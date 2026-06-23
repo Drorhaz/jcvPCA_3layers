@@ -1,0 +1,789 @@
+```text
+Layer 2 Pseudocode — Motive Bone Quaternions to JcvPCA-Ready Rotation-Vector Features
+
+Goal:
+  Convert Motive-solved global bone quaternions into filtered parent-child
+  relative rotation-vector features for Layer 3 JcvPCA.
+
+Input:
+  mixed_motive_csv:
+    CSV exported from Motive containing global bone rotations as quaternions.
+
+Expected quaternion columns:
+  Bone:<bone_name>:Rotation:X
+  Bone:<bone_name>:Rotation:Y
+  Bone:<bone_name>:Rotation:Z
+  Bone:<bone_name>:Rotation:W
+
+Output:
+  relative_rotation_vectors_filtered.parquet
+  relative_rotation_vectors_filtered.csv
+
+Final feature format:
+  frame
+  time
+  participant_id
+  timepoint
+  part_id
+  repetition_id
+  left_hip_rx
+  left_hip_ry
+  left_hip_rz
+  left_knee_rx
+  left_knee_ry
+  left_knee_rz
+  trunk_rx
+  trunk_ry
+  trunk_rz
+  ...
+
+These filtered rx/ry/rz columns are the only Layer 2 features passed to Layer 3 JcvPCA.
+
+================================================================================
+PART 0 — IMPORTANT IMPLEMENTATION ASSUMPTIONS
+================================================================================
+
+Use Motive-solved global bone quaternions as the source kinematics.
+
+Do not use raw markers to compute final joint angles in Layer 2.
+Raw markers belong to Layer 1 QC only.
+
+Do not use global bone quaternions directly for JcvPCA.
+Global bone quaternions describe bone orientation in world/lab coordinates,
+not joint-relative motion.
+
+Use parent-child relative rotations:
+  q_joint(t) = inverse(q_parent_global(t)) * q_child_global(t)
+
+Use Hamilton quaternion convention unless proven otherwise.
+
+Assume Motive column order is:
+  qx, qy, qz, qw
+
+Document this explicitly:
+  quaternion_component_order = "x,y,z,w"
+  internal_quaternion_order = whichever the implementation library requires
+  multiplication_convention = "Hamilton"
+  relative_formula = "inverse(parent) * child"
+
+Weak point:
+  Quaternion convention is a critical failure point.
+  If the library expects [w,x,y,z] but Motive exports [x,y,z,w],
+  the output will be wrong even if the code runs.
+
+================================================================================
+PART 1 — LOAD AND PARSE MOTIVE CSV
+================================================================================
+
+Function load_motive_csv(file_path):
+
+  Read CSV.
+
+  Detect frame column:
+    Possible names:
+      Frame
+      frame
+      FrameNumber
+
+  Detect time column:
+    Possible names:
+      Time
+      time
+      Timestamp
+      Seconds
+
+  Detect bone rotation quaternion columns.
+
+  A bone is valid only if all four components exist:
+    Rotation:X
+    Rotation:Y
+    Rotation:Z
+    Rotation:W
+
+  For each detected bone:
+    Store:
+      bone_name
+      qx_column
+      qy_column
+      qz_column
+      qw_column
+
+  Output:
+    raw_dataframe
+    bone_inventory
+
+  Export:
+    bone_inventory.csv
+
+bone_inventory.csv columns:
+  bone_name
+  qx_column
+  qy_column
+  qz_column
+  qw_column
+  has_qx
+  has_qy
+  has_qz
+  has_qw
+  n_frames
+  n_missing_qx
+  n_missing_qy
+  n_missing_qz
+  n_missing_qw
+
+Hard stop if:
+  no frame column found
+  no time column found
+  no bone quaternion columns found
+  any required bone in parent_child_joint_map is missing
+
+Weak point:
+  Motive naming may differ between exports.
+  Bone discovery must be robust, but it must not silently guess wrong names.
+
+================================================================================
+PART 2 — VALIDATE FRAME AND TIME BASE
+================================================================================
+
+Function validate_frame_time(raw_dataframe):
+
+  Check:
+    frame is monotonic increasing
+    no duplicated frames
+    no missing frame IDs, if frame IDs are integer-continuous
+    time is monotonic increasing
+    no duplicated timestamps
+    no negative time differences
+
+  Compute:
+    dt = time[t] - time[t-1]
+    median_dt
+    min_dt
+    max_dt
+    estimated_sampling_rate = 1 / median_dt
+
+  Expected:
+    sampling_rate_hz approximately 120 Hz
+
+  Flag:
+    duplicated frames
+    missing frames
+    large dt gaps
+    nonmonotonic time steps
+    sampling rate mismatch
+
+  Export:
+    frame_time_validation_report.csv
+
+Hard stop if:
+  time is nonmonotonic
+  many duplicated frames
+  sampling rate cannot be estimated
+
+Warning if:
+  sampling rate differs from expected 120 Hz
+  isolated dropped frames exist
+
+Weak point:
+  Filtering assumes a valid sampling rate.
+  If time is wrong, Butterworth filtering and later PCA interpretation become unreliable.
+
+================================================================================
+PART 3 — LOAD OR CREATE PARENT-CHILD JOINT MAP
+================================================================================
+
+Function load_parent_child_joint_map(map_path, bone_inventory):
+
+  Load parent_child_joint_map.csv.
+
+Expected columns:
+  joint_name
+  parent_bone
+  child_bone
+  include_in_layer3
+
+Example rows:
+  trunk, Pelvis, Chest, true
+  left_hip, Pelvis, LThigh, true
+  left_knee, LThigh, LShin, true
+  left_ankle, LShin, LFoot, true
+  right_hip, Pelvis, RThigh, true
+  right_knee, RThigh, RShin, true
+  right_ankle, RShin, RFoot, true
+  left_shoulder, Chest, LUArm, true
+  left_elbow, LUArm, LFArm, true
+  right_shoulder, Chest, RUArm, true
+  right_elbow, RUArm, RFArm, true
+
+Validate:
+  every parent_bone exists in bone_inventory
+  every child_bone exists in bone_inventory
+  joint_name is unique
+  no empty parent/child cells
+  include_in_layer3 is explicitly true or false
+
+Export copy:
+  parent_child_joint_map_used.csv
+
+Hard stop if:
+  required parent or child bone is missing
+  duplicate joint names exist
+  map is inconsistent with detected Motive bones
+
+Weak point:
+  This map is a scientific assumption, not just code configuration.
+  A wrong parent-child pair creates a wrong joint signal.
+
+================================================================================
+PART 4 — EXTRACT GLOBAL BONE QUATERNION TABLE
+================================================================================
+
+Function build_global_quaternion_table(raw_dataframe, bone_inventory):
+
+  For each bone:
+    Extract qx, qy, qz, qw as numeric arrays.
+
+  Convert empty strings to NaN.
+
+  Check for:
+    NaN
+    infinite values
+    all-zero quaternions
+    near-zero norm quaternions
+
+  Output table:
+    frame
+    time
+    <bone>_qx
+    <bone>_qy
+    <bone>_qz
+    <bone>_qw
+    ...
+
+  Export:
+    global_bone_quaternions_raw.parquet
+    bone_quaternion_missingness_report.csv
+
+Hard stop if:
+  any included bone has NaN or infinite quaternion values inside analysis data
+  any included bone has zero-norm quaternion frames
+
+Warning if:
+  missingness exists outside the selected analysis window
+
+Weak point:
+  Solved skeleton streams may appear complete even when marker tracking was imperfect.
+  Zero missing bone quaternions does not prove marker-level tracking quality.
+
+================================================================================
+PART 5 — NORMALIZE GLOBAL QUATERNIONS
+================================================================================
+
+Function normalize_quaternions(global_quaternion_table):
+
+  For each bone and frame:
+
+    q = [qx, qy, qz, qw]
+
+    norm_q = sqrt(qx^2 + qy^2 + qz^2 + qw^2)
+
+    If norm_q is zero or very close to zero:
+      flag as invalid
+      stop for that file/window
+
+    q_normalized = q / norm_q
+
+  Record:
+    mean norm before normalization
+    max deviation from unit norm
+    frames with large norm deviation
+
+  Export:
+    global_bone_quaternions_normalized.parquet
+    quaternion_norm_report.csv
+
+Weak point:
+  Normalization fixes small numeric drift.
+  It does not fix biologically wrong or solver-corrupted orientations.
+
+================================================================================
+PART 6 — GLOBAL QUATERNION SIGN-CONTINUITY CORRECTION
+================================================================================
+
+Function enforce_sign_continuity_global(normalized_global_quaternions):
+
+  For each bone:
+
+    For frame t from 1 to end:
+
+      previous_q = q[t-1]
+      current_q  = q[t]
+
+      If dot(previous_q, current_q) < 0:
+        q[t] = -q[t]
+        record sign flip correction
+
+  Export:
+    global_bone_quaternions_sign_corrected.parquet
+    quaternion_sign_flip_report_global.csv
+
+Weak point:
+  q and -q are the same rotation, but a sign flip can produce artificial jumps
+  in downstream computations if not corrected.
+
+================================================================================
+PART 7 — COMPUTE PARENT-CHILD RELATIVE QUATERNIONS
+================================================================================
+
+Function compute_relative_joint_quaternions(global_sign_corrected_quaternions, parent_child_joint_map):
+
+  For each joint in parent_child_joint_map where include_in_layer3 == true:
+
+    parent = parent_bone
+    child  = child_bone
+
+    For each frame t:
+
+      q_parent = global quaternion of parent at t
+      q_child  = global quaternion of child at t
+
+      q_joint = inverse(q_parent) * q_child
+
+      Normalize q_joint again.
+
+      Store:
+        joint_qx
+        joint_qy
+        joint_qz
+        joint_qw
+
+  Export:
+    relative_joint_quaternions_raw.parquet
+
+Important:
+  Use exact formula:
+    q_joint = inverse(q_parent_global) * q_child_global
+
+Do not use:
+    q_joint = q_child * inverse(q_parent)
+
+unless there is a documented convention requiring it.
+
+Weak point:
+  Quaternion multiplication order is one of the highest-risk implementation points.
+  The code should include a small unit test with known rotations.
+
+================================================================================
+PART 8 — RELATIVE QUATERNION SIGN-CONTINUITY CORRECTION
+================================================================================
+
+Function enforce_sign_continuity_relative(relative_joint_quaternions_raw):
+
+  For each joint:
+
+    For frame t from 1 to end:
+
+      previous_q = q_joint[t-1]
+      current_q  = q_joint[t]
+
+      If dot(previous_q, current_q) < 0:
+        q_joint[t] = -q_joint[t]
+        record sign flip correction
+
+  Export:
+    relative_joint_quaternions.parquet
+    quaternion_sign_flip_report_relative.csv
+
+Important:
+  Run sign-continuity correction again after computing relative quaternions.
+
+Reason:
+  Even if global bone quaternions are sign-continuous, relative quaternions can still
+  show representation-level discontinuities.
+
+Weak point:
+  Skipping this step can create artificial jumps in log-map rotation vectors.
+
+================================================================================
+PART 9 — CONVERT RELATIVE QUATERNIONS TO LOG-MAP ROTATION VECTORS
+================================================================================
+
+Function quaternion_to_rotation_vector(q_joint):
+
+  Input:
+    q_joint = [qx, qy, qz, qw]
+    q_joint must be unit length.
+
+  Step 1:
+    Normalize q_joint again for numerical safety.
+
+  Step 2:
+    Optional shortest-arc convention:
+      If qw < 0:
+        q_joint = -q_joint
+
+    Reason:
+      Keeps angle closer to [0, pi] and reduces branch-cut jumps.
+
+  Step 3:
+    v = [qx, qy, qz]
+    w = qw
+
+  Step 4:
+    Clamp w:
+      w = clamp(w, -1, 1)
+
+  Step 5:
+    sin_half_angle = norm(v)
+
+  Step 6:
+    If sin_half_angle < epsilon:
+      r = [0, 0, 0]
+
+    Else:
+      angle = 2 * atan2(sin_half_angle, w)
+      axis = v / sin_half_angle
+      r = angle * axis
+
+  Output:
+    r = [rx, ry, rz]
+
+Function build_rotation_vector_table(relative_joint_quaternions):
+
+  For each joint and frame:
+    r = quaternion_to_rotation_vector(q_joint)
+
+    Store:
+      <joint>_rx
+      <joint>_ry
+      <joint>_rz
+
+  Export:
+    relative_rotation_vectors_unfiltered.parquet
+    relative_rotation_vectors_unfiltered.csv
+
+Important:
+  rx, ry, rz are tangent-space rotation-vector components.
+  They are not automatically anatomical flexion, abduction, or twist.
+
+Weak point:
+  Log-map can show branch-cut issues near large rotations.
+  The shortest-arc convention and jump checks are essential.
+
+================================================================================
+PART 10 — ROTATION-VECTOR JUMP CHECKS BEFORE FILTERING
+================================================================================
+
+Function detect_rotation_vector_jumps(rotation_vectors_unfiltered):
+
+  For each joint:
+
+    For each frame t > 0:
+
+      r_t     = [joint_rx[t], joint_ry[t], joint_rz[t]]
+      r_prev  = [joint_rx[t-1], joint_ry[t-1], joint_rz[t-1]]
+
+      jump[t] = norm(r_t - r_prev)
+
+  For each joint compute:
+    max_jump
+    median_jump
+    robust_threshold
+    n_jump_flags
+    frames_flagged
+
+  Suggested robust threshold:
+    threshold = median(jump) + K * MAD(jump)
+    where K can start at 6 to 10 and should be documented.
+
+  Export:
+    rotation_vector_jump_report.csv
+    rotation_vector_jump_flags.csv
+
+Warning if:
+  large isolated jumps exist
+  jumps align with known marker/solver artifacts
+  jumps appear near group/task analysis windows
+
+Hard stop if:
+  many severe jumps exist in the selected analysis window
+
+Weak point:
+  A clean quaternion table can still produce unstable rotation-vector trajectories.
+  Do not filter blindly before inspecting major jumps.
+
+================================================================================
+PART 11 — FILTER ROTATION VECTORS IN TANGENT SPACE
+================================================================================
+
+Function filter_rotation_vectors(rotation_vectors_unfiltered, sampling_rate_hz, cutoff_hz=10):
+
+  Input:
+    continuous full-session or full-Part-1 rotation-vector table.
+
+  Important:
+    Prefer filtering the continuous session or full Part 1 before cutting short
+    group/task windows.
+
+  Reason:
+    Filtering short segments independently can create edge artifacts.
+
+  Filter:
+    Butterworth low-pass
+    cutoff_hz = 10
+    sampling_rate_hz = estimated from time column, expected about 120 Hz
+    zero_phase = true for offline analysis
+    filter_order = documented, e.g. 4
+
+  For each feature column:
+    Apply filter independently:
+      joint_rx
+      joint_ry
+      joint_rz
+
+  Do not filter:
+    frame
+    time
+    metadata columns
+
+  Export:
+    relative_rotation_vectors_filtered.parquet
+    relative_rotation_vectors_filtered.csv
+
+Metadata:
+  filter_type = "Butterworth low-pass"
+  cutoff_hz = 10
+  sampling_rate_hz
+  filter_order
+  zero_phase_true_false
+  filtered_before_segmentation = true/false
+  software_versions
+
+Weak point:
+  Filtering is a major source of downstream PCA differences.
+  Keep filter settings fixed and documented.
+
+================================================================================
+PART 12 — OPTIONAL FILTER SENSITIVITY OUTPUTS
+================================================================================
+
+Function run_filter_sensitivity(rotation_vectors_unfiltered):
+
+  For cutoff_hz in [6, 10, 15]:
+
+    filtered_table = filter_rotation_vectors(
+      rotation_vectors_unfiltered,
+      sampling_rate_hz,
+      cutoff_hz
+    )
+
+    Export:
+      relative_rotation_vectors_filtered_6Hz.parquet
+      relative_rotation_vectors_filtered_10Hz.parquet
+      relative_rotation_vectors_filtered_15Hz.parquet
+
+  Create:
+    filter_sensitivity_summary.csv
+
+Summary fields:
+  cutoff_hz
+  n_features
+  mean_absolute_difference_vs_10Hz
+  max_absolute_difference_vs_10Hz
+  notes
+
+Layer 3 can later rerun JcvPCA on these versions.
+
+Weak point:
+  If Layer 3 JcvPCA direction changes strongly across 6/10/15 Hz,
+  the result should be marked unstable.
+
+================================================================================
+PART 13 — ATTACH SESSION/TASK METADATA FOR LAYER 3
+================================================================================
+
+Function attach_metadata(filtered_rotation_vectors, session_metadata):
+
+  Add columns:
+    participant_id
+    timepoint        # T1, T2, T3
+    part_id          # P1
+    repetition_id    # r1, r2
+    source_file
+    sampling_rate_hz
+    filter_cutoff_hz
+
+  Do not segment permanently here unless needed.
+
+  Preferred:
+    Layer 2 outputs continuous filtered features.
+    Layer 3 performs group/task extraction using manually verified boundaries.
+
+  Optional:
+    Also export segment-ready copies if boundaries are already verified.
+
+Output:
+  layer2_feature_table_continuous.parquet
+
+Weak point:
+  Segment boundaries should be manually/video verified.
+  Do not rely only on transcript timestamps for final analysis.
+
+================================================================================
+PART 14 — CREATE FEATURE MANIFEST FOR LAYER 3
+================================================================================
+
+Function create_layer3_feature_manifest(filtered_rotation_vectors):
+
+  For each rx/ry/rz feature column:
+
+    Parse:
+      joint_name
+      component  # rx, ry, rz
+
+    Store:
+      feature_index
+      feature_name
+      joint_name
+      component
+      include_in_layer3 = true
+
+  Export:
+    layer3_feature_manifest.csv
+
+Example:
+  0, trunk_rx, trunk, rx, true
+  1, trunk_ry, trunk, ry, true
+  2, trunk_rz, trunk, rz, true
+  3, left_hip_rx, left_hip, rx, true
+  ...
+
+Important:
+  This manifest defines exact feature order for JcvPCA.
+
+Weak point:
+  JcvPCA requires identical feature order between A and B.
+  The manifest should be reused by Layer 3, not regenerated differently per file.
+
+================================================================================
+PART 15 — FINAL OUTPUT VALIDATION
+================================================================================
+
+Function validate_layer2_final_outputs(filtered_rotation_vectors, feature_manifest):
+
+  Check:
+    frame/time present
+    metadata columns present
+    all manifest features exist
+    no NaN in feature columns
+    no infinite values
+    all features numeric
+    feature order matches manifest
+    at least one rx/ry/rz triplet per included joint
+    sampling rate metadata present
+    filter metadata present
+
+  For each joint:
+    confirm exactly:
+      joint_rx
+      joint_ry
+      joint_rz
+
+  Export:
+    layer2_final_validation_report.csv
+
+Hard stop if:
+  missing features
+  NaN/infinite values in final features
+  inconsistent feature order
+  missing metadata needed for Layer 3
+
+================================================================================
+PART 16 — REQUIRED OUTPUT FILES
+================================================================================
+
+Primary Layer 2 outputs:
+  relative_rotation_vectors_filtered.parquet
+  relative_rotation_vectors_filtered.csv
+  layer2_feature_table_continuous.parquet
+  layer3_feature_manifest.csv
+
+Supporting outputs:
+  bone_inventory.csv
+  parent_child_joint_map_used.csv
+  frame_time_validation_report.csv
+  bone_quaternion_missingness_report.csv
+  quaternion_norm_report.csv
+  quaternion_sign_flip_report_global.csv
+  quaternion_sign_flip_report_relative.csv
+  relative_joint_quaternions.parquet
+  relative_rotation_vectors_unfiltered.parquet
+  rotation_vector_jump_report.csv
+  rotation_vector_jump_flags.csv
+  filter_sensitivity_summary.csv
+  layer2_final_validation_report.csv
+  layer2_metadata.json
+
+layer2_metadata.json should include:
+  source_file
+  participant_id
+  timepoint
+  part_id
+  repetition_id
+  quaternion_component_order
+  internal_quaternion_order
+  multiplication_convention
+  relative_rotation_formula
+  parent_child_joint_map_file
+  sampling_rate_hz
+  filter_type
+  filter_order
+  filter_cutoff_hz
+  zero_phase_filtering
+  filtered_before_segmentation
+  log_map_shortest_arc_true_false
+  final_feature_representation = "parent-child relative rotation vectors"
+  output_for_layer3 = "filtered joint_rx/joint_ry/joint_rz features"
+
+================================================================================
+PART 17 — IMPLEMENTATION WEAK POINTS TO HANDLE CAREFULLY
+================================================================================
+
+1. Motive quaternion column parsing:
+   Do not silently misread X/Y/Z/W order.
+
+2. Quaternion library convention:
+   Many libraries use [w,x,y,z], while Motive often exports X/Y/Z/W.
+   Convert explicitly and test.
+
+3. Quaternion multiplication order:
+   Use:
+     inverse(parent) * child
+   Document and unit-test it.
+
+4. Sign-continuity:
+   Apply once to global bone quaternions and again to relative joint quaternions.
+
+5. Log-map edge cases:
+   Handle near-zero rotations, clamp qw, and consider shortest-arc convention.
+
+6. Filtering:
+   Filter continuous signals before group/task segmentation when possible.
+   Avoid filtering very short task windows independently.
+
+7. Segment boundaries:
+   Layer 2 should produce continuous filtered features.
+   Layer 3 should use manually/video-verified group/task windows.
+
+8. Anatomical interpretation:
+   rx/ry/rz are not anatomical flexion/abduction/twist angles.
+   They are rotation-vector components.
+   Layer 3 should group rx/ry/rz per joint for joint-level JcvPCA.
+
+9. Dependency on Motive:
+   These are Motive-derived skeleton kinematic features.
+   They are not independently reconstructed anatomical joint angles.
+
+10. Layer 3 compatibility:
+   The final feature manifest must be stable across T1, T2, T3, r1, and r2.
+```

@@ -1,0 +1,47 @@
+{
+  "safe_to_open": true,
+  "blocking_errors": [],
+  "warnings": [
+    "load_warning: Optional file is empty (skipped): quarantined_markers.csv"
+  ],
+  "identity": {
+    "session_key": "671_T1_P1_R1",
+    "layer1_run_key": "671_T1_P1_R1",
+    "layer2_session_id": "671_T1_P1_R1",
+    "layer2_run_label": "671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001"
+  },
+  "alignment": {
+    "exact_frame_alignment": true,
+    "canonical_join_key": "frame"
+  },
+  "window": {
+    "start_frame": 1000,
+    "end_frame": 1500
+  },
+  "gap_policy": "strict",
+  "qc_evidence_policy": {
+    "l1_evidence_types": [
+      "artifact_sigma",
+      "gap_0p2",
+      "gap_0p5",
+      "segment_swap"
+    ],
+    "l2_evidence_types": [
+      "block_filter",
+      "manual_review",
+      "stage07_jump",
+      "stage08_eligibility",
+      "stage08_masked"
+    ]
+  },
+  "export_scope": "all_non_excluded",
+  "mapping_version": "session_datadescriptions_unverified_v0",
+  "mapping_source": "session_datadescriptions_optional",
+  "datadescriptions_used": true,
+  "template_mapping_status": "session_datadescriptions_used_unverified",
+  "n_unmapped_markers": 2,
+  "gap_files_status": {
+    "gaps_over_0p2s.csv": "present_not_parsed_in_phase_5a",
+    "gaps_over_0p5s.csv": "present_not_parsed_in_phase_5a"
+  }
+}

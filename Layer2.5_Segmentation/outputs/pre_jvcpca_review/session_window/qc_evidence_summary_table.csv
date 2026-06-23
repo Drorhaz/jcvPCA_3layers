@@ -1,0 +1,5 @@
+qc_type,event_count,total_event_duration_frames,total_event_duration_percent_of_window,unique_marker_or_region_count,markers_or_regions,related_joint_families,mapping_status_summary,source_files
+gap_0p5,2,142,14.78,2,671:LFArm; 671:LHandIn,left_shoulder_arm; left_wrist_hand,mapped:2; unmapped:0,gaps_over_0p5s.csv
+gap_0p2,4,111,11.55,2,671:RFArm; 671:RHandIn,right_shoulder_arm; right_wrist_hand,mapped:2; unmapped:0,gaps_over_0p2s.csv
+artifact_sigma,5,5,0.52,4,671:ChestTop; 671:LHandIn; 671:LWristOut; 671:WaistRFront,left_wrist_hand; pelvis_hip; trunk_chest,mapped:4; unmapped:0,artifact_events.csv
+segment_swap,2,7,0.73,2,LHandIn__LWristOut; RHandIn__RWristOut,left_wrist_hand; right_wrist_hand,mapped:2; unmapped:0,artifact_events.csv

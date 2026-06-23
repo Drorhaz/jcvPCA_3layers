@@ -1,0 +1,2 @@
+start_frame,end_frame,n_window_frames,n_use_frames,n_caution_frames,n_exclude_frames,percent_use,percent_caution,percent_exclude,flag_gap_0p2,flag_gap_0p5,flag_artifact_sigma,flag_segment_swap,flag_edge_effect
+0,2000,2001,1518,148,335,75.8621,7.3963,16.7416,0,335,0,408,16

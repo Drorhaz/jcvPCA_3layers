@@ -1,0 +1,6 @@
+pandas>=2.0
+pyarrow>=14
+numpy>=1.24
+ipywidgets>=8
+pytest>=8
+ruff>=0.4

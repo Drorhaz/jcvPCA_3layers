@@ -1,0 +1,552 @@
+column_index,flat_name,type,source_name,source_id,source_parent,property,component,layer2_role,layer2_used,notes
+0,frame,,,,,,Frame,frame,False,Frame index column
+1,time_seconds,Type,Name,ID,Parent,,Time (Seconds),time,False,Time column
+6,col0006__Bone__T3_671_T3_671__Position__X,Bone,T3_671:T3_671,47C68B89012911F1:90AFB54A3B8C3180,Root,Position,X,bone_position,False,Bone position ignored for Layer 2
+7,col0007__Bone__T3_671_T3_671__Position__Y,Bone,T3_671:T3_671,47C68B89012911F1:90AFB54A3B8C3180,Root,Position,Y,bone_position,False,Bone position ignored for Layer 2
+8,col0008__Bone__T3_671_T3_671__Position__Z,Bone,T3_671:T3_671,47C68B89012911F1:90AFB54A3B8C3180,Root,Position,Z,bone_position,False,Bone position ignored for Layer 2
+13,col0013__Bone__T3_671_Ab__Position__X,Bone,T3_671:Ab,47C68B8B012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,X,bone_position,False,Bone position ignored for Layer 2
+14,col0014__Bone__T3_671_Ab__Position__Y,Bone,T3_671:Ab,47C68B8B012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,Y,bone_position,False,Bone position ignored for Layer 2
+15,col0015__Bone__T3_671_Ab__Position__Z,Bone,T3_671:Ab,47C68B8B012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,Z,bone_position,False,Bone position ignored for Layer 2
+20,col0020__Bone__T3_671_Spine2__Position__X,Bone,T3_671:Spine2,47C68C35012911F1:90AFB54A3B8C3180,T3_671:Ab,Position,X,bone_position,False,Bone position ignored for Layer 2
+21,col0021__Bone__T3_671_Spine2__Position__Y,Bone,T3_671:Spine2,47C68C35012911F1:90AFB54A3B8C3180,T3_671:Ab,Position,Y,bone_position,False,Bone position ignored for Layer 2
+22,col0022__Bone__T3_671_Spine2__Position__Z,Bone,T3_671:Spine2,47C68C35012911F1:90AFB54A3B8C3180,T3_671:Ab,Position,Z,bone_position,False,Bone position ignored for Layer 2
+27,col0027__Bone__T3_671_Spine3__Position__X,Bone,T3_671:Spine3,47C68C36012911F1:90AFB54A3B8C3180,T3_671:Spine2,Position,X,bone_position,False,Bone position ignored for Layer 2
+28,col0028__Bone__T3_671_Spine3__Position__Y,Bone,T3_671:Spine3,47C68C36012911F1:90AFB54A3B8C3180,T3_671:Spine2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+29,col0029__Bone__T3_671_Spine3__Position__Z,Bone,T3_671:Spine3,47C68C36012911F1:90AFB54A3B8C3180,T3_671:Spine2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+34,col0034__Bone__T3_671_Spine4__Position__X,Bone,T3_671:Spine4,47C68C37012911F1:90AFB54A3B8C3180,T3_671:Spine3,Position,X,bone_position,False,Bone position ignored for Layer 2
+35,col0035__Bone__T3_671_Spine4__Position__Y,Bone,T3_671:Spine4,47C68C37012911F1:90AFB54A3B8C3180,T3_671:Spine3,Position,Y,bone_position,False,Bone position ignored for Layer 2
+36,col0036__Bone__T3_671_Spine4__Position__Z,Bone,T3_671:Spine4,47C68C37012911F1:90AFB54A3B8C3180,T3_671:Spine3,Position,Z,bone_position,False,Bone position ignored for Layer 2
+41,col0041__Bone__T3_671_Chest__Position__X,Bone,T3_671:Chest,47C68B8C012911F1:90AFB54A3B8C3180,T3_671:Spine4,Position,X,bone_position,False,Bone position ignored for Layer 2
+42,col0042__Bone__T3_671_Chest__Position__Y,Bone,T3_671:Chest,47C68B8C012911F1:90AFB54A3B8C3180,T3_671:Spine4,Position,Y,bone_position,False,Bone position ignored for Layer 2
+43,col0043__Bone__T3_671_Chest__Position__Z,Bone,T3_671:Chest,47C68B8C012911F1:90AFB54A3B8C3180,T3_671:Spine4,Position,Z,bone_position,False,Bone position ignored for Layer 2
+48,col0048__Bone__T3_671_Neck__Position__X,Bone,T3_671:Neck,47C68B8D012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,X,bone_position,False,Bone position ignored for Layer 2
+49,col0049__Bone__T3_671_Neck__Position__Y,Bone,T3_671:Neck,47C68B8D012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,Y,bone_position,False,Bone position ignored for Layer 2
+50,col0050__Bone__T3_671_Neck__Position__Z,Bone,T3_671:Neck,47C68B8D012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,Z,bone_position,False,Bone position ignored for Layer 2
+55,col0055__Bone__T3_671_Neck2__Position__X,Bone,T3_671:Neck2,47C68C38012911F1:90AFB54A3B8C3180,T3_671:Neck,Position,X,bone_position,False,Bone position ignored for Layer 2
+56,col0056__Bone__T3_671_Neck2__Position__Y,Bone,T3_671:Neck2,47C68C38012911F1:90AFB54A3B8C3180,T3_671:Neck,Position,Y,bone_position,False,Bone position ignored for Layer 2
+57,col0057__Bone__T3_671_Neck2__Position__Z,Bone,T3_671:Neck2,47C68C38012911F1:90AFB54A3B8C3180,T3_671:Neck,Position,Z,bone_position,False,Bone position ignored for Layer 2
+62,col0062__Bone__T3_671_Head__Position__X,Bone,T3_671:Head,47C68B8E012911F1:90AFB54A3B8C3180,T3_671:Neck2,Position,X,bone_position,False,Bone position ignored for Layer 2
+63,col0063__Bone__T3_671_Head__Position__Y,Bone,T3_671:Head,47C68B8E012911F1:90AFB54A3B8C3180,T3_671:Neck2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+64,col0064__Bone__T3_671_Head__Position__Z,Bone,T3_671:Head,47C68B8E012911F1:90AFB54A3B8C3180,T3_671:Neck2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+69,col0069__Bone__T3_671_LShoulder__Position__X,Bone,T3_671:LShoulder,47C68B8F012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,X,bone_position,False,Bone position ignored for Layer 2
+70,col0070__Bone__T3_671_LShoulder__Position__Y,Bone,T3_671:LShoulder,47C68B8F012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,Y,bone_position,False,Bone position ignored for Layer 2
+71,col0071__Bone__T3_671_LShoulder__Position__Z,Bone,T3_671:LShoulder,47C68B8F012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,Z,bone_position,False,Bone position ignored for Layer 2
+76,col0076__Bone__T3_671_LUArm__Position__X,Bone,T3_671:LUArm,47C68B90012911F1:90AFB54A3B8C3180,T3_671:LShoulder,Position,X,bone_position,False,Bone position ignored for Layer 2
+77,col0077__Bone__T3_671_LUArm__Position__Y,Bone,T3_671:LUArm,47C68B90012911F1:90AFB54A3B8C3180,T3_671:LShoulder,Position,Y,bone_position,False,Bone position ignored for Layer 2
+78,col0078__Bone__T3_671_LUArm__Position__Z,Bone,T3_671:LUArm,47C68B90012911F1:90AFB54A3B8C3180,T3_671:LShoulder,Position,Z,bone_position,False,Bone position ignored for Layer 2
+83,col0083__Bone__T3_671_LFArm__Position__X,Bone,T3_671:LFArm,47C68B91012911F1:90AFB54A3B8C3180,T3_671:LUArm,Position,X,bone_position,False,Bone position ignored for Layer 2
+84,col0084__Bone__T3_671_LFArm__Position__Y,Bone,T3_671:LFArm,47C68B91012911F1:90AFB54A3B8C3180,T3_671:LUArm,Position,Y,bone_position,False,Bone position ignored for Layer 2
+85,col0085__Bone__T3_671_LFArm__Position__Z,Bone,T3_671:LFArm,47C68B91012911F1:90AFB54A3B8C3180,T3_671:LUArm,Position,Z,bone_position,False,Bone position ignored for Layer 2
+90,col0090__Bone__T3_671_LHand__Position__X,Bone,T3_671:LHand,47C68B92012911F1:90AFB54A3B8C3180,T3_671:LFArm,Position,X,bone_position,False,Bone position ignored for Layer 2
+91,col0091__Bone__T3_671_LHand__Position__Y,Bone,T3_671:LHand,47C68B92012911F1:90AFB54A3B8C3180,T3_671:LFArm,Position,Y,bone_position,False,Bone position ignored for Layer 2
+92,col0092__Bone__T3_671_LHand__Position__Z,Bone,T3_671:LHand,47C68B92012911F1:90AFB54A3B8C3180,T3_671:LFArm,Position,Z,bone_position,False,Bone position ignored for Layer 2
+97,col0097__Bone__T3_671_LThumb1__Position__X,Bone,T3_671:LThumb1,47C68B9F012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+98,col0098__Bone__T3_671_LThumb1__Position__Y,Bone,T3_671:LThumb1,47C68B9F012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+99,col0099__Bone__T3_671_LThumb1__Position__Z,Bone,T3_671:LThumb1,47C68B9F012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+104,col0104__Bone__T3_671_LThumb2__Position__X,Bone,T3_671:LThumb2,47C68BA0012911F1:90AFB54A3B8C3180,T3_671:LThumb1,Position,X,bone_position,False,Bone position ignored for Layer 2
+105,col0105__Bone__T3_671_LThumb2__Position__Y,Bone,T3_671:LThumb2,47C68BA0012911F1:90AFB54A3B8C3180,T3_671:LThumb1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+106,col0106__Bone__T3_671_LThumb2__Position__Z,Bone,T3_671:LThumb2,47C68BA0012911F1:90AFB54A3B8C3180,T3_671:LThumb1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+111,col0111__Bone__T3_671_LThumb3__Position__X,Bone,T3_671:LThumb3,47C68BA1012911F1:90AFB54A3B8C3180,T3_671:LThumb2,Position,X,bone_position,False,Bone position ignored for Layer 2
+112,col0112__Bone__T3_671_LThumb3__Position__Y,Bone,T3_671:LThumb3,47C68BA1012911F1:90AFB54A3B8C3180,T3_671:LThumb2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+113,col0113__Bone__T3_671_LThumb3__Position__Z,Bone,T3_671:LThumb3,47C68BA1012911F1:90AFB54A3B8C3180,T3_671:LThumb2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+118,col0118__Bone__T3_671_LIndex1__Position__X,Bone,T3_671:LIndex1,47C68BA3012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+119,col0119__Bone__T3_671_LIndex1__Position__Y,Bone,T3_671:LIndex1,47C68BA3012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+120,col0120__Bone__T3_671_LIndex1__Position__Z,Bone,T3_671:LIndex1,47C68BA3012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+125,col0125__Bone__T3_671_LIndex2__Position__X,Bone,T3_671:LIndex2,47C68BA4012911F1:90AFB54A3B8C3180,T3_671:LIndex1,Position,X,bone_position,False,Bone position ignored for Layer 2
+126,col0126__Bone__T3_671_LIndex2__Position__Y,Bone,T3_671:LIndex2,47C68BA4012911F1:90AFB54A3B8C3180,T3_671:LIndex1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+127,col0127__Bone__T3_671_LIndex2__Position__Z,Bone,T3_671:LIndex2,47C68BA4012911F1:90AFB54A3B8C3180,T3_671:LIndex1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+132,col0132__Bone__T3_671_LIndex3__Position__X,Bone,T3_671:LIndex3,47C68BA5012911F1:90AFB54A3B8C3180,T3_671:LIndex2,Position,X,bone_position,False,Bone position ignored for Layer 2
+133,col0133__Bone__T3_671_LIndex3__Position__Y,Bone,T3_671:LIndex3,47C68BA5012911F1:90AFB54A3B8C3180,T3_671:LIndex2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+134,col0134__Bone__T3_671_LIndex3__Position__Z,Bone,T3_671:LIndex3,47C68BA5012911F1:90AFB54A3B8C3180,T3_671:LIndex2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+139,col0139__Bone__T3_671_LMiddle1__Position__X,Bone,T3_671:LMiddle1,47C68BA7012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+140,col0140__Bone__T3_671_LMiddle1__Position__Y,Bone,T3_671:LMiddle1,47C68BA7012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+141,col0141__Bone__T3_671_LMiddle1__Position__Z,Bone,T3_671:LMiddle1,47C68BA7012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+146,col0146__Bone__T3_671_LMiddle2__Position__X,Bone,T3_671:LMiddle2,47C68BA8012911F1:90AFB54A3B8C3180,T3_671:LMiddle1,Position,X,bone_position,False,Bone position ignored for Layer 2
+147,col0147__Bone__T3_671_LMiddle2__Position__Y,Bone,T3_671:LMiddle2,47C68BA8012911F1:90AFB54A3B8C3180,T3_671:LMiddle1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+148,col0148__Bone__T3_671_LMiddle2__Position__Z,Bone,T3_671:LMiddle2,47C68BA8012911F1:90AFB54A3B8C3180,T3_671:LMiddle1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+153,col0153__Bone__T3_671_LMiddle3__Position__X,Bone,T3_671:LMiddle3,47C68BA9012911F1:90AFB54A3B8C3180,T3_671:LMiddle2,Position,X,bone_position,False,Bone position ignored for Layer 2
+154,col0154__Bone__T3_671_LMiddle3__Position__Y,Bone,T3_671:LMiddle3,47C68BA9012911F1:90AFB54A3B8C3180,T3_671:LMiddle2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+155,col0155__Bone__T3_671_LMiddle3__Position__Z,Bone,T3_671:LMiddle3,47C68BA9012911F1:90AFB54A3B8C3180,T3_671:LMiddle2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+160,col0160__Bone__T3_671_LRing1__Position__X,Bone,T3_671:LRing1,47C68BAB012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+161,col0161__Bone__T3_671_LRing1__Position__Y,Bone,T3_671:LRing1,47C68BAB012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+162,col0162__Bone__T3_671_LRing1__Position__Z,Bone,T3_671:LRing1,47C68BAB012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+167,col0167__Bone__T3_671_LRing2__Position__X,Bone,T3_671:LRing2,47C68BAC012911F1:90AFB54A3B8C3180,T3_671:LRing1,Position,X,bone_position,False,Bone position ignored for Layer 2
+168,col0168__Bone__T3_671_LRing2__Position__Y,Bone,T3_671:LRing2,47C68BAC012911F1:90AFB54A3B8C3180,T3_671:LRing1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+169,col0169__Bone__T3_671_LRing2__Position__Z,Bone,T3_671:LRing2,47C68BAC012911F1:90AFB54A3B8C3180,T3_671:LRing1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+174,col0174__Bone__T3_671_LRing3__Position__X,Bone,T3_671:LRing3,47C68BAD012911F1:90AFB54A3B8C3180,T3_671:LRing2,Position,X,bone_position,False,Bone position ignored for Layer 2
+175,col0175__Bone__T3_671_LRing3__Position__Y,Bone,T3_671:LRing3,47C68BAD012911F1:90AFB54A3B8C3180,T3_671:LRing2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+176,col0176__Bone__T3_671_LRing3__Position__Z,Bone,T3_671:LRing3,47C68BAD012911F1:90AFB54A3B8C3180,T3_671:LRing2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+181,col0181__Bone__T3_671_LPinky1__Position__X,Bone,T3_671:LPinky1,47C68BAF012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+182,col0182__Bone__T3_671_LPinky1__Position__Y,Bone,T3_671:LPinky1,47C68BAF012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+183,col0183__Bone__T3_671_LPinky1__Position__Z,Bone,T3_671:LPinky1,47C68BAF012911F1:90AFB54A3B8C3180,T3_671:LHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+188,col0188__Bone__T3_671_LPinky2__Position__X,Bone,T3_671:LPinky2,47C68BB0012911F1:90AFB54A3B8C3180,T3_671:LPinky1,Position,X,bone_position,False,Bone position ignored for Layer 2
+189,col0189__Bone__T3_671_LPinky2__Position__Y,Bone,T3_671:LPinky2,47C68BB0012911F1:90AFB54A3B8C3180,T3_671:LPinky1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+190,col0190__Bone__T3_671_LPinky2__Position__Z,Bone,T3_671:LPinky2,47C68BB0012911F1:90AFB54A3B8C3180,T3_671:LPinky1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+195,col0195__Bone__T3_671_LPinky3__Position__X,Bone,T3_671:LPinky3,47C68BB1012911F1:90AFB54A3B8C3180,T3_671:LPinky2,Position,X,bone_position,False,Bone position ignored for Layer 2
+196,col0196__Bone__T3_671_LPinky3__Position__Y,Bone,T3_671:LPinky3,47C68BB1012911F1:90AFB54A3B8C3180,T3_671:LPinky2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+197,col0197__Bone__T3_671_LPinky3__Position__Z,Bone,T3_671:LPinky3,47C68BB1012911F1:90AFB54A3B8C3180,T3_671:LPinky2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+202,col0202__Bone__T3_671_RShoulder__Position__X,Bone,T3_671:RShoulder,47C68B93012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,X,bone_position,False,Bone position ignored for Layer 2
+203,col0203__Bone__T3_671_RShoulder__Position__Y,Bone,T3_671:RShoulder,47C68B93012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,Y,bone_position,False,Bone position ignored for Layer 2
+204,col0204__Bone__T3_671_RShoulder__Position__Z,Bone,T3_671:RShoulder,47C68B93012911F1:90AFB54A3B8C3180,T3_671:Chest,Position,Z,bone_position,False,Bone position ignored for Layer 2
+209,col0209__Bone__T3_671_RUArm__Position__X,Bone,T3_671:RUArm,47C68B94012911F1:90AFB54A3B8C3180,T3_671:RShoulder,Position,X,bone_position,False,Bone position ignored for Layer 2
+210,col0210__Bone__T3_671_RUArm__Position__Y,Bone,T3_671:RUArm,47C68B94012911F1:90AFB54A3B8C3180,T3_671:RShoulder,Position,Y,bone_position,False,Bone position ignored for Layer 2
+211,col0211__Bone__T3_671_RUArm__Position__Z,Bone,T3_671:RUArm,47C68B94012911F1:90AFB54A3B8C3180,T3_671:RShoulder,Position,Z,bone_position,False,Bone position ignored for Layer 2
+216,col0216__Bone__T3_671_RFArm__Position__X,Bone,T3_671:RFArm,47C68B95012911F1:90AFB54A3B8C3180,T3_671:RUArm,Position,X,bone_position,False,Bone position ignored for Layer 2
+217,col0217__Bone__T3_671_RFArm__Position__Y,Bone,T3_671:RFArm,47C68B95012911F1:90AFB54A3B8C3180,T3_671:RUArm,Position,Y,bone_position,False,Bone position ignored for Layer 2
+218,col0218__Bone__T3_671_RFArm__Position__Z,Bone,T3_671:RFArm,47C68B95012911F1:90AFB54A3B8C3180,T3_671:RUArm,Position,Z,bone_position,False,Bone position ignored for Layer 2
+223,col0223__Bone__T3_671_RHand__Position__X,Bone,T3_671:RHand,47C68B96012911F1:90AFB54A3B8C3180,T3_671:RFArm,Position,X,bone_position,False,Bone position ignored for Layer 2
+224,col0224__Bone__T3_671_RHand__Position__Y,Bone,T3_671:RHand,47C68B96012911F1:90AFB54A3B8C3180,T3_671:RFArm,Position,Y,bone_position,False,Bone position ignored for Layer 2
+225,col0225__Bone__T3_671_RHand__Position__Z,Bone,T3_671:RHand,47C68B96012911F1:90AFB54A3B8C3180,T3_671:RFArm,Position,Z,bone_position,False,Bone position ignored for Layer 2
+230,col0230__Bone__T3_671_RThumb1__Position__X,Bone,T3_671:RThumb1,47C68BB3012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+231,col0231__Bone__T3_671_RThumb1__Position__Y,Bone,T3_671:RThumb1,47C68BB3012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+232,col0232__Bone__T3_671_RThumb1__Position__Z,Bone,T3_671:RThumb1,47C68BB3012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+237,col0237__Bone__T3_671_RThumb2__Position__X,Bone,T3_671:RThumb2,47C68BB4012911F1:90AFB54A3B8C3180,T3_671:RThumb1,Position,X,bone_position,False,Bone position ignored for Layer 2
+238,col0238__Bone__T3_671_RThumb2__Position__Y,Bone,T3_671:RThumb2,47C68BB4012911F1:90AFB54A3B8C3180,T3_671:RThumb1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+239,col0239__Bone__T3_671_RThumb2__Position__Z,Bone,T3_671:RThumb2,47C68BB4012911F1:90AFB54A3B8C3180,T3_671:RThumb1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+244,col0244__Bone__T3_671_RThumb3__Position__X,Bone,T3_671:RThumb3,47C68BB5012911F1:90AFB54A3B8C3180,T3_671:RThumb2,Position,X,bone_position,False,Bone position ignored for Layer 2
+245,col0245__Bone__T3_671_RThumb3__Position__Y,Bone,T3_671:RThumb3,47C68BB5012911F1:90AFB54A3B8C3180,T3_671:RThumb2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+246,col0246__Bone__T3_671_RThumb3__Position__Z,Bone,T3_671:RThumb3,47C68BB5012911F1:90AFB54A3B8C3180,T3_671:RThumb2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+251,col0251__Bone__T3_671_RIndex1__Position__X,Bone,T3_671:RIndex1,47C68BB7012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+252,col0252__Bone__T3_671_RIndex1__Position__Y,Bone,T3_671:RIndex1,47C68BB7012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+253,col0253__Bone__T3_671_RIndex1__Position__Z,Bone,T3_671:RIndex1,47C68BB7012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+258,col0258__Bone__T3_671_RIndex2__Position__X,Bone,T3_671:RIndex2,47C68BB8012911F1:90AFB54A3B8C3180,T3_671:RIndex1,Position,X,bone_position,False,Bone position ignored for Layer 2
+259,col0259__Bone__T3_671_RIndex2__Position__Y,Bone,T3_671:RIndex2,47C68BB8012911F1:90AFB54A3B8C3180,T3_671:RIndex1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+260,col0260__Bone__T3_671_RIndex2__Position__Z,Bone,T3_671:RIndex2,47C68BB8012911F1:90AFB54A3B8C3180,T3_671:RIndex1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+265,col0265__Bone__T3_671_RIndex3__Position__X,Bone,T3_671:RIndex3,47C68BB9012911F1:90AFB54A3B8C3180,T3_671:RIndex2,Position,X,bone_position,False,Bone position ignored for Layer 2
+266,col0266__Bone__T3_671_RIndex3__Position__Y,Bone,T3_671:RIndex3,47C68BB9012911F1:90AFB54A3B8C3180,T3_671:RIndex2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+267,col0267__Bone__T3_671_RIndex3__Position__Z,Bone,T3_671:RIndex3,47C68BB9012911F1:90AFB54A3B8C3180,T3_671:RIndex2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+272,col0272__Bone__T3_671_RMiddle1__Position__X,Bone,T3_671:RMiddle1,47C68BBB012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+273,col0273__Bone__T3_671_RMiddle1__Position__Y,Bone,T3_671:RMiddle1,47C68BBB012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+274,col0274__Bone__T3_671_RMiddle1__Position__Z,Bone,T3_671:RMiddle1,47C68BBB012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+279,col0279__Bone__T3_671_RMiddle2__Position__X,Bone,T3_671:RMiddle2,47C68BBC012911F1:90AFB54A3B8C3180,T3_671:RMiddle1,Position,X,bone_position,False,Bone position ignored for Layer 2
+280,col0280__Bone__T3_671_RMiddle2__Position__Y,Bone,T3_671:RMiddle2,47C68BBC012911F1:90AFB54A3B8C3180,T3_671:RMiddle1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+281,col0281__Bone__T3_671_RMiddle2__Position__Z,Bone,T3_671:RMiddle2,47C68BBC012911F1:90AFB54A3B8C3180,T3_671:RMiddle1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+286,col0286__Bone__T3_671_RMiddle3__Position__X,Bone,T3_671:RMiddle3,47C68BBD012911F1:90AFB54A3B8C3180,T3_671:RMiddle2,Position,X,bone_position,False,Bone position ignored for Layer 2
+287,col0287__Bone__T3_671_RMiddle3__Position__Y,Bone,T3_671:RMiddle3,47C68BBD012911F1:90AFB54A3B8C3180,T3_671:RMiddle2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+288,col0288__Bone__T3_671_RMiddle3__Position__Z,Bone,T3_671:RMiddle3,47C68BBD012911F1:90AFB54A3B8C3180,T3_671:RMiddle2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+293,col0293__Bone__T3_671_RRing1__Position__X,Bone,T3_671:RRing1,47C68BBF012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+294,col0294__Bone__T3_671_RRing1__Position__Y,Bone,T3_671:RRing1,47C68BBF012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+295,col0295__Bone__T3_671_RRing1__Position__Z,Bone,T3_671:RRing1,47C68BBF012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+300,col0300__Bone__T3_671_RRing2__Position__X,Bone,T3_671:RRing2,47C68BC0012911F1:90AFB54A3B8C3180,T3_671:RRing1,Position,X,bone_position,False,Bone position ignored for Layer 2
+301,col0301__Bone__T3_671_RRing2__Position__Y,Bone,T3_671:RRing2,47C68BC0012911F1:90AFB54A3B8C3180,T3_671:RRing1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+302,col0302__Bone__T3_671_RRing2__Position__Z,Bone,T3_671:RRing2,47C68BC0012911F1:90AFB54A3B8C3180,T3_671:RRing1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+307,col0307__Bone__T3_671_RRing3__Position__X,Bone,T3_671:RRing3,47C68BC1012911F1:90AFB54A3B8C3180,T3_671:RRing2,Position,X,bone_position,False,Bone position ignored for Layer 2
+308,col0308__Bone__T3_671_RRing3__Position__Y,Bone,T3_671:RRing3,47C68BC1012911F1:90AFB54A3B8C3180,T3_671:RRing2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+309,col0309__Bone__T3_671_RRing3__Position__Z,Bone,T3_671:RRing3,47C68BC1012911F1:90AFB54A3B8C3180,T3_671:RRing2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+314,col0314__Bone__T3_671_RPinky1__Position__X,Bone,T3_671:RPinky1,47C68BC3012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,X,bone_position,False,Bone position ignored for Layer 2
+315,col0315__Bone__T3_671_RPinky1__Position__Y,Bone,T3_671:RPinky1,47C68BC3012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Y,bone_position,False,Bone position ignored for Layer 2
+316,col0316__Bone__T3_671_RPinky1__Position__Z,Bone,T3_671:RPinky1,47C68BC3012911F1:90AFB54A3B8C3180,T3_671:RHand,Position,Z,bone_position,False,Bone position ignored for Layer 2
+321,col0321__Bone__T3_671_RPinky2__Position__X,Bone,T3_671:RPinky2,47C68BC4012911F1:90AFB54A3B8C3180,T3_671:RPinky1,Position,X,bone_position,False,Bone position ignored for Layer 2
+322,col0322__Bone__T3_671_RPinky2__Position__Y,Bone,T3_671:RPinky2,47C68BC4012911F1:90AFB54A3B8C3180,T3_671:RPinky1,Position,Y,bone_position,False,Bone position ignored for Layer 2
+323,col0323__Bone__T3_671_RPinky2__Position__Z,Bone,T3_671:RPinky2,47C68BC4012911F1:90AFB54A3B8C3180,T3_671:RPinky1,Position,Z,bone_position,False,Bone position ignored for Layer 2
+328,col0328__Bone__T3_671_RPinky3__Position__X,Bone,T3_671:RPinky3,47C68BC5012911F1:90AFB54A3B8C3180,T3_671:RPinky2,Position,X,bone_position,False,Bone position ignored for Layer 2
+329,col0329__Bone__T3_671_RPinky3__Position__Y,Bone,T3_671:RPinky3,47C68BC5012911F1:90AFB54A3B8C3180,T3_671:RPinky2,Position,Y,bone_position,False,Bone position ignored for Layer 2
+330,col0330__Bone__T3_671_RPinky3__Position__Z,Bone,T3_671:RPinky3,47C68BC5012911F1:90AFB54A3B8C3180,T3_671:RPinky2,Position,Z,bone_position,False,Bone position ignored for Layer 2
+335,col0335__Bone__T3_671_LThigh__Position__X,Bone,T3_671:LThigh,47C68B97012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,X,bone_position,False,Bone position ignored for Layer 2
+336,col0336__Bone__T3_671_LThigh__Position__Y,Bone,T3_671:LThigh,47C68B97012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,Y,bone_position,False,Bone position ignored for Layer 2
+337,col0337__Bone__T3_671_LThigh__Position__Z,Bone,T3_671:LThigh,47C68B97012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,Z,bone_position,False,Bone position ignored for Layer 2
+342,col0342__Bone__T3_671_LShin__Position__X,Bone,T3_671:LShin,47C68B98012911F1:90AFB54A3B8C3180,T3_671:LThigh,Position,X,bone_position,False,Bone position ignored for Layer 2
+343,col0343__Bone__T3_671_LShin__Position__Y,Bone,T3_671:LShin,47C68B98012911F1:90AFB54A3B8C3180,T3_671:LThigh,Position,Y,bone_position,False,Bone position ignored for Layer 2
+344,col0344__Bone__T3_671_LShin__Position__Z,Bone,T3_671:LShin,47C68B98012911F1:90AFB54A3B8C3180,T3_671:LThigh,Position,Z,bone_position,False,Bone position ignored for Layer 2
+349,col0349__Bone__T3_671_LFoot__Position__X,Bone,T3_671:LFoot,47C68B99012911F1:90AFB54A3B8C3180,T3_671:LShin,Position,X,bone_position,False,Bone position ignored for Layer 2
+350,col0350__Bone__T3_671_LFoot__Position__Y,Bone,T3_671:LFoot,47C68B99012911F1:90AFB54A3B8C3180,T3_671:LShin,Position,Y,bone_position,False,Bone position ignored for Layer 2
+351,col0351__Bone__T3_671_LFoot__Position__Z,Bone,T3_671:LFoot,47C68B99012911F1:90AFB54A3B8C3180,T3_671:LShin,Position,Z,bone_position,False,Bone position ignored for Layer 2
+356,col0356__Bone__T3_671_LToe__Position__X,Bone,T3_671:LToe,47C68B9A012911F1:90AFB54A3B8C3180,T3_671:LFoot,Position,X,bone_position,False,Bone position ignored for Layer 2
+357,col0357__Bone__T3_671_LToe__Position__Y,Bone,T3_671:LToe,47C68B9A012911F1:90AFB54A3B8C3180,T3_671:LFoot,Position,Y,bone_position,False,Bone position ignored for Layer 2
+358,col0358__Bone__T3_671_LToe__Position__Z,Bone,T3_671:LToe,47C68B9A012911F1:90AFB54A3B8C3180,T3_671:LFoot,Position,Z,bone_position,False,Bone position ignored for Layer 2
+363,col0363__Bone__T3_671_RThigh__Position__X,Bone,T3_671:RThigh,47C68B9B012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,X,bone_position,False,Bone position ignored for Layer 2
+364,col0364__Bone__T3_671_RThigh__Position__Y,Bone,T3_671:RThigh,47C68B9B012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,Y,bone_position,False,Bone position ignored for Layer 2
+365,col0365__Bone__T3_671_RThigh__Position__Z,Bone,T3_671:RThigh,47C68B9B012911F1:90AFB54A3B8C3180,T3_671:T3_671,Position,Z,bone_position,False,Bone position ignored for Layer 2
+370,col0370__Bone__T3_671_RShin__Position__X,Bone,T3_671:RShin,47C68B9C012911F1:90AFB54A3B8C3180,T3_671:RThigh,Position,X,bone_position,False,Bone position ignored for Layer 2
+371,col0371__Bone__T3_671_RShin__Position__Y,Bone,T3_671:RShin,47C68B9C012911F1:90AFB54A3B8C3180,T3_671:RThigh,Position,Y,bone_position,False,Bone position ignored for Layer 2
+372,col0372__Bone__T3_671_RShin__Position__Z,Bone,T3_671:RShin,47C68B9C012911F1:90AFB54A3B8C3180,T3_671:RThigh,Position,Z,bone_position,False,Bone position ignored for Layer 2
+377,col0377__Bone__T3_671_RFoot__Position__X,Bone,T3_671:RFoot,47C68B9D012911F1:90AFB54A3B8C3180,T3_671:RShin,Position,X,bone_position,False,Bone position ignored for Layer 2
+378,col0378__Bone__T3_671_RFoot__Position__Y,Bone,T3_671:RFoot,47C68B9D012911F1:90AFB54A3B8C3180,T3_671:RShin,Position,Y,bone_position,False,Bone position ignored for Layer 2
+379,col0379__Bone__T3_671_RFoot__Position__Z,Bone,T3_671:RFoot,47C68B9D012911F1:90AFB54A3B8C3180,T3_671:RShin,Position,Z,bone_position,False,Bone position ignored for Layer 2
+384,col0384__Bone__T3_671_RToe__Position__X,Bone,T3_671:RToe,47C68B9E012911F1:90AFB54A3B8C3180,T3_671:RFoot,Position,X,bone_position,False,Bone position ignored for Layer 2
+385,col0385__Bone__T3_671_RToe__Position__Y,Bone,T3_671:RToe,47C68B9E012911F1:90AFB54A3B8C3180,T3_671:RFoot,Position,Y,bone_position,False,Bone position ignored for Layer 2
+386,col0386__Bone__T3_671_RToe__Position__Z,Bone,T3_671:RToe,47C68B9E012911F1:90AFB54A3B8C3180,T3_671:RFoot,Position,Z,bone_position,False,Bone position ignored for Layer 2
+387,col0387__Bone_Marker__T3_671_HeadFront__Position__X,Bone Marker,T3_671:HeadFront,C,T3_671:Head,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+388,col0388__Bone_Marker__T3_671_HeadFront__Position__Y,Bone Marker,T3_671:HeadFront,C,T3_671:Head,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+389,col0389__Bone_Marker__T3_671_HeadFront__Position__Z,Bone Marker,T3_671:HeadFront,C,T3_671:Head,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+390,col0390__Bone_Marker__T3_671_HeadLeft__Position__X,Bone Marker,T3_671:HeadLeft,D,T3_671:Head,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+391,col0391__Bone_Marker__T3_671_HeadLeft__Position__Y,Bone Marker,T3_671:HeadLeft,D,T3_671:Head,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+392,col0392__Bone_Marker__T3_671_HeadLeft__Position__Z,Bone Marker,T3_671:HeadLeft,D,T3_671:Head,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+393,col0393__Bone_Marker__T3_671_HeadTop__Position__X,Bone Marker,T3_671:HeadTop,B,T3_671:Head,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+394,col0394__Bone_Marker__T3_671_HeadTop__Position__Y,Bone Marker,T3_671:HeadTop,B,T3_671:Head,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+395,col0395__Bone_Marker__T3_671_HeadTop__Position__Z,Bone Marker,T3_671:HeadTop,B,T3_671:Head,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+396,col0396__Bone_Marker__T3_671_HeadRight__Position__X,Bone Marker,T3_671:HeadRight,E,T3_671:Head,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+397,col0397__Bone_Marker__T3_671_HeadRight__Position__Y,Bone Marker,T3_671:HeadRight,E,T3_671:Head,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+398,col0398__Bone_Marker__T3_671_HeadRight__Position__Z,Bone Marker,T3_671:HeadRight,E,T3_671:Head,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+399,col0399__Bone_Marker__T3_671_BackTop__Position__X,Bone Marker,T3_671:BackTop,6,T3_671:Chest,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+400,col0400__Bone_Marker__T3_671_BackTop__Position__Y,Bone Marker,T3_671:BackTop,6,T3_671:Chest,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+401,col0401__Bone_Marker__T3_671_BackTop__Position__Z,Bone Marker,T3_671:BackTop,6,T3_671:Chest,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+402,col0402__Bone_Marker__T3_671_BackLeft__Position__X,Bone Marker,T3_671:BackLeft,7,T3_671:Chest,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+403,col0403__Bone_Marker__T3_671_BackLeft__Position__Y,Bone Marker,T3_671:BackLeft,7,T3_671:Chest,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+404,col0404__Bone_Marker__T3_671_BackLeft__Position__Z,Bone Marker,T3_671:BackLeft,7,T3_671:Chest,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+405,col0405__Bone_Marker__T3_671_BackRight__Position__X,Bone Marker,T3_671:BackRight,8,T3_671:Chest,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+406,col0406__Bone_Marker__T3_671_BackRight__Position__Y,Bone Marker,T3_671:BackRight,8,T3_671:Chest,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+407,col0407__Bone_Marker__T3_671_BackRight__Position__Z,Bone Marker,T3_671:BackRight,8,T3_671:Chest,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+408,col0408__Bone_Marker__T3_671_ChestTop__Position__X,Bone Marker,T3_671:ChestTop,9,T3_671:Chest,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+409,col0409__Bone_Marker__T3_671_ChestTop__Position__Y,Bone Marker,T3_671:ChestTop,9,T3_671:Chest,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+410,col0410__Bone_Marker__T3_671_ChestTop__Position__Z,Bone Marker,T3_671:ChestTop,9,T3_671:Chest,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+411,col0411__Bone_Marker__T3_671_ChestLow__Position__X,Bone Marker,T3_671:ChestLow,A,T3_671:Chest,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+412,col0412__Bone_Marker__T3_671_ChestLow__Position__Y,Bone Marker,T3_671:ChestLow,A,T3_671:Chest,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+413,col0413__Bone_Marker__T3_671_ChestLow__Position__Z,Bone Marker,T3_671:ChestLow,A,T3_671:Chest,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+414,col0414__Bone_Marker__T3_671_LShoulderBack__Position__X,Bone Marker,T3_671:LShoulderBack,10,T3_671:LShoulder,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+415,col0415__Bone_Marker__T3_671_LShoulderBack__Position__Y,Bone Marker,T3_671:LShoulderBack,10,T3_671:LShoulder,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+416,col0416__Bone_Marker__T3_671_LShoulderBack__Position__Z,Bone Marker,T3_671:LShoulderBack,10,T3_671:LShoulder,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+417,col0417__Bone_Marker__T3_671_LShoulderTop__Position__X,Bone Marker,T3_671:LShoulderTop,F,T3_671:LShoulder,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+418,col0418__Bone_Marker__T3_671_LShoulderTop__Position__Y,Bone Marker,T3_671:LShoulderTop,F,T3_671:LShoulder,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+419,col0419__Bone_Marker__T3_671_LShoulderTop__Position__Z,Bone Marker,T3_671:LShoulderTop,F,T3_671:LShoulder,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+420,col0420__Bone_Marker__T3_671_LUArmHigh__Position__X,Bone Marker,T3_671:LUArmHigh,13,T3_671:LUArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+421,col0421__Bone_Marker__T3_671_LUArmHigh__Position__Y,Bone Marker,T3_671:LUArmHigh,13,T3_671:LUArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+422,col0422__Bone_Marker__T3_671_LUArmHigh__Position__Z,Bone Marker,T3_671:LUArmHigh,13,T3_671:LUArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+423,col0423__Bone_Marker__T3_671_LElbowOut__Position__X,Bone Marker,T3_671:LElbowOut,11,T3_671:LUArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+424,col0424__Bone_Marker__T3_671_LElbowOut__Position__Y,Bone Marker,T3_671:LElbowOut,11,T3_671:LUArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+425,col0425__Bone_Marker__T3_671_LElbowOut__Position__Z,Bone Marker,T3_671:LElbowOut,11,T3_671:LUArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+426,col0426__Bone_Marker__T3_671_LFArm__Position__X,Bone Marker,T3_671:LFArm,14,T3_671:LFArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+427,col0427__Bone_Marker__T3_671_LFArm__Position__Y,Bone Marker,T3_671:LFArm,14,T3_671:LFArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+428,col0428__Bone_Marker__T3_671_LFArm__Position__Z,Bone Marker,T3_671:LFArm,14,T3_671:LFArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+429,col0429__Bone_Marker__T3_671_LWristOut__Position__X,Bone Marker,T3_671:LWristOut,15,T3_671:LFArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+430,col0430__Bone_Marker__T3_671_LWristOut__Position__Y,Bone Marker,T3_671:LWristOut,15,T3_671:LFArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+431,col0431__Bone_Marker__T3_671_LWristOut__Position__Z,Bone Marker,T3_671:LWristOut,15,T3_671:LFArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+432,col0432__Bone_Marker__T3_671_LHandOut__Position__X,Bone Marker,T3_671:LHandOut,17,T3_671:LHand,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+433,col0433__Bone_Marker__T3_671_LHandOut__Position__Y,Bone Marker,T3_671:LHandOut,17,T3_671:LHand,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+434,col0434__Bone_Marker__T3_671_LHandOut__Position__Z,Bone Marker,T3_671:LHandOut,17,T3_671:LHand,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+435,col0435__Bone_Marker__T3_671_LPinky__Position__X,Bone Marker,T3_671:LPinky,1B,T3_671:LPinky1,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+436,col0436__Bone_Marker__T3_671_LPinky__Position__Y,Bone Marker,T3_671:LPinky,1B,T3_671:LPinky1,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+437,col0437__Bone_Marker__T3_671_LPinky__Position__Z,Bone Marker,T3_671:LPinky,1B,T3_671:LPinky1,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+438,col0438__Bone_Marker__T3_671_LHandIn__Position__X,Bone Marker,T3_671:LHandIn,18,T3_671:LHand,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+439,col0439__Bone_Marker__T3_671_LHandIn__Position__Y,Bone Marker,T3_671:LHandIn,18,T3_671:LHand,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+440,col0440__Bone_Marker__T3_671_LHandIn__Position__Z,Bone Marker,T3_671:LHandIn,18,T3_671:LHand,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+441,col0441__Bone_Marker__T3_671_LThumb__Position__X,Bone Marker,T3_671:LThumb,19,T3_671:LThumb2,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+442,col0442__Bone_Marker__T3_671_LThumb__Position__Y,Bone Marker,T3_671:LThumb,19,T3_671:LThumb2,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+443,col0443__Bone_Marker__T3_671_LThumb__Position__Z,Bone Marker,T3_671:LThumb,19,T3_671:LThumb2,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+444,col0444__Bone_Marker__T3_671_LIndex__Position__X,Bone Marker,T3_671:LIndex,1A,T3_671:LIndex1,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+445,col0445__Bone_Marker__T3_671_LIndex__Position__Y,Bone Marker,T3_671:LIndex,1A,T3_671:LIndex1,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+446,col0446__Bone_Marker__T3_671_LIndex__Position__Z,Bone Marker,T3_671:LIndex,1A,T3_671:LIndex1,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+447,col0447__Bone_Marker__T3_671_RShoulderBack__Position__X,Bone Marker,T3_671:RShoulderBack,1D,T3_671:RShoulder,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+448,col0448__Bone_Marker__T3_671_RShoulderBack__Position__Y,Bone Marker,T3_671:RShoulderBack,1D,T3_671:RShoulder,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+449,col0449__Bone_Marker__T3_671_RShoulderBack__Position__Z,Bone Marker,T3_671:RShoulderBack,1D,T3_671:RShoulder,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+450,col0450__Bone_Marker__T3_671_RShoulderTop__Position__X,Bone Marker,T3_671:RShoulderTop,1C,T3_671:RShoulder,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+451,col0451__Bone_Marker__T3_671_RShoulderTop__Position__Y,Bone Marker,T3_671:RShoulderTop,1C,T3_671:RShoulder,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+452,col0452__Bone_Marker__T3_671_RShoulderTop__Position__Z,Bone Marker,T3_671:RShoulderTop,1C,T3_671:RShoulder,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+453,col0453__Bone_Marker__T3_671_RUArmHigh__Position__X,Bone Marker,T3_671:RUArmHigh,20,T3_671:RUArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+454,col0454__Bone_Marker__T3_671_RUArmHigh__Position__Y,Bone Marker,T3_671:RUArmHigh,20,T3_671:RUArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+455,col0455__Bone_Marker__T3_671_RUArmHigh__Position__Z,Bone Marker,T3_671:RUArmHigh,20,T3_671:RUArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+456,col0456__Bone_Marker__T3_671_RElbowOut__Position__X,Bone Marker,T3_671:RElbowOut,1E,T3_671:RUArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+457,col0457__Bone_Marker__T3_671_RElbowOut__Position__Y,Bone Marker,T3_671:RElbowOut,1E,T3_671:RUArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+458,col0458__Bone_Marker__T3_671_RElbowOut__Position__Z,Bone Marker,T3_671:RElbowOut,1E,T3_671:RUArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+459,col0459__Bone_Marker__T3_671_RFArm__Position__X,Bone Marker,T3_671:RFArm,21,T3_671:RFArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+460,col0460__Bone_Marker__T3_671_RFArm__Position__Y,Bone Marker,T3_671:RFArm,21,T3_671:RFArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+461,col0461__Bone_Marker__T3_671_RFArm__Position__Z,Bone Marker,T3_671:RFArm,21,T3_671:RFArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+462,col0462__Bone_Marker__T3_671_RWristOut__Position__X,Bone Marker,T3_671:RWristOut,22,T3_671:RFArm,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+463,col0463__Bone_Marker__T3_671_RWristOut__Position__Y,Bone Marker,T3_671:RWristOut,22,T3_671:RFArm,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+464,col0464__Bone_Marker__T3_671_RWristOut__Position__Z,Bone Marker,T3_671:RWristOut,22,T3_671:RFArm,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+465,col0465__Bone_Marker__T3_671_RHandOut__Position__X,Bone Marker,T3_671:RHandOut,24,T3_671:RHand,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+466,col0466__Bone_Marker__T3_671_RHandOut__Position__Y,Bone Marker,T3_671:RHandOut,24,T3_671:RHand,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+467,col0467__Bone_Marker__T3_671_RHandOut__Position__Z,Bone Marker,T3_671:RHandOut,24,T3_671:RHand,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+468,col0468__Bone_Marker__T3_671_RPinky__Position__X,Bone Marker,T3_671:RPinky,28,T3_671:RPinky1,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+469,col0469__Bone_Marker__T3_671_RPinky__Position__Y,Bone Marker,T3_671:RPinky,28,T3_671:RPinky1,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+470,col0470__Bone_Marker__T3_671_RPinky__Position__Z,Bone Marker,T3_671:RPinky,28,T3_671:RPinky1,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+471,col0471__Bone_Marker__T3_671_RHandIn__Position__X,Bone Marker,T3_671:RHandIn,25,T3_671:RHand,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+472,col0472__Bone_Marker__T3_671_RHandIn__Position__Y,Bone Marker,T3_671:RHandIn,25,T3_671:RHand,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+473,col0473__Bone_Marker__T3_671_RHandIn__Position__Z,Bone Marker,T3_671:RHandIn,25,T3_671:RHand,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+474,col0474__Bone_Marker__T3_671_RThumb__Position__X,Bone Marker,T3_671:RThumb,26,T3_671:RThumb2,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+475,col0475__Bone_Marker__T3_671_RThumb__Position__Y,Bone Marker,T3_671:RThumb,26,T3_671:RThumb2,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+476,col0476__Bone_Marker__T3_671_RThumb__Position__Z,Bone Marker,T3_671:RThumb,26,T3_671:RThumb2,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+477,col0477__Bone_Marker__T3_671_RIndex__Position__X,Bone Marker,T3_671:RIndex,27,T3_671:RIndex1,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+478,col0478__Bone_Marker__T3_671_RIndex__Position__Y,Bone Marker,T3_671:RIndex,27,T3_671:RIndex1,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+479,col0479__Bone_Marker__T3_671_RIndex__Position__Z,Bone Marker,T3_671:RIndex,27,T3_671:RIndex1,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+480,col0480__Bone_Marker__T3_671_WaistLFront__Position__X,Bone Marker,T3_671:WaistLFront,1,T3_671:T3_671,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+481,col0481__Bone_Marker__T3_671_WaistLFront__Position__Y,Bone Marker,T3_671:WaistLFront,1,T3_671:T3_671,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+482,col0482__Bone_Marker__T3_671_WaistLFront__Position__Z,Bone Marker,T3_671:WaistLFront,1,T3_671:T3_671,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+483,col0483__Bone_Marker__T3_671_WaistLBack__Position__X,Bone Marker,T3_671:WaistLBack,3,T3_671:T3_671,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+484,col0484__Bone_Marker__T3_671_WaistLBack__Position__Y,Bone Marker,T3_671:WaistLBack,3,T3_671:T3_671,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+485,col0485__Bone_Marker__T3_671_WaistLBack__Position__Z,Bone Marker,T3_671:WaistLBack,3,T3_671:T3_671,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+486,col0486__Bone_Marker__T3_671_WaistCBack__Position__X,Bone Marker,T3_671:WaistCBack,4,T3_671:Spine3,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+487,col0487__Bone_Marker__T3_671_WaistCBack__Position__Y,Bone Marker,T3_671:WaistCBack,4,T3_671:Spine3,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+488,col0488__Bone_Marker__T3_671_WaistCBack__Position__Z,Bone Marker,T3_671:WaistCBack,4,T3_671:Spine3,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+489,col0489__Bone_Marker__T3_671_WaistRBack__Position__X,Bone Marker,T3_671:WaistRBack,5,T3_671:T3_671,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+490,col0490__Bone_Marker__T3_671_WaistRBack__Position__Y,Bone Marker,T3_671:WaistRBack,5,T3_671:T3_671,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+491,col0491__Bone_Marker__T3_671_WaistRBack__Position__Z,Bone Marker,T3_671:WaistRBack,5,T3_671:T3_671,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+492,col0492__Bone_Marker__T3_671_WaistRFront__Position__X,Bone Marker,T3_671:WaistRFront,2,T3_671:T3_671,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+493,col0493__Bone_Marker__T3_671_WaistRFront__Position__Y,Bone Marker,T3_671:WaistRFront,2,T3_671:T3_671,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+494,col0494__Bone_Marker__T3_671_WaistRFront__Position__Z,Bone Marker,T3_671:WaistRFront,2,T3_671:T3_671,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+495,col0495__Bone_Marker__T3_671_LThighFront__Position__X,Bone Marker,T3_671:LThighFront,29,T3_671:LThigh,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+496,col0496__Bone_Marker__T3_671_LThighFront__Position__Y,Bone Marker,T3_671:LThighFront,29,T3_671:LThigh,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+497,col0497__Bone_Marker__T3_671_LThighFront__Position__Z,Bone Marker,T3_671:LThighFront,29,T3_671:LThigh,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+498,col0498__Bone_Marker__T3_671_LThighSide__Position__X,Bone Marker,T3_671:LThighSide,2A,T3_671:LThigh,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+499,col0499__Bone_Marker__T3_671_LThighSide__Position__Y,Bone Marker,T3_671:LThighSide,2A,T3_671:LThigh,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+500,col0500__Bone_Marker__T3_671_LThighSide__Position__Z,Bone Marker,T3_671:LThighSide,2A,T3_671:LThigh,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+501,col0501__Bone_Marker__T3_671_LKneeOut__Position__X,Bone Marker,T3_671:LKneeOut,2B,T3_671:LThigh,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+502,col0502__Bone_Marker__T3_671_LKneeOut__Position__Y,Bone Marker,T3_671:LKneeOut,2B,T3_671:LThigh,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+503,col0503__Bone_Marker__T3_671_LKneeOut__Position__Z,Bone Marker,T3_671:LKneeOut,2B,T3_671:LThigh,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+504,col0504__Bone_Marker__T3_671_LShin__Position__X,Bone Marker,T3_671:LShin,2D,T3_671:LShin,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+505,col0505__Bone_Marker__T3_671_LShin__Position__Y,Bone Marker,T3_671:LShin,2D,T3_671:LShin,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+506,col0506__Bone_Marker__T3_671_LShin__Position__Z,Bone Marker,T3_671:LShin,2D,T3_671:LShin,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+507,col0507__Bone_Marker__T3_671_LAnkleOut__Position__X,Bone Marker,T3_671:LAnkleOut,2E,T3_671:LShin,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+508,col0508__Bone_Marker__T3_671_LAnkleOut__Position__Y,Bone Marker,T3_671:LAnkleOut,2E,T3_671:LShin,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+509,col0509__Bone_Marker__T3_671_LAnkleOut__Position__Z,Bone Marker,T3_671:LAnkleOut,2E,T3_671:LShin,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+510,col0510__Bone_Marker__T3_671_LHeel__Position__X,Bone Marker,T3_671:LHeel,32,T3_671:LFoot,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+511,col0511__Bone_Marker__T3_671_LHeel__Position__Y,Bone Marker,T3_671:LHeel,32,T3_671:LFoot,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+512,col0512__Bone_Marker__T3_671_LHeel__Position__Z,Bone Marker,T3_671:LHeel,32,T3_671:LFoot,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+513,col0513__Bone_Marker__T3_671_LToeIn__Position__X,Bone Marker,T3_671:LToeIn,30,T3_671:LFoot,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+514,col0514__Bone_Marker__T3_671_LToeIn__Position__Y,Bone Marker,T3_671:LToeIn,30,T3_671:LFoot,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+515,col0515__Bone_Marker__T3_671_LToeIn__Position__Z,Bone Marker,T3_671:LToeIn,30,T3_671:LFoot,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+516,col0516__Bone_Marker__T3_671_LToeTip__Position__X,Bone Marker,T3_671:LToeTip,33,T3_671:LToe,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+517,col0517__Bone_Marker__T3_671_LToeTip__Position__Y,Bone Marker,T3_671:LToeTip,33,T3_671:LToe,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+518,col0518__Bone_Marker__T3_671_LToeTip__Position__Z,Bone Marker,T3_671:LToeTip,33,T3_671:LToe,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+519,col0519__Bone_Marker__T3_671_LToeOut__Position__X,Bone Marker,T3_671:LToeOut,31,T3_671:LFoot,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+520,col0520__Bone_Marker__T3_671_LToeOut__Position__Y,Bone Marker,T3_671:LToeOut,31,T3_671:LFoot,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+521,col0521__Bone_Marker__T3_671_LToeOut__Position__Z,Bone Marker,T3_671:LToeOut,31,T3_671:LFoot,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+522,col0522__Bone_Marker__T3_671_RThighFront__Position__X,Bone Marker,T3_671:RThighFront,34,T3_671:RThigh,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+523,col0523__Bone_Marker__T3_671_RThighFront__Position__Y,Bone Marker,T3_671:RThighFront,34,T3_671:RThigh,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+524,col0524__Bone_Marker__T3_671_RThighFront__Position__Z,Bone Marker,T3_671:RThighFront,34,T3_671:RThigh,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+525,col0525__Bone_Marker__T3_671_RThighSide__Position__X,Bone Marker,T3_671:RThighSide,35,T3_671:RThigh,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+526,col0526__Bone_Marker__T3_671_RThighSide__Position__Y,Bone Marker,T3_671:RThighSide,35,T3_671:RThigh,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+527,col0527__Bone_Marker__T3_671_RThighSide__Position__Z,Bone Marker,T3_671:RThighSide,35,T3_671:RThigh,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+528,col0528__Bone_Marker__T3_671_RKneeOut__Position__X,Bone Marker,T3_671:RKneeOut,36,T3_671:RThigh,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+529,col0529__Bone_Marker__T3_671_RKneeOut__Position__Y,Bone Marker,T3_671:RKneeOut,36,T3_671:RThigh,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+530,col0530__Bone_Marker__T3_671_RKneeOut__Position__Z,Bone Marker,T3_671:RKneeOut,36,T3_671:RThigh,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+531,col0531__Bone_Marker__T3_671_RShin__Position__X,Bone Marker,T3_671:RShin,38,T3_671:RShin,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+532,col0532__Bone_Marker__T3_671_RShin__Position__Y,Bone Marker,T3_671:RShin,38,T3_671:RShin,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+533,col0533__Bone_Marker__T3_671_RShin__Position__Z,Bone Marker,T3_671:RShin,38,T3_671:RShin,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+534,col0534__Bone_Marker__T3_671_RAnkleOut__Position__X,Bone Marker,T3_671:RAnkleOut,39,T3_671:RShin,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+535,col0535__Bone_Marker__T3_671_RAnkleOut__Position__Y,Bone Marker,T3_671:RAnkleOut,39,T3_671:RShin,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+536,col0536__Bone_Marker__T3_671_RAnkleOut__Position__Z,Bone Marker,T3_671:RAnkleOut,39,T3_671:RShin,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+537,col0537__Bone_Marker__T3_671_RHeel__Position__X,Bone Marker,T3_671:RHeel,3D,T3_671:RFoot,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+538,col0538__Bone_Marker__T3_671_RHeel__Position__Y,Bone Marker,T3_671:RHeel,3D,T3_671:RFoot,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+539,col0539__Bone_Marker__T3_671_RHeel__Position__Z,Bone Marker,T3_671:RHeel,3D,T3_671:RFoot,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+540,col0540__Bone_Marker__T3_671_RToeIn__Position__X,Bone Marker,T3_671:RToeIn,3B,T3_671:RFoot,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+541,col0541__Bone_Marker__T3_671_RToeIn__Position__Y,Bone Marker,T3_671:RToeIn,3B,T3_671:RFoot,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+542,col0542__Bone_Marker__T3_671_RToeIn__Position__Z,Bone Marker,T3_671:RToeIn,3B,T3_671:RFoot,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+543,col0543__Bone_Marker__T3_671_RToeTip__Position__X,Bone Marker,T3_671:RToeTip,3E,T3_671:RToe,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+544,col0544__Bone_Marker__T3_671_RToeTip__Position__Y,Bone Marker,T3_671:RToeTip,3E,T3_671:RToe,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+545,col0545__Bone_Marker__T3_671_RToeTip__Position__Z,Bone Marker,T3_671:RToeTip,3E,T3_671:RToe,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+546,col0546__Bone_Marker__T3_671_RToeOut__Position__X,Bone Marker,T3_671:RToeOut,3C,T3_671:RFoot,Position,X,bone_marker,False,Bone Marker column ignored for Layer 2
+547,col0547__Bone_Marker__T3_671_RToeOut__Position__Y,Bone Marker,T3_671:RToeOut,3C,T3_671:RFoot,Position,Y,bone_marker,False,Bone Marker column ignored for Layer 2
+548,col0548__Bone_Marker__T3_671_RToeOut__Position__Z,Bone Marker,T3_671:RToeOut,3C,T3_671:RFoot,Position,Z,bone_marker,False,Bone Marker column ignored for Layer 2
+549,col0549__Marker__T3_671_BackLeft__Position__X,Marker,T3_671:BackLeft,1FF80FE4012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+550,col0550__Marker__T3_671_BackLeft__Position__Y,Marker,T3_671:BackLeft,1FF80FE4012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+551,col0551__Marker__T3_671_BackLeft__Position__Z,Marker,T3_671:BackLeft,1FF80FE4012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+552,col0552__Marker__T3_671_BackRight__Position__X,Marker,T3_671:BackRight,1FF80FE5012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+553,col0553__Marker__T3_671_BackRight__Position__Y,Marker,T3_671:BackRight,1FF80FE5012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+554,col0554__Marker__T3_671_BackRight__Position__Z,Marker,T3_671:BackRight,1FF80FE5012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+555,col0555__Marker__T3_671_BackTop__Position__X,Marker,T3_671:BackTop,1FF80FE2012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+556,col0556__Marker__T3_671_BackTop__Position__Y,Marker,T3_671:BackTop,1FF80FE2012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+557,col0557__Marker__T3_671_BackTop__Position__Z,Marker,T3_671:BackTop,1FF80FE2012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+558,col0558__Marker__T3_671_ChestLow__Position__X,Marker,T3_671:ChestLow,1FF80FE6012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+559,col0559__Marker__T3_671_ChestLow__Position__Y,Marker,T3_671:ChestLow,1FF80FE6012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+560,col0560__Marker__T3_671_ChestLow__Position__Z,Marker,T3_671:ChestLow,1FF80FE6012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+561,col0561__Marker__T3_671_ChestTop__Position__X,Marker,T3_671:ChestTop,1FF80FE3012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+562,col0562__Marker__T3_671_ChestTop__Position__Y,Marker,T3_671:ChestTop,1FF80FE3012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+563,col0563__Marker__T3_671_ChestTop__Position__Z,Marker,T3_671:ChestTop,1FF80FE3012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+564,col0564__Marker__T3_671_HeadFront__Position__X,Marker,T3_671:HeadFront,1FF80FE8012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+565,col0565__Marker__T3_671_HeadFront__Position__Y,Marker,T3_671:HeadFront,1FF80FE8012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+566,col0566__Marker__T3_671_HeadFront__Position__Z,Marker,T3_671:HeadFront,1FF80FE8012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+567,col0567__Marker__T3_671_HeadLeft__Position__X,Marker,T3_671:HeadLeft,1FF80FE9012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+568,col0568__Marker__T3_671_HeadLeft__Position__Y,Marker,T3_671:HeadLeft,1FF80FE9012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+569,col0569__Marker__T3_671_HeadLeft__Position__Z,Marker,T3_671:HeadLeft,1FF80FE9012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+570,col0570__Marker__T3_671_HeadRight__Position__X,Marker,T3_671:HeadRight,1FF80FEA012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+571,col0571__Marker__T3_671_HeadRight__Position__Y,Marker,T3_671:HeadRight,1FF80FEA012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+572,col0572__Marker__T3_671_HeadRight__Position__Z,Marker,T3_671:HeadRight,1FF80FEA012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+573,col0573__Marker__T3_671_HeadTop__Position__X,Marker,T3_671:HeadTop,1FF80FE7012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+574,col0574__Marker__T3_671_HeadTop__Position__Y,Marker,T3_671:HeadTop,1FF80FE7012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+575,col0575__Marker__T3_671_HeadTop__Position__Z,Marker,T3_671:HeadTop,1FF80FE7012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+576,col0576__Marker__T3_671_LAnkleOut__Position__X,Marker,T3_671:LAnkleOut,1FF81004012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+577,col0577__Marker__T3_671_LAnkleOut__Position__Y,Marker,T3_671:LAnkleOut,1FF81004012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+578,col0578__Marker__T3_671_LAnkleOut__Position__Z,Marker,T3_671:LAnkleOut,1FF81004012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+579,col0579__Marker__T3_671_LElbowOut__Position__X,Marker,T3_671:LElbowOut,1FF80FED012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+580,col0580__Marker__T3_671_LElbowOut__Position__Y,Marker,T3_671:LElbowOut,1FF80FED012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+581,col0581__Marker__T3_671_LElbowOut__Position__Z,Marker,T3_671:LElbowOut,1FF80FED012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+582,col0582__Marker__T3_671_LFArm__Position__X,Marker,T3_671:LFArm,1FF80FF0012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+583,col0583__Marker__T3_671_LFArm__Position__Y,Marker,T3_671:LFArm,1FF80FF0012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+584,col0584__Marker__T3_671_LFArm__Position__Z,Marker,T3_671:LFArm,1FF80FF0012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+585,col0585__Marker__T3_671_LHandIn__Position__X,Marker,T3_671:LHandIn,1FF80FF2012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+586,col0586__Marker__T3_671_LHandIn__Position__Y,Marker,T3_671:LHandIn,1FF80FF2012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+587,col0587__Marker__T3_671_LHandIn__Position__Z,Marker,T3_671:LHandIn,1FF80FF2012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+588,col0588__Marker__T3_671_LHandOut__Position__X,Marker,T3_671:LHandOut,1FF80FF1012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+589,col0589__Marker__T3_671_LHandOut__Position__Y,Marker,T3_671:LHandOut,1FF80FF1012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+590,col0590__Marker__T3_671_LHandOut__Position__Z,Marker,T3_671:LHandOut,1FF80FF1012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+591,col0591__Marker__T3_671_LHeel__Position__X,Marker,T3_671:LHeel,1FF81008012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+592,col0592__Marker__T3_671_LHeel__Position__Y,Marker,T3_671:LHeel,1FF81008012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+593,col0593__Marker__T3_671_LHeel__Position__Z,Marker,T3_671:LHeel,1FF81008012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+594,col0594__Marker__T3_671_LIndex__Position__X,Marker,T3_671:LIndex,1FF80FF4012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+595,col0595__Marker__T3_671_LIndex__Position__Y,Marker,T3_671:LIndex,1FF80FF4012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+596,col0596__Marker__T3_671_LIndex__Position__Z,Marker,T3_671:LIndex,1FF80FF4012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+597,col0597__Marker__T3_671_LKneeOut__Position__X,Marker,T3_671:LKneeOut,1FF81001012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+598,col0598__Marker__T3_671_LKneeOut__Position__Y,Marker,T3_671:LKneeOut,1FF81001012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+599,col0599__Marker__T3_671_LKneeOut__Position__Z,Marker,T3_671:LKneeOut,1FF81001012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+600,col0600__Marker__T3_671_LPinky__Position__X,Marker,T3_671:LPinky,1FF80FF5012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+601,col0601__Marker__T3_671_LPinky__Position__Y,Marker,T3_671:LPinky,1FF80FF5012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+602,col0602__Marker__T3_671_LPinky__Position__Z,Marker,T3_671:LPinky,1FF80FF5012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+603,col0603__Marker__T3_671_LShin__Position__X,Marker,T3_671:LShin,1FF81005012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+604,col0604__Marker__T3_671_LShin__Position__Y,Marker,T3_671:LShin,1FF81005012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+605,col0605__Marker__T3_671_LShin__Position__Z,Marker,T3_671:LShin,1FF81005012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+606,col0606__Marker__T3_671_LShoulderBack__Position__X,Marker,T3_671:LShoulderBack,1FF80FEB012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+607,col0607__Marker__T3_671_LShoulderBack__Position__Y,Marker,T3_671:LShoulderBack,1FF80FEB012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+608,col0608__Marker__T3_671_LShoulderBack__Position__Z,Marker,T3_671:LShoulderBack,1FF80FEB012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+609,col0609__Marker__T3_671_LShoulderTop__Position__X,Marker,T3_671:LShoulderTop,1FF80FEC012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+610,col0610__Marker__T3_671_LShoulderTop__Position__Y,Marker,T3_671:LShoulderTop,1FF80FEC012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+611,col0611__Marker__T3_671_LShoulderTop__Position__Z,Marker,T3_671:LShoulderTop,1FF80FEC012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+612,col0612__Marker__T3_671_LThighFront__Position__X,Marker,T3_671:LThighFront,1FF81002012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+613,col0613__Marker__T3_671_LThighFront__Position__Y,Marker,T3_671:LThighFront,1FF81002012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+614,col0614__Marker__T3_671_LThighFront__Position__Z,Marker,T3_671:LThighFront,1FF81002012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+615,col0615__Marker__T3_671_LThighSide__Position__X,Marker,T3_671:LThighSide,1FF81003012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+616,col0616__Marker__T3_671_LThighSide__Position__Y,Marker,T3_671:LThighSide,1FF81003012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+617,col0617__Marker__T3_671_LThighSide__Position__Z,Marker,T3_671:LThighSide,1FF81003012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+618,col0618__Marker__T3_671_LThumb__Position__X,Marker,T3_671:LThumb,1FF80FF3012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+619,col0619__Marker__T3_671_LThumb__Position__Y,Marker,T3_671:LThumb,1FF80FF3012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+620,col0620__Marker__T3_671_LThumb__Position__Z,Marker,T3_671:LThumb,1FF80FF3012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+621,col0621__Marker__T3_671_LToeIn__Position__X,Marker,T3_671:LToeIn,1FF81007012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+622,col0622__Marker__T3_671_LToeIn__Position__Y,Marker,T3_671:LToeIn,1FF81007012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+623,col0623__Marker__T3_671_LToeIn__Position__Z,Marker,T3_671:LToeIn,1FF81007012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+624,col0624__Marker__T3_671_LToeOut__Position__X,Marker,T3_671:LToeOut,1FF81006012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+625,col0625__Marker__T3_671_LToeOut__Position__Y,Marker,T3_671:LToeOut,1FF81006012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+626,col0626__Marker__T3_671_LToeOut__Position__Z,Marker,T3_671:LToeOut,1FF81006012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+627,col0627__Marker__T3_671_LToeTip__Position__X,Marker,T3_671:LToeTip,1FF81009012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+628,col0628__Marker__T3_671_LToeTip__Position__Y,Marker,T3_671:LToeTip,1FF81009012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+629,col0629__Marker__T3_671_LToeTip__Position__Z,Marker,T3_671:LToeTip,1FF81009012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+630,col0630__Marker__T3_671_LUArmHigh__Position__X,Marker,T3_671:LUArmHigh,1FF80FEE012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+631,col0631__Marker__T3_671_LUArmHigh__Position__Y,Marker,T3_671:LUArmHigh,1FF80FEE012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+632,col0632__Marker__T3_671_LUArmHigh__Position__Z,Marker,T3_671:LUArmHigh,1FF80FEE012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+633,col0633__Marker__T3_671_LWristOut__Position__X,Marker,T3_671:LWristOut,1FF80FEF012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+634,col0634__Marker__T3_671_LWristOut__Position__Y,Marker,T3_671:LWristOut,1FF80FEF012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+635,col0635__Marker__T3_671_LWristOut__Position__Z,Marker,T3_671:LWristOut,1FF80FEF012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+636,col0636__Marker__T3_671_RAnkleOut__Position__X,Marker,T3_671:RAnkleOut,1FF8100D012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+637,col0637__Marker__T3_671_RAnkleOut__Position__Y,Marker,T3_671:RAnkleOut,1FF8100D012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+638,col0638__Marker__T3_671_RAnkleOut__Position__Z,Marker,T3_671:RAnkleOut,1FF8100D012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+639,col0639__Marker__T3_671_RElbowOut__Position__X,Marker,T3_671:RElbowOut,1FF80FF8012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+640,col0640__Marker__T3_671_RElbowOut__Position__Y,Marker,T3_671:RElbowOut,1FF80FF8012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+641,col0641__Marker__T3_671_RElbowOut__Position__Z,Marker,T3_671:RElbowOut,1FF80FF8012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+642,col0642__Marker__T3_671_RFArm__Position__X,Marker,T3_671:RFArm,1FF80FFB012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+643,col0643__Marker__T3_671_RFArm__Position__Y,Marker,T3_671:RFArm,1FF80FFB012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+644,col0644__Marker__T3_671_RFArm__Position__Z,Marker,T3_671:RFArm,1FF80FFB012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+645,col0645__Marker__T3_671_RHandIn__Position__X,Marker,T3_671:RHandIn,1FF80FFD012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+646,col0646__Marker__T3_671_RHandIn__Position__Y,Marker,T3_671:RHandIn,1FF80FFD012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+647,col0647__Marker__T3_671_RHandIn__Position__Z,Marker,T3_671:RHandIn,1FF80FFD012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+648,col0648__Marker__T3_671_RHandOut__Position__X,Marker,T3_671:RHandOut,1FF80FFC012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+649,col0649__Marker__T3_671_RHandOut__Position__Y,Marker,T3_671:RHandOut,1FF80FFC012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+650,col0650__Marker__T3_671_RHandOut__Position__Z,Marker,T3_671:RHandOut,1FF80FFC012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+651,col0651__Marker__T3_671_RHeel__Position__X,Marker,T3_671:RHeel,1FF81011012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+652,col0652__Marker__T3_671_RHeel__Position__Y,Marker,T3_671:RHeel,1FF81011012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+653,col0653__Marker__T3_671_RHeel__Position__Z,Marker,T3_671:RHeel,1FF81011012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+654,col0654__Marker__T3_671_RIndex__Position__X,Marker,T3_671:RIndex,1FF80FFF012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+655,col0655__Marker__T3_671_RIndex__Position__Y,Marker,T3_671:RIndex,1FF80FFF012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+656,col0656__Marker__T3_671_RIndex__Position__Z,Marker,T3_671:RIndex,1FF80FFF012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+657,col0657__Marker__T3_671_RKneeOut__Position__X,Marker,T3_671:RKneeOut,1FF8100A012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+658,col0658__Marker__T3_671_RKneeOut__Position__Y,Marker,T3_671:RKneeOut,1FF8100A012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+659,col0659__Marker__T3_671_RKneeOut__Position__Z,Marker,T3_671:RKneeOut,1FF8100A012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+660,col0660__Marker__T3_671_RPinky__Position__X,Marker,T3_671:RPinky,1FF81000012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+661,col0661__Marker__T3_671_RPinky__Position__Y,Marker,T3_671:RPinky,1FF81000012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+662,col0662__Marker__T3_671_RPinky__Position__Z,Marker,T3_671:RPinky,1FF81000012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+663,col0663__Marker__T3_671_RShin__Position__X,Marker,T3_671:RShin,1FF8100E012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+664,col0664__Marker__T3_671_RShin__Position__Y,Marker,T3_671:RShin,1FF8100E012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+665,col0665__Marker__T3_671_RShin__Position__Z,Marker,T3_671:RShin,1FF8100E012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+666,col0666__Marker__T3_671_RShoulderBack__Position__X,Marker,T3_671:RShoulderBack,1FF80FF6012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+667,col0667__Marker__T3_671_RShoulderBack__Position__Y,Marker,T3_671:RShoulderBack,1FF80FF6012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+668,col0668__Marker__T3_671_RShoulderBack__Position__Z,Marker,T3_671:RShoulderBack,1FF80FF6012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+669,col0669__Marker__T3_671_RShoulderTop__Position__X,Marker,T3_671:RShoulderTop,1FF80FF7012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+670,col0670__Marker__T3_671_RShoulderTop__Position__Y,Marker,T3_671:RShoulderTop,1FF80FF7012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+671,col0671__Marker__T3_671_RShoulderTop__Position__Z,Marker,T3_671:RShoulderTop,1FF80FF7012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+672,col0672__Marker__T3_671_RThighFront__Position__X,Marker,T3_671:RThighFront,1FF8100B012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+673,col0673__Marker__T3_671_RThighFront__Position__Y,Marker,T3_671:RThighFront,1FF8100B012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+674,col0674__Marker__T3_671_RThighFront__Position__Z,Marker,T3_671:RThighFront,1FF8100B012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+675,col0675__Marker__T3_671_RThighSide__Position__X,Marker,T3_671:RThighSide,1FF8100C012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+676,col0676__Marker__T3_671_RThighSide__Position__Y,Marker,T3_671:RThighSide,1FF8100C012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+677,col0677__Marker__T3_671_RThighSide__Position__Z,Marker,T3_671:RThighSide,1FF8100C012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+678,col0678__Marker__T3_671_RThumb__Position__X,Marker,T3_671:RThumb,1FF80FFE012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+679,col0679__Marker__T3_671_RThumb__Position__Y,Marker,T3_671:RThumb,1FF80FFE012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+680,col0680__Marker__T3_671_RThumb__Position__Z,Marker,T3_671:RThumb,1FF80FFE012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+681,col0681__Marker__T3_671_RToeIn__Position__X,Marker,T3_671:RToeIn,1FF81010012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+682,col0682__Marker__T3_671_RToeIn__Position__Y,Marker,T3_671:RToeIn,1FF81010012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+683,col0683__Marker__T3_671_RToeIn__Position__Z,Marker,T3_671:RToeIn,1FF81010012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+684,col0684__Marker__T3_671_RToeOut__Position__X,Marker,T3_671:RToeOut,1FF8100F012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+685,col0685__Marker__T3_671_RToeOut__Position__Y,Marker,T3_671:RToeOut,1FF8100F012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+686,col0686__Marker__T3_671_RToeOut__Position__Z,Marker,T3_671:RToeOut,1FF8100F012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+687,col0687__Marker__T3_671_RToeTip__Position__X,Marker,T3_671:RToeTip,1FF81012012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+688,col0688__Marker__T3_671_RToeTip__Position__Y,Marker,T3_671:RToeTip,1FF81012012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+689,col0689__Marker__T3_671_RToeTip__Position__Z,Marker,T3_671:RToeTip,1FF81012012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+690,col0690__Marker__T3_671_RUArmHigh__Position__X,Marker,T3_671:RUArmHigh,1FF80FF9012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+691,col0691__Marker__T3_671_RUArmHigh__Position__Y,Marker,T3_671:RUArmHigh,1FF80FF9012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+692,col0692__Marker__T3_671_RUArmHigh__Position__Z,Marker,T3_671:RUArmHigh,1FF80FF9012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+693,col0693__Marker__T3_671_RWristOut__Position__X,Marker,T3_671:RWristOut,1FF80FFA012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+694,col0694__Marker__T3_671_RWristOut__Position__Y,Marker,T3_671:RWristOut,1FF80FFA012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+695,col0695__Marker__T3_671_RWristOut__Position__Z,Marker,T3_671:RWristOut,1FF80FFA012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+696,col0696__Marker__T3_671_WaistCBack__Position__X,Marker,T3_671:WaistCBack,1FF80FE0012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+697,col0697__Marker__T3_671_WaistCBack__Position__Y,Marker,T3_671:WaistCBack,1FF80FE0012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+698,col0698__Marker__T3_671_WaistCBack__Position__Z,Marker,T3_671:WaistCBack,1FF80FE0012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+699,col0699__Marker__T3_671_WaistLBack__Position__X,Marker,T3_671:WaistLBack,1FF80FDF012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+700,col0700__Marker__T3_671_WaistLBack__Position__Y,Marker,T3_671:WaistLBack,1FF80FDF012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+701,col0701__Marker__T3_671_WaistLBack__Position__Z,Marker,T3_671:WaistLBack,1FF80FDF012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+702,col0702__Marker__T3_671_WaistLFront__Position__X,Marker,T3_671:WaistLFront,1FF80FDD012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+703,col0703__Marker__T3_671_WaistLFront__Position__Y,Marker,T3_671:WaistLFront,1FF80FDD012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+704,col0704__Marker__T3_671_WaistLFront__Position__Z,Marker,T3_671:WaistLFront,1FF80FDD012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+705,col0705__Marker__T3_671_WaistRBack__Position__X,Marker,T3_671:WaistRBack,1FF80FE1012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+706,col0706__Marker__T3_671_WaistRBack__Position__Y,Marker,T3_671:WaistRBack,1FF80FE1012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+707,col0707__Marker__T3_671_WaistRBack__Position__Z,Marker,T3_671:WaistRBack,1FF80FE1012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+708,col0708__Marker__T3_671_WaistRFront__Position__X,Marker,T3_671:WaistRFront,1FF80FDE012B11F1:90AFB54A3B8C3180,,Position,X,marker,False,Marker column ignored for Layer 2
+709,col0709__Marker__T3_671_WaistRFront__Position__Y,Marker,T3_671:WaistRFront,1FF80FDE012B11F1:90AFB54A3B8C3180,,Position,Y,marker,False,Marker column ignored for Layer 2
+710,col0710__Marker__T3_671_WaistRFront__Position__Z,Marker,T3_671:WaistRFront,1FF80FDE012B11F1:90AFB54A3B8C3180,,Position,Z,marker,False,Marker column ignored for Layer 2
+711,col0711__Marker__Unlabeled_1314__Position__X,Marker,Unlabeled 1314,A01:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+712,col0712__Marker__Unlabeled_1314__Position__Y,Marker,Unlabeled 1314,A01:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+713,col0713__Marker__Unlabeled_1314__Position__Z,Marker,Unlabeled 1314,A01:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+714,col0714__Marker__Unlabeled_1316__Position__X,Marker,Unlabeled 1316,A08:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+715,col0715__Marker__Unlabeled_1316__Position__Y,Marker,Unlabeled 1316,A08:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+716,col0716__Marker__Unlabeled_1316__Position__Z,Marker,Unlabeled 1316,A08:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+717,col0717__Marker__Unlabeled_1317__Position__X,Marker,Unlabeled 1317,A0D:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+718,col0718__Marker__Unlabeled_1317__Position__Y,Marker,Unlabeled 1317,A0D:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+719,col0719__Marker__Unlabeled_1317__Position__Z,Marker,Unlabeled 1317,A0D:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+720,col0720__Marker__Unlabeled_1319__Position__X,Marker,Unlabeled 1319,A19:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+721,col0721__Marker__Unlabeled_1319__Position__Y,Marker,Unlabeled 1319,A19:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+722,col0722__Marker__Unlabeled_1319__Position__Z,Marker,Unlabeled 1319,A19:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+723,col0723__Marker__Unlabeled_1321__Position__X,Marker,Unlabeled 1321,A1B:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+724,col0724__Marker__Unlabeled_1321__Position__Y,Marker,Unlabeled 1321,A1B:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+725,col0725__Marker__Unlabeled_1321__Position__Z,Marker,Unlabeled 1321,A1B:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+726,col0726__Marker__Unlabeled_1324__Position__X,Marker,Unlabeled 1324,A24:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+727,col0727__Marker__Unlabeled_1324__Position__Y,Marker,Unlabeled 1324,A24:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+728,col0728__Marker__Unlabeled_1324__Position__Z,Marker,Unlabeled 1324,A24:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+729,col0729__Marker__Unlabeled_1326__Position__X,Marker,Unlabeled 1326,A3B:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+730,col0730__Marker__Unlabeled_1326__Position__Y,Marker,Unlabeled 1326,A3B:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+731,col0731__Marker__Unlabeled_1326__Position__Z,Marker,Unlabeled 1326,A3B:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+732,col0732__Marker__Unlabeled_1327__Position__X,Marker,Unlabeled 1327,A44:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+733,col0733__Marker__Unlabeled_1327__Position__Y,Marker,Unlabeled 1327,A44:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+734,col0734__Marker__Unlabeled_1327__Position__Z,Marker,Unlabeled 1327,A44:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+735,col0735__Marker__Unlabeled_1330__Position__X,Marker,Unlabeled 1330,A49:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+736,col0736__Marker__Unlabeled_1330__Position__Y,Marker,Unlabeled 1330,A49:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+737,col0737__Marker__Unlabeled_1330__Position__Z,Marker,Unlabeled 1330,A49:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+738,col0738__Marker__Unlabeled_1332__Position__X,Marker,Unlabeled 1332,A4D:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+739,col0739__Marker__Unlabeled_1332__Position__Y,Marker,Unlabeled 1332,A4D:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+740,col0740__Marker__Unlabeled_1332__Position__Z,Marker,Unlabeled 1332,A4D:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+741,col0741__Marker__Unlabeled_1334__Position__X,Marker,Unlabeled 1334,A69:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+742,col0742__Marker__Unlabeled_1334__Position__Y,Marker,Unlabeled 1334,A69:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+743,col0743__Marker__Unlabeled_1334__Position__Z,Marker,Unlabeled 1334,A69:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+744,col0744__Marker__Unlabeled_1337__Position__X,Marker,Unlabeled 1337,A74:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+745,col0745__Marker__Unlabeled_1337__Position__Y,Marker,Unlabeled 1337,A74:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+746,col0746__Marker__Unlabeled_1337__Position__Z,Marker,Unlabeled 1337,A74:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+747,col0747__Marker__Unlabeled_1339__Position__X,Marker,Unlabeled 1339,A8B:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+748,col0748__Marker__Unlabeled_1339__Position__Y,Marker,Unlabeled 1339,A8B:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+749,col0749__Marker__Unlabeled_1339__Position__Z,Marker,Unlabeled 1339,A8B:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+750,col0750__Marker__Unlabeled_1340__Position__X,Marker,Unlabeled 1340,A91:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+751,col0751__Marker__Unlabeled_1340__Position__Y,Marker,Unlabeled 1340,A91:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+752,col0752__Marker__Unlabeled_1340__Position__Z,Marker,Unlabeled 1340,A91:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+753,col0753__Marker__Unlabeled_1346__Position__X,Marker,Unlabeled 1346,AC8:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+754,col0754__Marker__Unlabeled_1346__Position__Y,Marker,Unlabeled 1346,AC8:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+755,col0755__Marker__Unlabeled_1346__Position__Z,Marker,Unlabeled 1346,AC8:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+756,col0756__Marker__Unlabeled_1347__Position__X,Marker,Unlabeled 1347,AC9:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+757,col0757__Marker__Unlabeled_1347__Position__Y,Marker,Unlabeled 1347,AC9:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+758,col0758__Marker__Unlabeled_1347__Position__Z,Marker,Unlabeled 1347,AC9:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+759,col0759__Marker__Unlabeled_1348__Position__X,Marker,Unlabeled 1348,ACA:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+760,col0760__Marker__Unlabeled_1348__Position__Y,Marker,Unlabeled 1348,ACA:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+761,col0761__Marker__Unlabeled_1348__Position__Z,Marker,Unlabeled 1348,ACA:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+762,col0762__Marker__Unlabeled_1352__Position__X,Marker,Unlabeled 1352,AD5:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+763,col0763__Marker__Unlabeled_1352__Position__Y,Marker,Unlabeled 1352,AD5:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+764,col0764__Marker__Unlabeled_1352__Position__Z,Marker,Unlabeled 1352,AD5:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+765,col0765__Marker__Unlabeled_1354__Position__X,Marker,Unlabeled 1354,AE2:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+766,col0766__Marker__Unlabeled_1354__Position__Y,Marker,Unlabeled 1354,AE2:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+767,col0767__Marker__Unlabeled_1354__Position__Z,Marker,Unlabeled 1354,AE2:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2
+768,col0768__Marker__Unlabeled_1358__Position__X,Marker,Unlabeled 1358,AF7:F44B3851012811F1,,Position,X,marker,False,Marker column ignored for Layer 2
+769,col0769__Marker__Unlabeled_1358__Position__Y,Marker,Unlabeled 1358,AF7:F44B3851012811F1,,Position,Y,marker,False,Marker column ignored for Layer 2
+770,col0770__Marker__Unlabeled_1358__Position__Z,Marker,Unlabeled 1358,AF7:F44B3851012811F1,,Position,Z,marker,False,Marker column ignored for Layer 2

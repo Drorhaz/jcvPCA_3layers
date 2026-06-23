@@ -1,0 +1,7 @@
+session_id,run_label,export_folder,skeleton_template,frame_count,duration_sec,n_links_total,n_core_candidate_links,n_review_provisional_links,n_excluded_links,n_stage07_jump_frames,n_stage08_jump_context_rows,n_analysis_eligible_rows,n_analysis_ineligible_rows,integrity_status,ready_for_segmentation_notebook,notes
+671_T1_P1_R1,671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,outputs/layer2_exports/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,Core + Passive Fingers (54),30604,255.025,50,16,2,32,19,1159,458938,1071262,pass,True,
+671_T1_P1_R2,671_T1_P1_R2_Take_2026-01-06_03.57.12_PM_003,outputs/layer2_exports/671_T1_P1_R2_Take_2026-01-06_03.57.12_PM_003,Core + Passive Fingers (54),30235,251.95,50,16,2,32,0,0,483760,1027990,pass,True,
+671_T2_P1_R1,671_T2_P1_R1_Take_2026-01-15_04.35.25_PM_005,outputs/layer2_exports/671_T2_P1_R1_Take_2026-01-15_04.35.25_PM_005,Core + Passive Fingers (54),30356,252.958333,50,16,2,32,13,793,485574,1032226,pass,True,
+671_T2_P1_R2,671_T2_P1_R2_Take_2026-01-15_04.35.25_PM_009,outputs/layer2_exports/671_T2_P1_R2_Take_2026-01-15_04.35.25_PM_009,Core + Passive Fingers (54),30479,253.983333,50,16,2,32,0,0,487664,1036286,pass,True,
+671_T3_P1_R1,671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,outputs/layer2_exports/671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,Biomech (57),31674,263.941667,54,16,6,32,23,1403,411762,1298634,pass,True,
+671_T3_P1_R2,671_T3_P1_R2_Take_2026-02-03_08.05.01_PM_005,outputs/layer2_exports/671_T3_P1_R2_Take_2026-02-03_08.05.01_PM_005,Biomech (57),31392,261.591667,54,16,6,32,9,549,502211,1192957,pass,True,

@@ -1,0 +1,22 @@
+Motive Raw Marker QC Summary (Layers 1-2)
+============================================
+Input file: /Users/drorhazan/Desktop/motive_qc/data/671_T2_P1_R1_Take 2026-01-15 04.35.25 PM_005_raw test.csv
+Observed frames: 30356
+Effective frame rate (Hz): 120.0
+Labeled markers: 54
+Unlabeled markers: 15
+Raw data status: consistent_with_marker_xyz
+
+The exported file is consistent with raw reconstructed Motive marker XYZ data, with missing values preserved, according to the checks performed.
+No preprocessing (gap filling, smoothing, filtering, coordinate transforms) was applied by this script.
+
+Labeled missing percent: 0.103098
+Total gaps (all markers): 232
+Labeled gaps >= 0.2 s: 10
+Labeled gaps >= 0.5 s: 4
+Raw QC preprocessing status: poor
+Reason: Labeled missingness or large-gap counts exceed caution thresholds.
+
+Validation status: pass
+Warnings: 0
+Errors: 0

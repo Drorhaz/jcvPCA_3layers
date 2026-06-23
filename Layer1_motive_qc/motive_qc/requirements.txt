@@ -1,0 +1,10 @@
+pandas
+numpy
+pyyaml
+matplotlib
+openpyxl
+xlsxwriter
+xarray
+ipywidgets
+ipykernel
+tqdm

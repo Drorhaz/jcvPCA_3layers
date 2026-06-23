@@ -1,0 +1,42 @@
+{
+  "safe_to_open": true,
+  "blocking_errors": [],
+  "warnings": [
+    "load_warning: Optional file is empty (skipped): quarantined_markers.csv"
+  ],
+  "identity": {
+    "session_key": "671_T1_P1_R1",
+    "layer1_run_key": "671_T1_P1_R1",
+    "layer2_session_id": "671_T1_P1_R1",
+    "layer2_run_label": "671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001",
+    "identity_override": false
+  },
+  "alignment": {
+    "canonical_join_key": "frame",
+    "exact_frame_alignment": true,
+    "frame_range_mismatch": false,
+    "layer1_frames": {
+      "start": 0,
+      "end": 30603,
+      "n": 30604,
+      "time_source": "observed"
+    },
+    "layer2_frames": {
+      "start": 0,
+      "end": 30603,
+      "n": 30604,
+      "time_source": "observed"
+    },
+    "overlap": {
+      "start": 0,
+      "end": 30603,
+      "n": 30604
+    },
+    "time_drift_warning": false,
+    "alignment_uncertainty": null
+  },
+  "n_checks": 43,
+  "n_pass": 43,
+  "n_warn": 0,
+  "n_fail": 0
+}

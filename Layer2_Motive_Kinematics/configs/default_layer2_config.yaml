@@ -1,0 +1,80 @@
+# Default Layer 2 configuration
+#
+# Provisional placeholders marked VALIDATION_REQUIRED must be confirmed with a
+# representative Motive CSV and scientist review before Stage 04 processing.
+
+pipeline:
+  # Stages 00–08; run one stage at a time during development
+  default_output_dir: outputs
+
+# --- Stage 03: frame/time validation ---
+frame_time_validation:
+  metadata_rate_tolerance_pct: 0.5
+  max_dt_median_multiplier: 1.5
+  min_positive_dt_median_multiplier: 0.5
+
+# --- Stage 04: quaternion QC (VALIDATION_REQUIRED before production freeze) ---
+quaternion_qc:
+  expected_unit_norm: 1.0
+  pass_max_abs_norm_error: 1.0e-3
+  warning_max_abs_norm_error: 1.0e-2
+  near_zero_norm_threshold: 1.0e-8  # VALIDATION_REQUIRED
+  min_complete_xyzw_percent: 99.0
+  invalid_quaternion_stop_policy: stop  # VALIDATION_REQUIRED: stop | warn
+  # Max consecutive invalid frames before hard stop (when interpolation disabled)
+  max_gap_frames_before_stop: 5
+  allow_short_gap_interpolation: false  # off by default per v5.1 addendum
+  max_interpolation_gap_frames: 5
+  interpolation_method: slerp  # slerp | linear_then_normalize (Stage 04 QC does not interpolate)
+
+# --- Stage 05 / 06: sign continuity ---
+sign_continuity:
+  apply_global_before_relative: true
+  apply_relative_before_logmap: true  # required in Stage 06
+  min_consecutive_dot: -1.0e-12  # post-correction validation tolerance
+
+# --- Stage 06: relative rotations ---
+relative_rotation:
+  reconstruction_max_error_deg: 1.0e-5  # pass threshold; VALIDATION_REQUIRED
+  reconstruction_warning_max_error_deg: 1.0e-3  # fail above this
+  reconstruction_min_test_frames: 100
+
+# --- Stage 07: rotation vectors ---
+rotvec:
+  near_pi_threshold_rad: 3.041592653589793  # pi - 0.10; count/percent near-pi statistic
+  near_pi_warning_fraction: 0.95  # branch-cut warning when rotvec_norm > fraction * pi
+  branch_cut_fail_tol_rad: 1.0e-6  # fail when rotvec_norm >= pi - tol
+  jump_warning_rad: 0.5  # frame-to-frame rotvec jump warning
+  jump_fail_rad: 1.0  # frame-to-frame rotvec jump fail (core links hard stop)
+
+# --- Stage 08: filtering ---
+filtering:
+  cutoff_hz: 10.0
+  filter_order: 4
+  filter_type: butterworth
+  # cutoff must satisfy: cutoff_hz < 0.45 * sampling_rate_hz
+  nyquist_safety_factor: 0.45
+  # V1: mask (do not interpolate) rows within ±N frames of Stage 07 jump or branch-cut events
+  jump_context_window_frames: 30
+
+# --- Stage 01: distal bone exclusion heuristics (VALIDATION_REQUIRED on real export) ---
+# Provisional reporting only; not the final Layer 3 feature set. See docs/FEATURE_SELECTION_BOUNDARY.md
+distal_exclusion:
+  keywords:
+    - Thumb
+    - Index
+    - Middle
+    - Ring
+    - Pinky
+    - Finger
+    - HandThumb
+    - HandIndex
+  # Hand is usually kept; Toe handling is project-specific
+  cautious_keywords:
+    - Toe
+  include_hand: true
+  include_toes: false  # VALIDATION_REQUIRED; fingers excluded via keywords above
+
+# --- Prefix stripping ---
+naming:
+  subject_prefix_rule: colon_suffix  # split on ':' and take last segment

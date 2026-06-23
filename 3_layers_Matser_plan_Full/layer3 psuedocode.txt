@@ -1,0 +1,791 @@
+```text
+Algorithm: JcvPCA for Gaga Part 1 Across T1, T2, T3
+
+Purpose:
+  Compare how whole-body joint contribution structure changes from T1 to T2 and T3,
+  using T1 as the reference condition.
+
+Session structure:
+  Timepoints:
+    T1, T2, T3
+
+  At each timepoint:
+    Part 1 is repeated twice:
+      P1_r1
+      P1_r2
+
+  Example units:
+    T1_P1_r1
+    T1_P1_r2
+    T2_P1_r1
+    T2_P1_r2
+    T3_P1_r1
+    T3_P1_r2
+
+  Inside each repetition:
+    Part 1 is segmented into movement groups:
+      Group 1 = trunk sagittal movement
+      Group 2 = upper-limb elevation and arm wave
+      Group 3 = axial rotation and reciprocal arm rotation
+      Group 4 = curvilinear exploration
+      Group 5 = single-leg balance with whole-body curves
+      Group 6 = whole-body shaking / dance
+
+Recommended first focus:
+  Primary:
+    Group 4 — curvilinear exploration
+
+  Secondary:
+    Group 5 — single-leg balance with whole-body curves
+
+Reason:
+  Group 4 is long, coherent, whole-body, and Gaga-relevant.
+  Group 5 is also strong, but includes balance and possible leg-side effects.
+
+================================================================================
+PART 0: CORE INPUTS
+================================================================================
+
+subject_id:
+  Identifier of the participant.
+
+timepoints:
+  [T1, T2, T3]
+
+reference_timepoint:
+  T1
+
+comparison_timepoints:
+  [T2, T3]
+
+part_id:
+  P1
+
+repetitions:
+  [r1, r2]
+
+movement_groups:
+  Group-level segmentation of Part 1.
+
+individual_tasks:
+  Smaller cue-level tasks inside each group.
+  Example inside Group 4:
+    draw curves with hands,
+    add curves with elbows,
+    add curves with shoulders,
+    add curves with nose,
+    whole body curves.
+
+feature_names:
+  Ordered list of joint-axis features used in PCA.
+  Example:
+    pelvis_rx, pelvis_ry, pelvis_rz,
+    spine_rx, spine_ry, spine_rz,
+    left_shoulder_rx, left_shoulder_ry, left_shoulder_rz,
+    ...
+
+joint_map:
+  Mapping from each joint to its axes.
+  Example:
+    left_shoulder -> [left_shoulder_rx, left_shoulder_ry, left_shoulder_rz]
+
+analysis_feature_scope:
+  Default:
+    whole_body
+
+  Later optional scopes:
+    trunk_only,
+    upper_body,
+    lower_body,
+    arms_only,
+    balance_related_joints
+
+selected_m:
+  Number of PCs selected once from the full T1 reference dataset
+  for the same analysis unit.
+
+variance_threshold:
+  Explained variance threshold for choosing selected_m.
+  Recommended:
+    0.80 or 0.90
+
+num_variability_iterations:
+  For the current structure with only two T1 repetitions:
+    natural variability is primarily r1 vs r2.
+  If later more windows/repetitions exist:
+    repeated split/bootstrap can be added.
+
+================================================================================
+PART 1: DEFINE ANALYSIS LEVELS
+================================================================================
+
+The pipeline should support four analysis levels.
+
+--------------------------------------------------------------------------------
+LEVEL 1: Single-task, single-repetition analysis
+--------------------------------------------------------------------------------
+
+Example:
+  A = T1_P1_r1_Group4_Task10
+  B = T2_P1_r1_Group4_Task10
+
+Purpose:
+  Most direct cue-specific comparison.
+
+Use when:
+  The individual task is long enough and biomechanically clear.
+
+Caution:
+  Some tasks may be too short for stable PCA.
+
+--------------------------------------------------------------------------------
+LEVEL 2: Group-level, single-repetition analysis
+--------------------------------------------------------------------------------
+
+Example:
+  A = T1_P1_r1_Group4
+  B = T2_P1_r1_Group4
+
+Purpose:
+  Compare the same movement group across timepoints,
+  while keeping repetitions separate.
+
+Use when:
+  You want to inspect whether r1 and r2 show consistent patterns.
+
+--------------------------------------------------------------------------------
+LEVEL 3: Single-task, cross-repetition combined analysis
+--------------------------------------------------------------------------------
+
+Example:
+  A = T1_P1_r1_Group4_Task10 + T1_P1_r2_Group4_Task10
+  B = T2_P1_r1_Group4_Task10 + T2_P1_r2_Group4_Task10
+
+Purpose:
+  Cue-specific comparison with more data by pooling repetitions.
+
+Use when:
+  Individual tasks are meaningful but short.
+
+--------------------------------------------------------------------------------
+LEVEL 4: Group-level, cross-repetition combined analysis
+--------------------------------------------------------------------------------
+
+Example:
+  A = T1_P1_r1_Group4 + T1_P1_r2_Group4
+  B = T2_P1_r1_Group4 + T2_P1_r2_Group4
+
+Purpose:
+  Most stable first-pass comparison.
+
+Use as:
+  Primary analysis level for first results.
+
+Recommended first result:
+  Group 4:
+    A  = T1_r1_Group4 + T1_r2_Group4
+    B1 = T2_r1_Group4 + T2_r2_Group4
+    B2 = T3_r1_Group4 + T3_r2_Group4
+
+  Group 5:
+    A  = T1_r1_Group5 + T1_r2_Group5
+    B1 = T2_r1_Group5 + T2_r2_Group5
+    B2 = T3_r1_Group5 + T3_r2_Group5
+
+================================================================================
+PART 2: SEGMENT EXTRACTION
+================================================================================
+
+Function Extract_Analysis_Unit(subject_id, timepoint, part_id, repetition, group_id, task_id optional):
+
+  Input example:
+    subject_id = S01
+    timepoint = T1
+    part_id = P1
+    repetition = r1
+    group_id = Group4
+    task_id = optional
+
+  If task_id is not provided:
+    Extract full group window.
+
+  If task_id is provided:
+    Extract only the individual task/cue inside the group.
+
+  Use manually/video-verified boundaries:
+    group_start_time
+    group_end_time
+    task_start_time
+    task_end_time
+
+  Return:
+    analysis_unit_data
+
+Important:
+  Boundaries should not rely only on transcript timestamps.
+  Use video/manual verification before final analysis.
+
+================================================================================
+PART 3: BUILD DATASETS FOR EACH ANALYSIS LEVEL
+================================================================================
+
+Function Build_A_B_Datasets(analysis_level, group_id, task_id optional, comparison_timepoint):
+
+  If analysis_level == "single_task_single_repetition":
+
+    For each repetition r in [r1, r2]:
+
+      A_data:
+        Extract_Analysis_Unit(T1, P1, r, group_id, task_id)
+
+      B_data:
+        Extract_Analysis_Unit(comparison_timepoint, P1, r, group_id, task_id)
+
+      Run JcvPCA:
+        A_data vs B_data
+
+
+  If analysis_level == "group_single_repetition":
+
+    For each repetition r in [r1, r2]:
+
+      A_data:
+        Extract_Analysis_Unit(T1, P1, r, group_id)
+
+      B_data:
+        Extract_Analysis_Unit(comparison_timepoint, P1, r, group_id)
+
+      Run JcvPCA:
+        A_data vs B_data
+
+
+  If analysis_level == "single_task_cross_repetition":
+
+    A_data:
+      Concatenate:
+        Extract_Analysis_Unit(T1, P1, r1, group_id, task_id)
+        Extract_Analysis_Unit(T1, P1, r2, group_id, task_id)
+
+    B_data:
+      Concatenate:
+        Extract_Analysis_Unit(comparison_timepoint, P1, r1, group_id, task_id)
+        Extract_Analysis_Unit(comparison_timepoint, P1, r2, group_id, task_id)
+
+    Run JcvPCA:
+      A_data vs B_data
+
+
+  If analysis_level == "group_cross_repetition":
+
+    A_data:
+      Concatenate:
+        Extract_Analysis_Unit(T1, P1, r1, group_id)
+        Extract_Analysis_Unit(T1, P1, r2, group_id)
+
+    B_data:
+      Concatenate:
+        Extract_Analysis_Unit(comparison_timepoint, P1, r1, group_id)
+        Extract_Analysis_Unit(comparison_timepoint, P1, r2, group_id)
+
+    Run JcvPCA:
+      A_data vs B_data
+
+================================================================================
+PART 4: NATURAL VARIABILITY DESIGN
+================================================================================
+
+Natural variability is estimated from T1 only.
+
+The basic natural variability comparison is always:
+
+  T1_P1_r1 vs T1_P1_r2
+
+Do this separately for each analysis unit.
+
+--------------------------------------------------------------------------------
+GROUP-LEVEL NATURAL VARIABILITY
+--------------------------------------------------------------------------------
+
+Example for Group 4:
+
+  A_var:
+    T1_P1_r1_Group4
+
+  B_var:
+    T1_P1_r2_Group4
+
+  Natural_Variability_Group4:
+    Compute_JcvPCA(A_var, B_var)
+
+Example for Group 5:
+
+  A_var:
+    T1_P1_r1_Group5
+
+  B_var:
+    T1_P1_r2_Group5
+
+  Natural_Variability_Group5:
+    Compute_JcvPCA(A_var, B_var)
+
+Use this to interpret:
+  T1 combined Group4 vs T2 combined Group4
+  T1 combined Group4 vs T3 combined Group4
+  T1 combined Group5 vs T2 combined Group5
+  T1 combined Group5 vs T3 combined Group5
+
+--------------------------------------------------------------------------------
+SINGLE-TASK NATURAL VARIABILITY
+--------------------------------------------------------------------------------
+
+Example for Group 4 Task 10:
+
+  A_var:
+    T1_P1_r1_Group4_Task10
+
+  B_var:
+    T1_P1_r2_Group4_Task10
+
+  Natural_Variability_Group4_Task10:
+    Compute_JcvPCA(A_var, B_var)
+
+Use this to interpret:
+  T1 combined Task10 vs T2 combined Task10
+  T1 combined Task10 vs T3 combined Task10
+
+Caution:
+  If the single task is too short, mark interpretation as unstable or exploratory.
+
+--------------------------------------------------------------------------------
+NATURAL VARIABILITY INTERPRETATION
+--------------------------------------------------------------------------------
+
+If only two T1 repetitions are available:
+
+  The natural variability estimate is repetition-level baseline difference:
+    T1_r1 vs T1_r2
+
+  It is useful, but it is not a robust statistical distribution.
+
+Therefore report:
+
+  "observed change exceeds the available T1 repetition-level variability"
+
+Do not report:
+
+  "statistically significant"
+
+If more repetitions/windows are later available:
+
+  Use repeated split or bootstrap:
+    shuffle T1 windows/repetitions
+    split into two subsets
+    compute JcvPCA repeatedly
+    estimate mean ± standard error
+
+================================================================================
+PART 5: CORE JcvPCA FUNCTION
+================================================================================
+
+Function Compute_JcvPCA(A_data, B_data, feature_names, joint_map, selected_m):
+
+  --------------------------------------------------------------------------
+  STEP 5.1: VALIDATE INPUTS
+  --------------------------------------------------------------------------
+
+  Check:
+    A_data and B_data contain the same feature_names.
+    feature_names are in the same order.
+    features are whole-body filtered relative rotation vectors.
+    no raw marker columns enter PCA.
+    no raw quaternion columns enter PCA.
+
+  --------------------------------------------------------------------------
+  STEP 5.2: CENTER EACH DATASET INDEPENDENTLY
+  --------------------------------------------------------------------------
+
+  A_mean:
+    mean(A_data)
+
+  B_mean:
+    mean(B_data)
+
+  A_centered:
+    A_data - A_mean
+
+  B_centered:
+    B_data - B_mean
+
+  Important:
+    Center each dataset independently.
+
+  Do not:
+    z-score,
+    divide by standard deviation,
+    range-normalize.
+
+  --------------------------------------------------------------------------
+  STEP 5.3: FIT PCA ON REFERENCE A
+  --------------------------------------------------------------------------
+
+  PCA_A:
+    fit PCA on A_centered
+
+  R_A:
+    first selected_m PCA components from A
+
+  A_loadings:
+    R_A
+
+  A_explained_variance_ratio:
+    explained variance ratio of selected PCs
+
+  --------------------------------------------------------------------------
+  STEP 5.4: PROJECT B INTO A PCA SPACE
+  --------------------------------------------------------------------------
+
+  B_scores_in_A_space:
+    B_centered dot transpose(R_A)
+
+  Meaning:
+    B is represented in A's PCA coordinate frame.
+
+  --------------------------------------------------------------------------
+  STEP 5.5: RECOMPUTE PCA ON PROJECTED B
+  --------------------------------------------------------------------------
+
+  PCA_B_in_A_space:
+    fit PCA on B_scores_in_A_space
+
+  B_components_in_A_space:
+    first selected_m PCA components from PCA_B_in_A_space
+
+  --------------------------------------------------------------------------
+  STEP 5.6: EXPRESS B LOADINGS BACK IN ORIGINAL FEATURE SPACE
+  --------------------------------------------------------------------------
+
+  B_reprojected_loadings:
+    B_components_in_A_space dot R_A
+
+  JRW_axis:
+    abs(B_reprojected_loadings)
+
+  Meaning:
+    Joint Reprojection Weight of B in A's PCA reference structure.
+
+  --------------------------------------------------------------------------
+  STEP 5.7: COMPUTE JcvPCA
+  --------------------------------------------------------------------------
+
+  A_abs_loadings:
+    abs(A_loadings)
+
+  B_abs_loadings:
+    abs(B_reprojected_loadings)
+
+  JcvPCA_axis:
+    B_abs_loadings - A_abs_loadings
+
+  Sign convention:
+    Positive:
+      feature contributes more in B than A.
+
+    Negative:
+      feature contributes less in B than A.
+
+  Note:
+    This follows the paper's verbal interpretation.
+    It intentionally uses B - A to avoid the sign contradiction in Equation 3.
+
+  --------------------------------------------------------------------------
+  STEP 5.8: GROUP AXES INTO JOINT VALUES
+  --------------------------------------------------------------------------
+
+  For each joint in joint_map:
+
+    axis_list:
+      rx, ry, rz columns for that joint.
+
+    For each PC:
+
+      A_joint_abs_loading_sum:
+        sum A_abs_loadings across axis_list
+
+      B_joint_abs_loading_sum:
+        sum B_abs_loadings across axis_list
+
+      JcvPCA_joint:
+        B_joint_abs_loading_sum - A_joint_abs_loading_sum
+
+  --------------------------------------------------------------------------
+  STEP 5.9: OPTIONAL VARIANCE WEIGHTING
+  --------------------------------------------------------------------------
+
+  Weighted_JcvPCA_axis:
+    JcvPCA_axis * A_explained_variance_ratio per PC
+
+  Weighted_JcvPCA_joint:
+    JcvPCA_joint * A_explained_variance_ratio per PC
+
+  Return:
+    JRW_axis
+    JcvPCA_axis
+    JcvPCA_joint
+    Weighted_JcvPCA_axis
+    Weighted_JcvPCA_joint
+    A_explained_variance_ratio
+
+================================================================================
+PART 6: SELECT selected_m
+================================================================================
+
+Function Select_selected_m(A_data, variance_threshold):
+
+  Center A_data independently:
+    A_centered = A_data - mean(A_data)
+
+  Fit PCA on A_centered.
+
+  Compute cumulative explained variance.
+
+  selected_m:
+    smallest number of PCs where cumulative variance >= variance_threshold.
+
+  Return selected_m.
+
+Important:
+  For each analysis unit, selected_m should be chosen from the relevant T1 reference A.
+
+Examples:
+  For Group4 cross-repetition analysis:
+    selected_m is chosen from T1_r1_Group4 + T1_r2_Group4.
+
+  For Group4 Task10 cross-repetition analysis:
+    selected_m is chosen from T1_r1_Task10 + T1_r2_Task10.
+
+  For Group5:
+    selected_m is chosen separately from T1 Group5.
+
+Do not:
+  choose selected_m from T2 or T3.
+
+================================================================================
+PART 7: PCA STABILITY CHECK
+================================================================================
+
+Function Check_PCA_Stability(A_units, selected_m):
+
+  Purpose:
+    Warn whether the reference PCA is stable enough for interpretation.
+
+  If analysis level has two repetitions only:
+
+    Compare PCA from:
+      T1_r1
+      T1_r2
+      T1_r1 + T1_r2
+
+    Check:
+      explained variance similarity
+      loading similarity
+      whether dominant PCs are consistent
+
+  If enough windows exist inside the group:
+
+    Bootstrap windows from T1.
+    Refit PCA repeatedly.
+    Compare loading similarity and explained variance.
+
+  Output:
+    PCA_stability_status:
+      stable
+      warning_unstable
+      insufficient_data_for_stability_test
+
+  Important:
+    Instability does not automatically stop analysis,
+    but it must be reported.
+
+================================================================================
+PART 8: RUN FIRST ANALYSIS PLAN
+================================================================================
+
+Primary group:
+  Group 4 — Curvilinear exploration
+
+Secondary group:
+  Group 5 — Single-leg balance with whole-body curves
+
+For each group in [Group4, Group5]:
+
+  --------------------------------------------------------------------------
+  8.1 Group-level cross-repetition analysis
+  --------------------------------------------------------------------------
+
+  A:
+    T1_r1_group + T1_r2_group
+
+  B_T2:
+    T2_r1_group + T2_r2_group
+
+  B_T3:
+    T3_r1_group + T3_r2_group
+
+  Natural variability:
+    T1_r1_group vs T1_r2_group
+
+  Run:
+    JcvPCA(A, B_T2)
+    JcvPCA(A, B_T3)
+
+  Interpret:
+    Compare observed T1-vs-T2 and T1-vs-T3 values
+    against T1_r1-vs-T1_r2 variability.
+
+  --------------------------------------------------------------------------
+  8.2 Group-level single-repetition analysis
+  --------------------------------------------------------------------------
+
+  For each repetition r in [r1, r2]:
+
+    A:
+      T1_r_group
+
+    B_T2:
+      T2_r_group
+
+    B_T3:
+      T3_r_group
+
+    Run:
+      JcvPCA(A, B_T2)
+      JcvPCA(A, B_T3)
+
+  Purpose:
+    Check whether both repetitions show similar direction of change.
+
+  --------------------------------------------------------------------------
+  8.3 Single-task cross-repetition analysis
+  --------------------------------------------------------------------------
+
+  For each task inside the group:
+
+    A:
+      T1_r1_task + T1_r2_task
+
+    B_T2:
+      T2_r1_task + T2_r2_task
+
+    B_T3:
+      T3_r1_task + T3_r2_task
+
+    Natural variability:
+      T1_r1_task vs T1_r2_task
+
+    Run:
+      JcvPCA(A, B_T2)
+      JcvPCA(A, B_T3)
+
+  Purpose:
+    Identify which specific cue inside the group drives the group-level result.
+
+  --------------------------------------------------------------------------
+  8.4 Single-task single-repetition analysis
+  --------------------------------------------------------------------------
+
+  For each task inside the group:
+
+    For each repetition r in [r1, r2]:
+
+      A:
+        T1_r_task
+
+      B_T2:
+        T2_r_task
+
+      B_T3:
+        T3_r_task
+
+      Run:
+        JcvPCA(A, B_T2)
+        JcvPCA(A, B_T3)
+
+  Purpose:
+    Exploratory fine-grained check.
+
+  Caution:
+    Mark as exploratory if task duration is short or PCA is unstable.
+
+================================================================================
+PART 9: OUTPUT TABLES
+================================================================================
+
+Export for each subject, group, task, analysis level, and comparison:
+
+  JRW_axis_table.csv:
+    B reprojected contribution weights.
+
+  JcvPCA_axis_table.csv:
+    PC-level change per joint-axis feature.
+
+  JcvPCA_joint_table.csv:
+    PC-level change grouped by joint.
+
+  Natural_variability_table.csv:
+    T1_r1 vs T1_r2 baseline variability for the same analysis unit.
+
+  Interpretation_table.csv:
+    observed JcvPCA values compared with natural variability.
+
+  PCA_stability_report.csv:
+    stability diagnostics for the T1 reference PCA.
+
+  metadata.json:
+    subject_id
+    timepoint_A = T1
+    timepoint_B = T2 or T3
+    part_id = P1
+    group_id
+    task_id if applicable
+    analysis_level
+    repetitions_used
+    feature_scope = whole_body
+    feature_names
+    joint_map
+    selected_m
+    variance_threshold
+    centering_rule = "center each dataset independently"
+    normalization_rule = "no z-score, no range-normalization"
+    sign_convention = "JcvPCA = abs(B_reprojected) - abs(A)"
+    natural_variability_rule = "T1 repetition-level variability: r1 vs r2"
+    boundary_verification = "manual/video verified"
+    timing_caveat = "JcvPCA does not measure synchronization"
+
+================================================================================
+PART 10: INTERPRETATION LANGUAGE
+================================================================================
+
+Use:
+
+  "increased beyond T1 repetition-level variability"
+  "decreased beyond T1 repetition-level variability"
+  "within T1 repetition-level variability / inconclusive"
+  "consistent across T2 and T3"
+  "consistent across r1 and r2"
+  "visible at group level and supported by task-level analysis"
+
+Avoid:
+
+  "statistically significant"
+  "proved change"
+  "no change"
+
+unless additional formal statistics are implemented.
+
+Recommended first claim structure:
+
+  "For Group 4, T1 was used as the reference condition.
+   T2 and T3 were compared against T1 using whole-body relative rotation-vector features.
+   The observed JcvPCA changes were interpreted against T1 repetition-level variability
+   estimated from T1_P1_r1_Group4 versus T1_P1_r2_Group4."
+```

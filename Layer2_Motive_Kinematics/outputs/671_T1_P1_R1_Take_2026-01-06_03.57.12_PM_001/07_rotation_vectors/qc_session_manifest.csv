@@ -1,0 +1,2 @@
+session_id,run_label,skeleton_template,frame_count,sampling_rate_hz,stage03_timing_status,stage04_file_status,stage05_file_status,stage06_file_status,stage07_file_status,stage08_authorization_status,notes
+671_T1_P1_R1,671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,Core + Passive Fingers (54),30604,120.00480019200238,pass,pass,pass,pass,fail,review_required,J007 (LFArm→LHand): jump fail (max jump=1.47401 rad); J005 (LUArm→LFArm): jump warning (max jump=0.673624 rad); J029 (RUArm→RFArm): jump warning (max jump=0.555333 rad)

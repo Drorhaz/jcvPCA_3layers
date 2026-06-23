@@ -1,0 +1,105 @@
+# Layer 2 assumptions log
+- [2026-06-19 13:12:32 UTC] Header block parsed manually without pandas MultiIndex headers.
+- [2026-06-19 13:12:32 UTC] Flat column names generated for future numeric loading with pd.read_csv(skiprows=..., names=...).
+- [2026-06-19 13:12:32 UTC] Rotation Type detected as Quaternion from metadata row.
+- [2026-06-19 13:12:32 UTC] Coordinate Space detected as Global from metadata row.
+- [2026-06-19 13:12:36 UTC] Subject prefix rule: colon_suffix (reversible via subject_prefix + canonical_bone_name).
+- [2026-06-19 13:12:36 UTC] Distal exclusion uses provisional config heuristics only; joint set not frozen.
+- [2026-06-19 13:12:36 UTC] Provisional auto-included joints: 16; uncertain candidates: 5.
+- [2026-06-19 13:12:36 UTC] Parent==Root joints excluded from auto-selection but reported for manual review.
+- [2026-06-19 13:12:36 UTC] Root/asset anchor reported as detected; not renamed to Pelvis unless present in CSV.
+- [2026-06-19 13:12:36 UTC] Final analysis feature selection is deferred until after Layer 2 output validation and before Layer 3 JcvPCA. See `docs/FEATURE_SELECTION_BOUNDARY.md`.
+- [2026-06-19 13:12:36 UTC] Structural rotation population check counts complete raw XYZW rows only; not norm QC or component-order validation.
+- [2026-06-19 13:30:28 UTC] Motive Bone Rotation labels X/Y/Z/W map to SciPy [x,y,z,w] by label semantics.
+- [2026-06-19 13:30:28 UTC] Constructability uses scipy.spatial.transform.Rotation.from_quat on finite numeric rows.
+- [2026-06-19 13:30:28 UTC] Alternative [w,x,y,z] comparison is diagnostic only and not used for selection.
+- [2026-06-19 13:30:28 UTC] This stage validates component-order / SciPy library compatibility only.
+- [2026-06-19 13:30:28 UTC] Motive Bone Rotation columns are labeled X, Y, Z, W.
+- [2026-06-19 13:30:28 UTC] SciPy Rotation.from_quat expects [x, y, z, w] (scalar-last).
+- [2026-06-19 13:30:28 UTC] Intended mapping: Motive X,Y,Z,W -> SciPy x,y,z,w.
+- [2026-06-19 13:30:28 UTC] This does not validate quaternion norms, temporal continuity, gaps, or relative joint rotations.
+- [2026-06-19 13:30:28 UTC] Alternative-order constructability ([w,x,y,z] fed to SciPy) is reported for comparison only; numerical constructability of both orders does not prove semantic correctness.
+- [2026-06-19 13:30:28 UTC] This does not validate global quaternion quality or biomechanical correctness.
+- [2026-06-19 13:35:23 UTC] Frame and Time columns are loaded using Stage 00 header detection and flat column indices.
+- [2026-06-19 13:35:23 UTC] Sampling rate is inferred as 1 / median positive dt from the Time column.
+- [2026-06-19 13:35:23 UTC] Metadata sampling rate uses Export Frame Rate, falling back to Capture Frame Rate.
+- [2026-06-19 13:35:23 UTC] Provisional thresholds: metadata tolerance 0.5%, large dt > 1.5× median, small dt < 0.5× median.
+- [2026-06-19 13:35:23 UTC] This stage validates Frame and Time column structure only.
+- [2026-06-19 13:35:23 UTC] No quaternion norm QC, gap repair, sign continuity, relative rotations, rotation vectors, filtering, or Layer 3 processing is performed.
+- [2026-06-19 13:35:23 UTC] Missing frame indices are reported but not interpolated or repaired.
+- [2026-06-19 13:35:23 UTC] Sampling rate is inferred from median positive dt; irregular intervals are flagged only.
+- [2026-06-19 13:35:23 UTC] Joint sets are not frozen; this stage does not validate bone or joint selection.
+- [2026-06-19 13:41:31 UTC] Bone Rotation groups are loaded using Stage 00 column detection (X/Y/Z/W per bone).
+- [2026-06-19 13:41:31 UTC] Quaternion norms are computed on complete finite XYZW rows only; no normalization applied.
+- [2026-06-19 13:41:31 UTC] Provisional thresholds: pass norm error <= 0.001, warning <= 0.01, near-zero norm < 1e-08.
+- [2026-06-19 13:41:31 UTC] Stage 04 validates numeric quaternion quality only.
+- [2026-06-19 13:41:31 UTC] Stage 04 does not validate anatomical correctness.
+- [2026-06-19 13:41:31 UTC] Stage 04 does not perform sign-continuity.
+- [2026-06-19 13:41:31 UTC] Stage 04 does not compute relative rotations.
+- [2026-06-19 13:41:31 UTC] Stage 04 does not filter.
+- [2026-06-19 13:41:31 UTC] Stage 04 does not make Layer 3 features ready.
+- [2026-06-19 13:41:31 UTC] No quaternion normalization, interpolation, or silent repair is performed in Stage 04.
+- [2026-06-19 13:41:31 UTC] v5 spec Stage 04 also describes normalization/mitigation outputs; this milestone implements QC/reporting only per approved plan.
+- [2026-06-19 13:56:06 UTC] Sign continuity uses consecutive dot-product sign test on SciPy-order quaternions.
+- [2026-06-19 13:56:06 UTC] Correction multiplies q[t] by -1 when dot(q[t], q_corrected[t-1]) < 0.
+- [2026-06-19 13:56:06 UTC] Post-correction validation requires consecutive dot >= -1e-12.
+- [2026-06-19 13:56:06 UTC] Output table uses long format (one row per frame per bone) with flip_applied flag.
+- [2026-06-19 13:56:06 UTC] Stage 05 corrects global quaternion signs only; it does not change represented rotations.
+- [2026-06-19 13:56:06 UTC] Stage 05 does not interpolate missing data or repair failed Stage 04 QC data.
+- [2026-06-19 13:56:06 UTC] Stage 05 does not perform anatomical validation.
+- [2026-06-19 13:56:06 UTC] Stage 05 does not compute relative rotations.
+- [2026-06-19 13:56:06 UTC] Stage 05 does not convert to rotation vectors or filter.
+- [2026-06-19 13:56:06 UTC] Stage 05 does not make Layer 3 features ready.
+- [2026-06-19 13:56:06 UTC] No quaternion normalization is applied; Stage 04-passed norms are preserved.
+- [2026-06-19 14:12:50 UTC] Relative quaternion: q_rel = inv(q_parent) * q_child via SciPy Rotation.from_quat(parent).inv() * Rotation.from_quat(child). Reconstruction: q_child ≈ q_parent * q_rel via parent * relative.
+- [2026-06-19 14:12:50 UTC] Reconstruction pass threshold: max error ≤ 1e-05 deg
+- [2026-06-19 14:12:50 UTC] Reconstruction warning threshold: max error ≤ 0.001 deg
+- [2026-06-19 14:12:50 UTC] When raw relative quaternion sequences contain sign discontinuities, Stage 06 applies the same consecutive dot-product correction as Stage 05 (flip q[t] when dot(q[t], q[t-1]) < 0) with explicit logging. This is a documented second-pass sign continuity on relative quaternions, required before Stage 07 log-map.
+- [2026-06-19 14:12:50 UTC] Parent-child links derived from Stage 01 candidate_joint_map (not a fixed joint list).
+- [2026-06-19 14:12:50 UTC] Stage 06 computes native relative quaternions from sign-continuous global quaternions.
+- [2026-06-19 14:12:50 UTC] Stage 06 does not finalize analysis features.
+- [2026-06-19 14:12:50 UTC] Stage 06 does not resolve skeleton-version mismatch.
+- [2026-06-19 14:12:50 UTC] Stage 06 does not convert to rotation vectors.
+- [2026-06-19 14:12:50 UTC] Stage 06 does not filter.
+- [2026-06-19 14:12:50 UTC] Stage 06 does not make Layer 3 ready.
+- [2026-06-19 14:12:50 UTC] Provisional joint selection from Stage 01 is preserved but not frozen.
+- [2026-06-19 14:12:50 UTC] Root-anchor links are labeled and excluded from final-analysis status by default.
+- [2026-06-19 14:51:51 UTC] Rotation vector conversion: scipy.spatial.transform.Rotation.from_quat([qx, qy, qz, qw]).as_rotvec()
+- [2026-06-19 14:51:51 UTC] Near-π statistic threshold: 3.04159 rad
+- [2026-06-19 14:51:51 UTC] Branch-cut warning/fail: > 2.98451 / ≥ 3.14159 rad
+- [2026-06-19 14:51:51 UTC] Jump warning/fail: > 0.5 / > 1.0 rad
+- [2026-06-19 14:51:51 UTC] Loaded Stage 06 relative quaternions from parquet; parquet is primary deliverable
+- [2026-06-19 14:51:51 UTC] Stage 07 uses the log-map / rotation-vector representation (SciPy Rotation.as_rotvec).
+- [2026-06-19 14:51:51 UTC] Stage 07 performs branch-cut and frame-to-frame jump diagnostics only.
+- [2026-06-19 14:51:51 UTC] Stage 07 does not filter.
+- [2026-06-19 14:51:51 UTC] Stage 07 does not finalize analysis features.
+- [2026-06-19 14:51:51 UTC] Stage 07 does not resolve skeleton-version mismatch.
+- [2026-06-19 14:51:51 UTC] Stage 07 does not make Layer 3 ready.
+- [2026-06-19 14:51:51 UTC] Core and excluded link diagnostics are interpreted separately.
+- [2026-06-19 14:51:51 UTC] Branch-cut/jump diagnostics are required before Stage 08 filtering.
+- [2026-06-19 14:51:51 UTC] Provisional joint selection from Stage 01 / pre–Stage 07 gate is preserved but not frozen.
+- [2026-06-19 15:08:07 UTC] Rotation vector conversion: scipy.spatial.transform.Rotation.from_quat([qx, qy, qz, qw]).as_rotvec()
+- [2026-06-19 15:08:07 UTC] Near-π statistic threshold: 3.04159 rad
+- [2026-06-19 15:08:07 UTC] Branch-cut warning/fail: > 2.98451 / ≥ 3.14159 rad
+- [2026-06-19 15:08:07 UTC] Jump warning/fail: > 0.5 / > 1.0 rad
+- [2026-06-19 15:08:07 UTC] Loaded Stage 06 relative quaternions from parquet; parquet is primary deliverable
+- [2026-06-19 15:08:07 UTC] Stage 07 uses the log-map / rotation-vector representation (SciPy Rotation.as_rotvec).
+- [2026-06-19 15:08:07 UTC] Stage 07 performs branch-cut and frame-to-frame jump diagnostics only.
+- [2026-06-19 15:08:07 UTC] Stage 07 does not filter.
+- [2026-06-19 15:08:07 UTC] Stage 07 does not finalize analysis features.
+- [2026-06-19 15:08:07 UTC] Stage 07 does not resolve skeleton-version mismatch.
+- [2026-06-19 15:08:07 UTC] Stage 07 does not make Layer 3 ready.
+- [2026-06-19 15:08:07 UTC] Core and excluded link diagnostics are interpreted separately.
+- [2026-06-19 15:08:07 UTC] Branch-cut/jump diagnostics are required before Stage 08 filtering.
+- [2026-06-19 15:08:07 UTC] Provisional joint selection from Stage 01 / pre–Stage 07 gate is preserved but not frozen.
+- [2026-06-19 15:30:37 UTC] Butterworth sosfiltfilt: cutoff=10.0 Hz, order=4
+- [2026-06-19 15:30:37 UTC] Sampling rate from Stage 03: 120.00480019200238 Hz
+- [2026-06-19 15:30:37 UTC] Jump context window: ±30 frames
+- [2026-06-19 15:30:37 UTC] Stage 08 V1 does not interpolate Stage 07 jump frames.
+- [2026-06-19 15:30:37 UTC] Stage 08 V1 does not interpolate or repair Stage 07 jump frames.
+- [2026-06-19 15:30:37 UTC] Native filtered values may exist inside jump-context windows but are not analysis-clean.
+- [2026-06-19 15:30:37 UTC] Analysis-clean columns are NaN/masked in jump-context windows.
+- [2026-06-19 15:30:37 UTC] Final inclusion/exclusion remains deferred to post–Layer 2 / pre–Layer 3 feature selection.
+- [2026-06-19 15:30:37 UTC] Stage 08 does not implement Layer 3.
+- [2026-06-19 15:30:37 UTC] Stage 08 does not overwrite Stage 07 outputs or modify Stage 07 thresholds.
+- [2026-06-19 15:30:37 UTC] Isolated Stage 07 jump failures do not remove entire links or sessions from filtering.

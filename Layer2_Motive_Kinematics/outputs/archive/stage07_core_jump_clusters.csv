@@ -1,0 +1,15 @@
+run_label,session_id,link_id,parent_canonical,child_canonical,stage08_policy,cluster_type,start_frame,end_frame,start_time_sec,end_time_sec,duration_frames,duration_seconds,max_jump_magnitude_rad,frame_of_max_jump,classification
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,671_T1_P1_R1,J005,LUArm,LFArm,allow_filter_with_warning,warning_or_fail,16611,16611,138.425,138.425,1,0.0,0.6736240290657813,16611,single_transition
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,671_T1_P1_R1,J007,LFArm,LHand,block_filter,fail_only,16334,16334,136.116667,136.116667,1,0.0,1.4740064916106252,16334,single_transition
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,671_T1_P1_R1,J007,LFArm,LHand,block_filter,warning_or_fail,16334,16334,136.116667,136.116667,1,0.0,1.4740064916106252,16334,single_transition
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,671_T1_P1_R1,J029,RUArm,RFArm,allow_filter_with_warning,warning_or_fail,16611,16611,138.425,138.425,1,0.0,0.5553326509046814,16611,single_transition
+671_T2_P1_R1_Take_2026-01-15_04.35.25_PM_005,671_T2_P1_R1,J029,RUArm,RFArm,allow_filter_with_warning,warning_or_fail,17307,17307,144.225,144.225,1,0.0,0.7187676308631565,17307,single_transition
+671_T2_P1_R1_Take_2026-01-15_04.35.25_PM_005,671_T2_P1_R1,J031,RFArm,RHand,allow_filter_with_warning,warning_or_fail,17307,17307,144.225,144.225,1,0.0,0.7017348056699987,17307,single_transition
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J004,LUArm,LFArm,block_filter,fail_only,18914,18914,157.616667,157.616667,1,0.0,1.3331956407914098,18914,single_transition
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J004,LUArm,LFArm,block_filter,warning_or_fail,18914,18914,157.616667,157.616667,1,0.0,1.3331956407914098,18914,single_transition
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J006,LFArm,LHand,block_filter,fail_only,18914,18914,157.616667,157.616667,1,0.0,1.4497434147009356,18914,single_transition
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J006,LFArm,LHand,block_filter,warning_or_fail,18914,18914,157.616667,157.616667,1,0.0,1.4497434147009356,18914,single_transition
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J031,RFArm,RHand,block_filter,fail_only,26397,26397,219.975,219.975,1,0.0,1.7399371866532016,26397,single_transition
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J031,RFArm,RHand,block_filter,warning_or_fail,18914,18914,157.616667,157.616667,1,0.0,0.9056860852059384,18914,single_transition
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J031,RFArm,RHand,block_filter,warning_or_fail,26397,26397,219.975,219.975,1,0.0,1.7399371866532016,26397,single_transition
+671_T3_P1_R2_Take_2026-02-03_08.05.01_PM_005,671_T3_P1_R2,J006,LFArm,LHand,allow_filter_with_warning,warning_or_fail,8072,8072,67.266667,67.266667,1,0.0,0.8182085932058963,8072,single_transition

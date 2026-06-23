@@ -1,0 +1,7 @@
+file,repetition_label,total_flips,bones_with_flips,max_flips_in_one_bone,bone_with_max_flips,first_flip_frame,last_flip_frame,diagnostic_status
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,R1,57080,4,14270,LIndex3,16334.0,30603.0,review
+671_T1_P1_R2_Take_2026-01-06_03.57.12_PM_003,R2,0,0,0,,,,expected
+671_T2_P1_R1_Take_2026-01-15_04.35.25_PM_005,R1,26098,2,13049,RIndex2,17307.0,30355.0,review
+671_T2_P1_R2_Take_2026-01-15_04.35.25_PM_009,R2,0,0,0,,,,expected
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,R1,23314,3,12760,RPinky3,18914.0,31673.0,review
+671_T3_P1_R2_Take_2026-02-03_08.05.01_PM_005,R2,0,0,0,,,,expected

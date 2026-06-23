@@ -1,0 +1,70 @@
+marker_name,is_labeled,is_unlabeled,body_region_group,n_gaps_total,n_single_frame_gaps,longest_gap_frames,longest_gap_seconds,n_gaps_ge_0p025s,n_gaps_ge_0p1s,n_gaps_ge_0p2s,n_gaps_ge_0p5s,n_gaps_ge_1p0s,missing_percent,quality_label
+671:BackLeft,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:BackRight,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:BackTop,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:ChestLow,True,False,torso_chest_back,13,4,66,0.55,8,5,1,1,0,0.517196,caution
+671:ChestTop,True,False,torso_chest_back,2,0,478,3.983333,2,1,1,1,1,1.587824,caution
+671:HeadFront,True,False,head_neck,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:HeadLeft,True,False,head_neck,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:HeadRight,True,False,head_neck,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:HeadTop,True,False,head_neck,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LAnkleOut,True,False,shank_ankle,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LElbowOut,True,False,elbow_forearm,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LFArm,True,False,shoulder_upper_arm,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LHandIn,True,False,wrist_hand,27,12,19,0.158333,10,1,0,0,0,0.30307,clean
+671:LHandOut,True,False,wrist_hand,1,0,15,0.125,1,1,0,0,0,0.049414,clean
+671:LHeel,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LIndex,True,False,fingers,6,2,13,0.108333,2,1,0,0,0,0.079062,clean
+671:LKneeOut,True,False,thigh_knee,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LPinky,True,False,fingers,2,0,3,0.025,2,0,0,0,0,0.019765,clean
+671:LShin,True,False,shank_ankle,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LShoulderBack,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LShoulderTop,True,False,shoulder_upper_arm,1,0,10,0.083333,1,0,0,0,0,0.032942,clean
+671:LThighFront,True,False,thigh_knee,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LThighSide,True,False,thigh_knee,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LThumb,True,False,fingers,29,13,110,0.916667,12,6,3,2,0,0.994861,poor
+671:LToeIn,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LToeOut,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LToeTip,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LUArmHigh,True,False,shoulder_upper_arm,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:LWristOut,True,False,wrist_hand,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RAnkleOut,True,False,shank_ankle,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RElbowOut,True,False,elbow_forearm,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RFArm,True,False,shoulder_upper_arm,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RHandIn,True,False,wrist_hand,22,14,28,0.233333,5,2,1,0,0,0.280011,clean
+671:RHandOut,True,False,wrist_hand,1,1,1,0.008333,0,0,0,0,0,0.003294,clean
+671:RHeel,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RIndex,True,False,fingers,75,31,33,0.275,33,9,2,0,0,1.116748,minor_issue
+671:RKneeOut,True,False,thigh_knee,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RPinky,True,False,fingers,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RShin,True,False,shank_ankle,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RShoulderBack,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RShoulderTop,True,False,shoulder_upper_arm,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RThighFront,True,False,thigh_knee,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RThighSide,True,False,thigh_knee,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RThumb,True,False,fingers,16,7,17,0.141667,8,2,0,0,0,0.289893,clean
+671:RToeIn,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RToeOut,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RToeTip,True,False,foot,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RUArmHigh,True,False,shoulder_upper_arm,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:RWristOut,True,False,wrist_hand,1,1,1,0.008333,0,0,0,0,0,0.003294,clean
+671:WaistCBack,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:WaistLBack,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:WaistLFront,True,False,pelvis_waist,3,0,45,0.375,2,2,1,0,0,0.200949,clean
+671:WaistRBack,True,False,torso_chest_back,0,0,0,0.0,0,0,0,0,0,0.0,clean
+671:WaistRFront,True,False,pelvis_waist,1,0,27,0.225,1,1,1,0,0,0.088945,clean
+Unlabeled 2934,False,True,unlabeled,2,0,27631,230.258333,2,2,2,2,2,99.743049,poor
+Unlabeled 2935,False,True,unlabeled,2,0,19811,165.091667,2,2,2,2,2,99.957175,poor
+Unlabeled 2936,False,True,unlabeled,2,0,15908,132.566667,2,2,2,2,2,99.624456,poor
+Unlabeled 2937,False,True,unlabeled,2,0,15861,132.175,2,2,2,2,2,99.917644,poor
+Unlabeled 2941,False,True,unlabeled,2,0,16211,135.091667,2,2,2,2,2,99.973646,poor
+Unlabeled 2945,False,True,unlabeled,2,0,17232,143.6,2,2,2,2,2,99.752932,poor
+Unlabeled 2955,False,True,unlabeled,2,0,24563,204.691667,2,2,2,2,2,99.990117,poor
+Unlabeled 2962,False,True,unlabeled,2,0,27713,230.941667,2,2,2,2,2,99.986823,poor
+Unlabeled 2971,False,True,unlabeled,2,0,28079,233.991667,2,2,2,2,2,99.993412,poor
+Unlabeled 2974,False,True,unlabeled,2,0,28081,234.008333,2,2,2,2,2,99.990117,poor
+Unlabeled 2995,False,True,unlabeled,2,0,28318,235.983333,2,2,2,2,2,99.993412,poor
+Unlabeled 3002,False,True,unlabeled,2,0,28779,239.825,2,2,2,2,2,99.993412,poor
+Unlabeled 3003,False,True,unlabeled,3,0,28780,239.833333,3,3,3,3,3,99.993412,poor
+Unlabeled 3011,False,True,unlabeled,2,0,29521,246.008333,2,2,2,2,2,99.990117,poor
+Unlabeled 3012,False,True,unlabeled,3,0,29541,246.175,3,3,3,3,3,99.993412,poor

@@ -1,0 +1,10 @@
+run_label,session_id,link_id,parent_canonical,child_canonical,stage08_policy,stage07_link_jump_status,total_frames,stage07_jump_status_fail_row_count,stage07_jump_status_warning_row_count,stage07_row_qc_fail_count,stage07_row_qc_warning_count,stage07_row_qc_warning_or_fail_count,first_fail_frame,last_fail_frame,first_warning_or_fail_frame,last_warning_or_fail_frame,max_stage07_jump_magnitude_rad,frame_of_max_jump,fail_only_cluster_count,warning_or_fail_cluster_count
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,671_T1_P1_R1,J005,LUArm,LFArm,allow_filter_with_warning,warning,30604,0,30604,0,1,1,,,16611,16611,0.6736240290657813,16611,0,1
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,671_T1_P1_R1,J007,LFArm,LHand,block_filter,fail,30604,30604,0,1,0,1,16334.0,16334.0,16334,16334,1.4740064916106252,16334,1,1
+671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,671_T1_P1_R1,J029,RUArm,RFArm,allow_filter_with_warning,warning,30604,0,30604,0,1,1,,,16611,16611,0.5553326509046814,16611,0,1
+671_T2_P1_R1_Take_2026-01-15_04.35.25_PM_005,671_T2_P1_R1,J029,RUArm,RFArm,allow_filter_with_warning,warning,30356,0,30356,0,1,1,,,17307,17307,0.7187676308631565,17307,0,1
+671_T2_P1_R1_Take_2026-01-15_04.35.25_PM_005,671_T2_P1_R1,J031,RFArm,RHand,allow_filter_with_warning,warning,30356,0,30356,0,1,1,,,17307,17307,0.7017348056699987,17307,0,1
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J004,LUArm,LFArm,block_filter,fail,31674,31674,0,1,0,1,18914.0,18914.0,18914,18914,1.3331956407914098,18914,1,1
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J006,LFArm,LHand,block_filter,fail,31674,31674,0,1,0,1,18914.0,18914.0,18914,18914,1.4497434147009356,18914,1,1
+671_T3_P1_R1_Take_2026-02-03_08.05.01_PM_000,671_T3_P1_R1,J031,RFArm,RHand,block_filter,fail,31674,31674,0,1,1,2,26397.0,26397.0,18914,26397,1.7399371866532016,26397,1,2
+671_T3_P1_R2_Take_2026-02-03_08.05.01_PM_005,671_T3_P1_R2,J006,LFArm,LHand,allow_filter_with_warning,warning,31392,0,31392,0,1,1,,,8072,8072,0.8182085932058963,8072,0,1

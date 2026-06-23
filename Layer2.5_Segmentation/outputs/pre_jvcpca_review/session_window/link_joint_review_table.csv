@@ -1,0 +1,17 @@
+link_id,link_or_joint,joint_family,l1_regional_gap_0p5_event_frames,l1_regional_gap_0p5_event_percent,l1_regional_gap_0p2_event_frames,l1_regional_gap_0p2_event_percent,l1_regional_artifact_sigma_event_frames,l1_regional_artifact_sigma_event_percent,l1_regional_segment_swap_event_frames,l1_regional_segment_swap_event_percent,layer2_ineligible_jump_fail_rad_frame_percent,layer2_ineligible_block_filter_frame_percent,mapped_qc_marker_names_related_to_link,layer2_problem_notes
+J004,Neck->Head,head_neck,0,0.0,0,0.0,0,0.0,0,0.0,0.0,0.0,,no Layer 2 problem flags in selected window
+J005,LUArm->LFArm,left_elbow_forearm,94,9.78,0,0.0,1,0.1,5,0.52,0.0,0.0,671:LFArm; 671:LWristOut; LHandIn__LWristOut,no Layer 2 problem flags in selected window
+J006,LShin->LFoot,left_unknown,0,0.0,0,0.0,0,0.0,0,0.0,0.0,0.0,,no Layer 2 problem flags in selected window
+J007,LFArm->LHand,left_wrist_hand,142,14.78,0,0.0,2,0.21,5,0.52,0.0,100.0,671:LFArm; 671:LHandIn; 671:LWristOut; LHandIn__LWristOut,full-window block_filter
+J020,LThigh->LShin,left_thigh_knee,0,0.0,0,0.0,0,0.0,0,0.0,0.0,0.0,,no Layer 2 problem flags in selected window
+J021,Chest->LShoulder,left_unknown,0,0.0,0,0.0,1,0.1,7,0.73,0.0,0.0,671:ChestTop; LHandIn__LWristOut; RHandIn__RWristOut,no Layer 2 problem flags in selected window
+J022,671->LThigh,left_unknown,0,0.0,0,0.0,2,0.21,7,0.73,0.0,0.0,671:WaistRFront; LHandIn__LWristOut; RHandIn__RWristOut,no Layer 2 problem flags in selected window
+J027,LShoulder->LUArm,left_unknown,0,0.0,0,0.0,0,0.0,5,0.52,0.0,0.0,LHandIn__LWristOut,no Layer 2 problem flags in selected window
+J028,Chest->Neck,head_neck,0,0.0,0,0.0,1,0.1,7,0.73,0.0,0.0,671:ChestTop; LHandIn__LWristOut; RHandIn__RWristOut,no Layer 2 problem flags in selected window
+J029,RUArm->RFArm,right_elbow_forearm,0,0.0,60,6.24,0,0.0,2,0.21,0.0,0.0,671:RFArm; RHandIn__RWristOut,no Layer 2 problem flags in selected window
+J030,RShin->RFoot,right_unknown,0,0.0,0,0.0,0,0.0,0,0.0,0.0,0.0,,no Layer 2 problem flags in selected window
+J031,RFArm->RHand,right_wrist_hand,0,0.0,111,11.55,0,0.0,2,0.21,0.0,0.0,671:RFArm; 671:RHandIn; RHandIn__RWristOut,no Layer 2 problem flags in selected window
+J044,RThigh->RShin,right_thigh_knee,0,0.0,0,0.0,0,0.0,0,0.0,0.0,0.0,,no Layer 2 problem flags in selected window
+J045,Chest->RShoulder,right_unknown,0,0.0,0,0.0,1,0.1,7,0.73,0.0,0.0,671:ChestTop; LHandIn__LWristOut; RHandIn__RWristOut,no Layer 2 problem flags in selected window
+J046,671->RThigh,right_unknown,0,0.0,0,0.0,2,0.21,7,0.73,0.0,0.0,671:WaistRFront; LHandIn__LWristOut; RHandIn__RWristOut,no Layer 2 problem flags in selected window
+J051,RShoulder->RUArm,right_unknown,0,0.0,0,0.0,0,0.0,2,0.21,0.0,0.0,RHandIn__RWristOut,no Layer 2 problem flags in selected window

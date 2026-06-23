@@ -1,0 +1,795 @@
+```text
+Layer 1 Pseudocode — Raw Marker QC for OptiTrack / Motive Data
+
+Goal:
+  Evaluate the quality of the raw optical marker measurements before trusting
+  Motive-solved skeleton kinematics in Layer 2 and JcvPCA analysis in Layer 3.
+
+Core principle:
+  Layer 1 detects, flags, summarizes, and reports raw marker artifacts.
+  Layer 1 does not repair marker data.
+  Layer 1 does not compute final joint angles.
+  Layer 1 does not create JcvPCA features.
+
+Input:
+  raw_marker_csv:
+    CSV containing raw marker XYZ trajectories from Motive.
+
+Optional input:
+  segment_boundaries.csv:
+    Manually/video-verified Layer 3 analysis windows.
+    Example:
+      T1_P1_r1_Group4
+      T1_P1_r2_Group4
+      T2_P1_r1_Group4
+      ...
+
+Output:
+  raw_marker_qc_report.csv
+  raw_marker_missingness_by_marker.csv
+  raw_marker_jump_flags.csv
+  raw_marker_velocity_spike_flags.csv
+  raw_marker_segment_length_report.csv
+  raw_marker_unlabeled_marker_report.csv
+  raw_marker_window_qc_summary.csv
+  raw_marker_qc_metadata.json
+
+================================================================================
+PART 0 — IMPORTANT ASSUMPTIONS
+================================================================================
+
+Layer 1 uses raw marker trajectories only.
+
+Layer 1 supports the question:
+  "Was the optical measurement stable during the analysis windows used later?"
+
+Layer 1 does not prove anatomical correctness.
+
+Layer 1 does not replace Layer 2.
+
+Layer 1 outputs should be used as QC evidence when interpreting Layer 3.
+
+Important limitation:
+  A clean raw-marker QC report supports trust in the measurement window,
+  but it does not prove that Motive’s solved skeleton is anatomically perfect.
+
+================================================================================
+PART 1 — LOAD RAW MARKER CSV
+================================================================================
+
+Function load_raw_marker_csv(file_path):
+
+  Read CSV.
+
+  Detect frame column:
+    Possible names:
+      Frame
+      frame
+      FrameNumber
+
+  Detect time column:
+    Possible names:
+      Time
+      time
+      Timestamp
+      Seconds
+
+  Detect marker position columns.
+
+  Expected marker format examples:
+    MarkerName:X
+    MarkerName:Y
+    MarkerName:Z
+
+    or:
+    MarkerName_Position_X
+    MarkerName_Position_Y
+    MarkerName_Position_Z
+
+  For each detected marker:
+    Confirm that X, Y, Z columns exist.
+
+  Separate:
+    labeled_markers
+    unlabeled_marker_columns, if present
+
+  Output:
+    raw_marker_dataframe
+    marker_inventory
+
+  Export:
+    raw_marker_inventory.csv
+
+marker_inventory.csv columns:
+  marker_name
+  x_column
+  y_column
+  z_column
+  marker_type
+  has_x
+  has_y
+  has_z
+  n_frames
+  n_missing_x
+  n_missing_y
+  n_missing_z
+
+Hard stop if:
+  no frame column is found
+  no time column is found
+  no marker XYZ triplets are found
+
+Warning if:
+  some markers are missing one coordinate component
+  marker naming is ambiguous
+  unlabeled marker columns are present but cannot be parsed cleanly
+
+Weak point:
+  Motive CSV exports can vary in naming structure.
+  Marker parsing must be explicit and should not silently guess incorrectly.
+
+================================================================================
+PART 2 — VALIDATE FRAME AND TIME BASE
+================================================================================
+
+Function validate_frame_time(raw_marker_dataframe):
+
+  Check:
+    frame is monotonic increasing
+    no duplicated frames
+    no missing frame IDs if frame IDs are integer-continuous
+    time is monotonic increasing
+    no duplicated timestamps
+    no negative time differences
+
+  Compute:
+    dt = time[t] - time[t-1]
+    median_dt
+    min_dt
+    max_dt
+    estimated_sampling_rate_hz = 1 / median_dt
+
+  Expected:
+    approximately 120 Hz
+
+  Flag:
+    duplicated frames
+    missing frame IDs
+    large time gaps
+    nonmonotonic time steps
+    unexpected sampling rate
+
+  Export:
+    raw_marker_frame_time_validation_report.csv
+
+Hard stop if:
+    time is nonmonotonic
+    many duplicated frames exist
+    sampling rate cannot be estimated
+
+Warning if:
+    isolated dropped frames exist
+    estimated sampling rate differs from expected value
+
+Weak point:
+  Marker velocity and jump checks depend on correct frame/time spacing.
+  If time is wrong, artifact scores may be misleading.
+
+================================================================================
+PART 3 — BUILD MARKER POSITION TABLE
+================================================================================
+
+Function build_marker_position_table(raw_marker_dataframe, marker_inventory):
+
+  For each labeled marker:
+    Extract:
+      marker_x
+      marker_y
+      marker_z
+
+  Convert empty strings and invalid numeric values to NaN.
+
+  Preserve:
+    frame
+    time
+
+  Output:
+    marker_position_table
+
+  Export:
+    raw_marker_positions.parquet
+
+Check:
+    all marker coordinates are numeric
+    NaN values are preserved, not silently filled
+    units are documented, e.g. meters or millimeters
+
+Metadata:
+    marker_position_units
+
+Weak point:
+  Motive exports may use millimeters or meters depending on settings.
+  Velocity thresholds depend strongly on units.
+
+================================================================================
+PART 4 — MISSINGNESS CHECK
+================================================================================
+
+Function compute_marker_missingness(marker_position_table):
+
+  For each marker:
+
+    A frame is missing if:
+      X is NaN OR Y is NaN OR Z is NaN
+
+    Compute:
+      n_frames_total
+      n_missing_frames
+      missing_percent
+      max_consecutive_missing_frames
+      first_missing_frame
+      last_missing_frame
+
+  Export:
+    raw_marker_missingness_by_marker.csv
+
+raw_marker_missingness_by_marker.csv columns:
+  marker_name
+  n_frames_total
+  n_missing_frames
+  missing_percent
+  max_consecutive_missing_frames
+  first_missing_frame
+  last_missing_frame
+
+Recommended flags:
+  missing_percent_high
+  max_gap_high
+
+Example thresholds:
+  missing_percent_high if missing_percent > 5%
+  max_gap_high if max_consecutive_missing_frames > 10 frames
+
+Thresholds must be configurable.
+
+Weak point:
+  Missing raw marker data can exist even if Layer 2 solved skeleton quaternions
+  contain no missing values.
+
+================================================================================
+PART 5 — MARKER JUMP CHECK
+================================================================================
+
+Function detect_marker_jumps(marker_position_table, sampling_rate_hz):
+
+  For each marker:
+
+    For each frame t > 0:
+
+      p_t:
+        [x[t], y[t], z[t]]
+
+      p_prev:
+        [x[t-1], y[t-1], z[t-1]]
+
+      If either p_t or p_prev contains NaN:
+        jump[t] = NaN
+        skip flagging for this frame
+
+      Else:
+        displacement[t] = norm(p_t - p_prev)
+
+    Compute robust threshold:
+      median_displacement = median(displacement ignoring NaN)
+      mad_displacement = median_absolute_deviation(displacement ignoring NaN)
+
+      jump_threshold = median_displacement + K_jump * mad_displacement
+
+    Default:
+      K_jump = 8
+      configurable
+
+    Flag:
+      jump_flag[t] = displacement[t] > jump_threshold
+
+  Export:
+    raw_marker_jump_flags.csv
+    raw_marker_jump_summary.csv
+
+raw_marker_jump_flags.csv columns:
+  frame
+  time
+  marker_name
+  displacement
+  jump_threshold
+  jump_flag
+
+raw_marker_jump_summary.csv columns:
+  marker_name
+  n_jump_flags
+  jump_flags_per_minute
+  max_frame_to_frame_displacement
+  median_frame_to_frame_displacement
+  jump_threshold
+
+Weak point:
+  Gaga movement can be fast and expressive.
+  Fixed thresholds may falsely flag real movement.
+  Prefer robust marker-specific thresholds first, then inspect large flags.
+
+================================================================================
+PART 6 — MARKER VELOCITY SPIKE CHECK
+================================================================================
+
+Function detect_velocity_spikes(marker_position_table, sampling_rate_hz):
+
+  For each marker:
+
+    For each frame t > 0:
+
+      If position[t] or position[t-1] contains NaN:
+        velocity[t] = NaN
+
+      Else:
+        dt = time[t] - time[t-1]
+        velocity[t] = norm(position[t] - position[t-1]) / dt
+
+    Compute robust threshold:
+      median_velocity = median(velocity ignoring NaN)
+      mad_velocity = median_absolute_deviation(velocity ignoring NaN)
+
+      velocity_threshold = median_velocity + K_velocity * mad_velocity
+
+    Default:
+      K_velocity = 8
+      configurable
+
+    Flag:
+      velocity_spike_flag[t] = velocity[t] > velocity_threshold
+
+  Export:
+    raw_marker_velocity_spike_flags.csv
+    raw_marker_velocity_summary.csv
+
+raw_marker_velocity_spike_flags.csv columns:
+  frame
+  time
+  marker_name
+  velocity
+  velocity_threshold
+  velocity_spike_flag
+
+raw_marker_velocity_summary.csv columns:
+  marker_name
+  max_velocity
+  median_velocity
+  velocity_threshold
+  n_velocity_spike_flags
+  velocity_spike_flags_per_minute
+
+Weak point:
+  Velocity spikes and marker jumps are related but not identical.
+  Both are useful because a velocity spike can reveal artifact-like behavior even
+  when displacement thresholds are borderline.
+
+================================================================================
+PART 7 — UNLABELED MARKER BURST CHECK
+================================================================================
+
+Function detect_unlabeled_marker_bursts(raw_marker_dataframe):
+
+  If no unlabeled marker columns are present:
+    Export report stating:
+      "No unlabeled marker columns detected."
+    Return.
+
+  For each frame:
+
+    Count number of visible unlabeled markers:
+      n_unlabeled_visible[frame]
+
+    A marker is visible if:
+      at least one of X/Y/Z is non-NaN
+      or all three X/Y/Z are valid, depending on export format.
+
+  Compute:
+    median_unlabeled_visible
+    mad_unlabeled_visible
+    burst_threshold = median + K_unlabeled * MAD
+
+  Default:
+    K_unlabeled = 6
+    configurable
+
+  Flag:
+    unlabeled_burst_flag[frame] =
+      n_unlabeled_visible[frame] > burst_threshold
+
+  Export:
+    raw_marker_unlabeled_marker_report.csv
+    raw_marker_unlabeled_burst_flags.csv
+
+raw_marker_unlabeled_marker_report.csv columns:
+  frame
+  time
+  n_unlabeled_visible
+  burst_threshold
+  unlabeled_burst_flag
+
+Weak point:
+  Unlabeled marker bursts are indirect evidence.
+  They do not automatically invalidate the trial, but they may indicate tracking instability.
+
+================================================================================
+PART 8 — SEGMENT-LENGTH PLAUSIBILITY CHECK
+================================================================================
+
+Function load_marker_pair_map(marker_pair_map_path):
+
+  Load marker pairs expected to remain approximately stable.
+
+Expected columns:
+  pair_name
+  marker_a
+  marker_b
+  body_region
+  include_in_qc
+
+Example:
+  left_upper_arm_pair, LUpperArm1, LUpperArm2, left_arm, true
+  pelvis_pair, LPelvis, RPelvis, pelvis, true
+  trunk_pair, Sternum, Spine, trunk, true
+
+Validate:
+  marker_a exists
+  marker_b exists
+  pair_name is unique
+  include_in_qc is true/false
+
+Export:
+  marker_pair_map_used.csv
+
+
+Function compute_segment_length_plausibility(marker_position_table, marker_pair_map):
+
+  For each marker pair:
+
+    For each frame:
+
+      If marker_a or marker_b contains NaN:
+        distance[frame] = NaN
+
+      Else:
+        distance[frame] = norm(position_a - position_b)
+
+    Compute:
+      median_distance
+      std_distance
+      coefficient_of_variation = std_distance / median_distance
+      max_deviation_from_median
+      max_deviation_percent
+
+    Compute robust threshold:
+      distance_deviation = abs(distance - median_distance)
+      threshold = median(distance_deviation) + K_segment * MAD(distance_deviation)
+
+    Default:
+      K_segment = 8
+      configurable
+
+    Flag:
+      segment_length_flag[frame] =
+        distance_deviation[frame] > threshold
+
+  Export:
+    raw_marker_segment_length_report.csv
+    raw_marker_segment_length_flags.csv
+
+raw_marker_segment_length_report.csv columns:
+  pair_name
+  marker_a
+  marker_b
+  body_region
+  median_distance
+  std_distance
+  coefficient_of_variation
+  max_deviation_percent
+  n_segment_length_flags
+
+Weak point:
+  Segment-length plausibility is not proof of anatomical accuracy.
+  It only checks whether selected marker distances are stable enough to support tracking consistency.
+
+================================================================================
+PART 9 — CREATE FRAME-LEVEL ARTIFACT TABLE
+================================================================================
+
+Function create_frame_level_artifact_table():
+
+  For each frame:
+
+    Count:
+      n_missing_markers
+      n_marker_jump_flags
+      n_velocity_spike_flags
+      n_unlabeled_burst_flags
+      n_segment_length_flags
+
+    Compute:
+      any_marker_artifact =
+        n_missing_markers > 0 OR
+        n_marker_jump_flags > 0 OR
+        n_velocity_spike_flags > 0 OR
+        n_unlabeled_burst_flags > 0 OR
+        n_segment_length_flags > 0
+
+    Optional weighted artifact score:
+      frame_artifact_score =
+        w_missing * n_missing_markers +
+        w_jump * n_marker_jump_flags +
+        w_velocity * n_velocity_spike_flags +
+        w_unlabeled * n_unlabeled_burst_flags +
+        w_segment * n_segment_length_flags
+
+  Export:
+    raw_marker_frame_artifact_table.csv
+
+raw_marker_frame_artifact_table.csv columns:
+  frame
+  time
+  n_missing_markers
+  n_marker_jump_flags
+  n_velocity_spike_flags
+  n_unlabeled_burst_flags
+  n_segment_length_flags
+  any_marker_artifact
+  frame_artifact_score
+
+Weak point:
+  The artifact score is a QC summary, not a validated biological measure.
+  Use it to guide inspection, not as the only decision rule.
+
+================================================================================
+PART 10 — SEGMENT-LEVEL QC SUMMARY
+================================================================================
+
+Function compute_segment_qc_summary(segment_boundaries, frame_artifact_table):
+
+  Input:
+    segment_boundaries.csv
+
+Expected segment_boundaries columns:
+  subject_id
+  timepoint
+  part_id
+  repetition_id
+  group_id
+  task_id optional
+  start_time
+  end_time
+  boundary_source
+  boundary_verified_true_false
+
+  For each segment:
+
+    Select frames where:
+      start_time <= time <= end_time
+
+    Compute:
+      n_frames
+      duration_sec
+      mean_missing_markers
+      max_missing_markers
+      n_frames_with_missing_markers
+      percent_frames_with_missing_markers
+      n_jump_flags
+      n_velocity_spike_flags
+      n_unlabeled_burst_frames
+      n_segment_length_flags
+      n_any_artifact_frames
+      percent_any_artifact_frames
+      mean_frame_artifact_score
+      max_frame_artifact_score
+
+    Assign qc_status:
+      pass
+      warning
+      fail
+
+  Suggested qc_status rule:
+    fail if:
+      percent_any_artifact_frames > fail_percent_threshold
+      OR severe marker gaps overlap the segment
+      OR repeated large jumps occur in key markers
+
+    warning if:
+      artifact burden is nonzero but below fail threshold
+
+    pass if:
+      artifact burden is low
+
+  Thresholds must be configurable.
+
+  Export:
+    raw_marker_window_qc_summary.csv
+
+raw_marker_window_qc_summary.csv columns:
+  subject_id
+  timepoint
+  part_id
+  repetition_id
+  group_id
+  task_id
+  start_time
+  end_time
+  duration_sec
+  n_frames
+  percent_frames_with_missing_markers
+  n_jump_flags
+  n_velocity_spike_flags
+  n_unlabeled_burst_frames
+  n_segment_length_flags
+  percent_any_artifact_frames
+  mean_frame_artifact_score
+  max_frame_artifact_score
+  qc_status
+  qc_notes
+
+Important:
+  Segment boundaries are defined by task/video logic.
+  QC evaluates the chosen segment.
+  QC should not be used to secretly choose the cleanest segment.
+
+Weak point:
+  Because segmentation happens before Layer 3, this segment-level QC can be
+  computed after boundaries are verified and before JcvPCA interpretation.
+
+================================================================================
+PART 11 — CREATE OVERALL RAW MARKER QC REPORT
+================================================================================
+
+Function create_raw_marker_qc_report():
+
+  Combine:
+    marker inventory
+    frame/time validation
+    missingness summary
+    jump summary
+    velocity summary
+    unlabeled marker report
+    segment-length report
+    frame-level artifact table summary
+    segment-level QC summary if available
+
+  Export:
+    raw_marker_qc_report.csv
+    raw_marker_qc_metadata.json
+
+raw_marker_qc_report.csv should include:
+  source_file
+  subject_id
+  timepoint
+  part_id
+  repetition_id
+  n_frames
+  duration_sec
+  estimated_sampling_rate_hz
+  n_labeled_markers
+  n_unlabeled_marker_columns
+  mean_marker_missing_percent
+  max_marker_missing_percent
+  total_jump_flags
+  total_velocity_spike_flags
+  total_unlabeled_burst_frames
+  total_segment_length_flags
+  overall_qc_status
+  qc_notes
+
+raw_marker_qc_metadata.json should include:
+  source_file
+  marker_position_units
+  expected_sampling_rate_hz
+  estimated_sampling_rate_hz
+  jump_threshold_method
+  velocity_threshold_method
+  unlabeled_burst_threshold_method
+  segment_length_threshold_method
+  missingness_thresholds
+  artifact_score_weights
+  qc_status_rules
+  software_versions
+  layer1_role = "raw marker QC only"
+  does_not_compute_final_kinematics = true
+  does_not_repair_artifacts = true
+
+================================================================================
+PART 12 — OPTIONAL QC PLOTS
+================================================================================
+
+Function generate_qc_plots():
+
+  Create plots:
+    missingness_by_marker.png
+    marker_jump_flags_over_time.png
+    velocity_spike_flags_over_time.png
+    unlabeled_marker_count_over_time.png
+    segment_length_stability_examples.png
+    frame_artifact_score_over_time.png
+    segment_qc_summary_barplot.png
+
+  Save to:
+    layer1_raw_marker_qc/plots/
+
+Weak point:
+  Plots are important for manual inspection.
+  CSV flags alone may not reveal whether artifacts are isolated or systematic.
+
+================================================================================
+PART 13 — FINAL LAYER 1 OUTPUT FOLDER
+================================================================================
+
+Output folder:
+
+  analysis_output/
+    layer1_raw_marker_qc/
+      raw_marker_inventory.csv
+      raw_marker_positions.parquet
+      raw_marker_frame_time_validation_report.csv
+      raw_marker_missingness_by_marker.csv
+      raw_marker_jump_flags.csv
+      raw_marker_jump_summary.csv
+      raw_marker_velocity_spike_flags.csv
+      raw_marker_velocity_summary.csv
+      raw_marker_unlabeled_marker_report.csv
+      raw_marker_unlabeled_burst_flags.csv
+      marker_pair_map_used.csv
+      raw_marker_segment_length_report.csv
+      raw_marker_segment_length_flags.csv
+      raw_marker_frame_artifact_table.csv
+      raw_marker_window_qc_summary.csv
+      raw_marker_qc_report.csv
+      raw_marker_qc_metadata.json
+      plots/
+
+================================================================================
+PART 14 — IMPLEMENTATION WEAK POINTS TO HANDLE CAREFULLY
+================================================================================
+
+1. CSV parsing:
+   Motive raw marker exports may have inconsistent column naming.
+   Parser should be explicit and should fail loudly when ambiguous.
+
+2. Marker units:
+   Confirm whether positions are in meters or millimeters.
+   Velocity and displacement thresholds depend on this.
+
+3. Missing values:
+   Do not silently interpolate or fill missing marker values in Layer 1.
+   Preserve missingness and report it.
+
+4. Thresholds:
+   Gaga movement is unconstrained and can be fast.
+   Prefer robust marker-specific thresholds over rigid universal thresholds.
+
+5. Unlabeled markers:
+   Treat unlabeled marker bursts as warning evidence, not automatic failure.
+
+6. Segment-length pairs:
+   Marker-pair map must be reviewed manually.
+   Bad marker pairs create misleading segment-length flags.
+
+7. Segment QC:
+   Segment boundaries must come from task/video logic.
+   QC evaluates those windows; it should not define them.
+
+8. Layer separation:
+   Layer 1 QC does not create Layer 3 features.
+   Final kinematic variables come from Layer 2.
+
+9. Interpretation:
+   A clean Layer 1 report supports measurement stability.
+   It does not prove anatomical validity of Motive-solved skeleton kinematics.
+
+10. Reporting:
+   Always report QC status per full recording and per Layer 3 analysis segment.
+```

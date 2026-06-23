@@ -1,0 +1,97 @@
+"""Output CSV column schemas (spec order)."""
+
+MAPPING_LOGIC_COLUMNS = [
+    "raw_marker_or_region",
+    "normalized_marker_or_region",
+    "component_markers",
+    "attached_bone",
+    "attached_bone_canonical",
+    "marker_family",
+    "related_joint_family",
+    "candidate_layer2_links",
+    "candidate_layer2_link_ids",
+    "mapping_source",
+    "mapping_status",
+    "candidate_mapping_level",
+    "included_in_review",
+    "review_note",
+]
+
+WINDOW_DECISION_SUMMARY_COLUMNS = [
+    "session_id",
+    "run_label",
+    "frame_start",
+    "frame_end",
+    "duration_frames",
+    "duration_sec",
+    "selected_qc_evidence_types",
+    "joint_selection_preset",
+    "selected_layer2_links",
+    "selected_layer2_link_ids",
+    "layer1_labeled_marker_source",
+    "layer1_total_labeled_markers",
+    "layer1_mapped_labeled_markers",
+    "layer1_unmapped_labeled_marker_names",
+    "unlabeled_marker_policy",
+    "layer2_total_links_available",
+    "layer2_selected_links_count",
+    "datadescriptions_used",
+    "mapping_source_summary",
+    "n_gap_0p5_events",
+    "n_gap_0p2_events",
+    "n_artifact_sigma_events",
+    "n_segment_swap_events",
+    "gap_0p5_flagged_frame_percent",
+    "gap_0p2_flagged_frame_percent",
+    "artifact_sigma_flagged_frame_percent",
+    "segment_swap_flagged_frame_percent",
+    "jump_fail_rad_links_frame_percent",
+    "block_filter_links_frame_percent",
+]
+
+QC_EVIDENCE_SUMMARY_COLUMNS = [
+    "qc_type",
+    "event_count",
+    "total_event_duration_frames",
+    "total_event_duration_percent_of_window",
+    "unique_marker_or_region_count",
+    "markers_or_regions",
+    "related_joint_families",
+    "mapping_status_summary",
+    "source_files",
+]
+
+LINK_JOINT_REVIEW_COLUMNS = [
+    "link_id",
+    "link_or_joint",
+    "joint_family",
+    "l1_regional_gap_0p5_event_frames",
+    "l1_regional_gap_0p5_event_percent",
+    "l1_regional_gap_0p2_event_frames",
+    "l1_regional_gap_0p2_event_percent",
+    "l1_regional_artifact_sigma_event_frames",
+    "l1_regional_artifact_sigma_event_percent",
+    "l1_regional_segment_swap_event_frames",
+    "l1_regional_segment_swap_event_percent",
+    "layer2_ineligible_jump_fail_rad_frame_percent",
+    "layer2_ineligible_block_filter_frame_percent",
+    "mapped_qc_marker_names_related_to_link",
+    "layer2_problem_notes",
+]
+
+QC_EVENT_REVIEW_COLUMNS = [
+    "frame_start",
+    "frame_end",
+    "duration_frames",
+    "qc_type",
+    "reason",
+    "source_file",
+    "raw_marker_or_region",
+    "related_joint_family",
+    "candidate_layer2_links",
+    "candidate_mapping_level",
+    "mapping_status",
+    "included_in_review",
+]
+
+QC_TYPES = ("gap_0p5", "gap_0p2", "artifact_sigma", "segment_swap")

@@ -1,0 +1,10 @@
+link_id,parent_canonical,child_canonical,jump_event_frame,context_window_frames,context_start_frame,context_end_frame,stage07_jump_magnitude_rad,stage07_row_qc_status
+J006,LFArm,LHand,8072,30,8042,8102,0.8182085932058963,warning
+J007,LHand,LIndex1,16102,30,16072,16132,0.6480093651544921,warning
+J008,LIndex1,LIndex2,16102,30,16072,16132,0.7680029529289848,warning
+J011,LMiddle1,LMiddle2,16102,30,16072,16132,0.511488977628142,warning
+J013,LHand,LPinky1,8072,30,8042,8102,0.6761434387101645,warning
+J013,LHand,LPinky1,16102,30,16072,16132,0.558222398403374,warning
+J022,LHand,LThumb1,16102,30,16072,16132,0.5736202735471074,warning
+J032,RHand,RIndex1,16102,30,16072,16132,0.5683037541608051,warning
+J033,RIndex1,RIndex2,16102,30,16072,16132,0.6550975189084839,warning

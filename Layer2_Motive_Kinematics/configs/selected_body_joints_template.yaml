@@ -1,0 +1,14 @@
+# Template for curated body-joint selection (post-heuristic validation)
+#
+# Do not treat as authoritative until validated against a representative Motive export.
+# V0 default: derive candidate joints from CSV hierarchy + distal_exclusion rules.
+
+version: 0
+status: template_requires_validation
+
+joints: []
+
+notes: |
+  After Stage 01, compare candidate_joint_map.csv and selected_joint_map_v0.csv
+  against scientist expectations. Example joint entry fields:
+  joint_id, parent_bone, child_bone, included, selection_rule, requires_manual_review

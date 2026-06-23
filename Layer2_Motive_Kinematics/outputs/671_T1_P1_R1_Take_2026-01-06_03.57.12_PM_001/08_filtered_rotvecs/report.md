@@ -1,0 +1,82 @@
+# Stage 08 — Filtered relative rotation vectors (V1, no interpolation)
+
+Generated: 2026-06-21 12:26:05 UTC
+
+## Input files used
+
+- `data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/07_rotation_vectors/relative_rotation_vectors.parquet`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/03_frame_time_validation/frame_time_summary.csv`
+
+## What was detected
+
+- Links processed: 50
+- Links pass / QC-context masked / excluded / blocked / review: 16 / 19 / 32 / 0 / 2
+- Total Stage 07 jump event frames: 19
+- Total jump-context frames (may overlap): 1159
+- Total branch-cut event frames: 0
+- Total branch-cut context frames (may overlap): 0
+- Total analysis-eligible frames: 489481
+- Interpolation applied: False
+- Native filtered columns retain values where filtering succeeded.
+- Analysis-clean columns are NaN outside eligibility (QC context, excluded, blocked, review).
+
+## Assumptions
+
+- Butterworth sosfiltfilt: cutoff=10.0 Hz, order=4
+- Sampling rate from Stage 03: 120.00480019200238 Hz
+- QC context window: ±30 frames (jump and branch-cut events)
+- Stage 08 V1 does not interpolate Stage 07 jump frames.
+- Stage 08 V1 does not interpolate or repair Stage 07 jump frames.
+- Stage 07 jump and branch-cut failures use localized context masking, not whole-link blocks.
+- Native filtered values may exist inside QC context windows but are not analysis-clean.
+- Analysis-clean columns are NaN/masked in jump and branch-cut context windows.
+- Final inclusion/exclusion remains deferred to post–Layer 2 / pre–Layer 3 feature selection.
+- Stage 08 does not implement Layer 3.
+- Stage 08 does not overwrite Stage 07 outputs or modify Stage 07 thresholds.
+- Pipeline-integrity failures (quaternion/sign/reconstruction) still block entire links.
+
+## Outputs written
+
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/report.md`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/filtered_relative_rotation_vectors.parquet`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/filtered_relative_rotation_vectors.csv`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/filtering_summary_by_link.csv`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/stage08_jump_context_report.csv`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/stage08_branch_cut_context_report.csv`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/filter_diagnostics.csv`
+- `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/08_filtered_rotvecs/assumptions_and_limitations.md`
+
+## Warnings
+
+- None
+
+## Errors
+
+- None
+
+## Validation status
+
+PASS WITH REVIEW — filtering completed; review link summaries
+
+## Next recommended action
+
+Review filtering_summary_by_link.csv, stage08_jump_context_report.csv, and stage08_branch_cut_context_report.csv. Use analysis-clean columns for downstream feature work; native columns are archival. Final Layer 2 export/manifest can be prepared next; Layer 3 remains out of scope.
+
+## Stage 08 V1 policy reminder
+
+- Stage 08 V1 does **not** interpolate or repair Stage 07 jump frames.
+- Jump and branch-cut Stage 07 failures are **localized** (event ± context window).
+- Native filtered values may exist inside QC context windows but are **not** analysis-clean.
+- Analysis-clean columns are NaN/masked in jump and branch-cut context windows.
+- Whole-link blocks apply only to pipeline-integrity QC (`block_filter`).
+- Final inclusion/exclusion remains deferred to post–Layer 2 / pre–Layer 3 feature selection.
+- Stage 08 does not implement Layer 3.
+
+## QC context summary
+
+- Jump event frames (total across links): **19**
+- Jump-context frames (total, overlapping): **1159**
+- Branch-cut event frames (total): **0**
+- Branch-cut context frames (total, overlapping): **0**
+- Links with QC context masking: **19**

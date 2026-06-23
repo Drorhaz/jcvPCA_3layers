@@ -1,0 +1,17 @@
+joint_id,parent_bone,child_bone,source_parent_bone,source_child_bone
+J004,Neck,Head,671:Neck,671:Head
+J005,LUArm,LFArm,671:LUArm,671:LFArm
+J006,LShin,LFoot,671:LShin,671:LFoot
+J007,LFArm,LHand,671:LFArm,671:LHand
+J020,LThigh,LShin,671:LThigh,671:LShin
+J021,Chest,LShoulder,671:Chest,671:LShoulder
+J022,671,LThigh,671:671,671:LThigh
+J027,LShoulder,LUArm,671:LShoulder,671:LUArm
+J028,Chest,Neck,671:Chest,671:Neck
+J029,RUArm,RFArm,671:RUArm,671:RFArm
+J030,RShin,RFoot,671:RShin,671:RFoot
+J031,RFArm,RHand,671:RFArm,671:RHand
+J044,RThigh,RShin,671:RThigh,671:RShin
+J045,Chest,RShoulder,671:Chest,671:RShoulder
+J046,671,RThigh,671:671,671:RThigh
+J051,RShoulder,RUArm,671:RShoulder,671:RUArm

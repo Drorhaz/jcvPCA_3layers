@@ -1,0 +1,7 @@
+# Parent-child joint map template
+#
+# V0 derives hierarchy from the Motive CSV Parent row. This file is optional for
+# later stabilization after scientist validation.
+
+joint_name,parent_bone,child_bone,include_in_layer3,notes
+# trunk,Pelvis,Chest,true,example only — not authoritative

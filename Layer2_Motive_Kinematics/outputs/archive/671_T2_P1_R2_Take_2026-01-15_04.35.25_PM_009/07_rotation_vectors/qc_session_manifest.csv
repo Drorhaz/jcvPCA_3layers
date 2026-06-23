@@ -1,0 +1,2 @@
+session_id,run_label,skeleton_template,frame_count,sampling_rate_hz,stage03_timing_status,stage04_file_status,stage05_file_status,stage06_file_status,stage07_file_status,stage08_authorization_status,notes
+671_T2_P1_R2,671_T2_P1_R2_Take_2026-01-15_04.35.25_PM_009,Core + Passive Fingers (54),30479,120.00480019200238,pass,pass,pass,pass,pass,authorized,

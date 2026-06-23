@@ -1,0 +1,12 @@
+Format Version,1.25,Take Name,TestTake,Take Notes,,Capture Frame Rate,120.000000,Export Frame Rate,120.000000,Total Exported Frames,10,Rotation Type,Quaternion,Length Units,Millimeters,Coordinate Space,Global
+
+,Type,Bone,Bone,Bone,Bone
+,Name,900:Ab,900:Ab,900:Ab,900:Ab
+,ID,id0,id0,id0,id0
+,Parent,Root,Root,Root,Root
+,,Rotation,Rotation,Rotation,Rotation
+Frame,Time (Seconds),X,Y,Z,W
+0,0.000000,0,0,0,1
+1,0.008333,0,0,0,1
+2,0.008333,0,0,0,1
+3,0.016667,0,0,0,1

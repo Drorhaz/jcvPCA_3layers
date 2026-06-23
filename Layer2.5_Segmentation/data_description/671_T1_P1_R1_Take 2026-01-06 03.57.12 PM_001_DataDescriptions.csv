@@ -1,0 +1,224 @@
+Skeleton,671,0,
+Bone,671_671,1,0,-0.000000,0.911630,0.000000,671
+Bone Marker,WaistLFront,671_671,671,0.145181,0.085098,0.104394,
+Bone Marker,WaistRFront,671_671,671,-0.130294,0.087099,0.099712,
+Bone Marker,WaistLBack,671_671,671,0.147425,0.108380,-0.104394,
+Bone Marker,WaistCBack,671_671,671,-0.044028,0.185186,-0.130337,
+Bone Marker,WaistRBack,671_671,671,-0.124796,0.106337,-0.099712,
+Bone,671_Ab,2,1,-0.000000,0.079317,0.000000,671
+Bone,671_Chest,3,2,-0.000000,0.228261,0.000000,671
+Bone Marker,BackTop,671_Chest,671,0.008959,0.267977,-0.119810,
+Bone Marker,ChestTop,671_Chest,671,0.018262,0.166950,0.118442,
+Bone Marker,BackLeft,671_Chest,671,0.095285,0.070760,-0.141077,
+Bone Marker,BackRight,671_Chest,671,-0.082680,0.053888,-0.139023,
+Bone Marker,ChestLow,671_Chest,671,0.019688,0.085845,0.136611,
+Bone,671_Neck,4,3,-0.000000,0.247607,0.000000,671
+Bone,671_Head,5,4,-0.000000,0.149929,0.019346,671
+Bone Marker,HeadTop,671_Head,671,-0.000000,0.160632,-0.019346,
+Bone Marker,HeadFront,671_Head,671,-0.060697,0.123387,0.111278,
+Bone Marker,HeadLeft,671_Head,671,0.081868,0.076822,0.035513,
+Bone Marker,HeadRight,671_Head,671,-0.079297,0.053030,-0.053833,
+Bone,671_LShoulder,6,3,0.038649,0.192519,-0.000088,671
+Bone Marker,LShoulderBack,671_LShoulder,671,0.116028,-0.012547,-0.126096,
+Bone Marker,LShoulderTop,671_LShoulder,671,0.179655,0.054159,-0.002817,
+Bone,671_LUArm,7,6,0.109129,0.000000,0.000000,671
+Bone Marker,LElbowOut,671_LUArm,671,0.311979,0.034286,-0.051704,
+Bone Marker,LUArmHigh,671_LUArm,671,0.188295,-0.021251,-0.104308,
+Bone,671_LFArm,8,7,0.309931,0.000000,0.000000,671
+Bone Marker,LWristOut,671_LFArm,671,0.241309,-0.007776,-0.064526,
+Bone Marker,LFArm,671_LFArm,671,0.145587,-0.014581,0.024953,
+Bone,671_LHand,9,8,0.233916,0.000000,0.000000,671
+Bone Marker,LHandOut,671_LHand,671,0.096306,-0.000193,-0.051407,
+Bone Marker,LHandIn,671_LHand,671,0.102821,0.000193,0.067337,
+Bone,671_LThumb1,22,9,0.022309,-0.025350,0.035491,671
+Bone,671_LThumb2,23,22,0.030534,0.000000,0.000000,671
+Bone Marker,LThumb,671_LThumb2,671,0.048452,-0.002958,0.031165,
+Bone,671_LThumb3,24,23,0.026097,0.000000,0.000000,671
+Bone,671_LIndex1,25,9,0.091262,0.000000,0.035491,671
+Bone Marker,LIndex,671_LIndex1,671,0.055359,0.003328,0.018838,
+Bone,671_LIndex2,26,25,0.045946,0.000000,0.000000,671
+Bone,671_LIndex3,27,26,0.022973,0.000000,0.000000,671
+Bone,671_LMiddle1,28,9,0.091262,0.000000,0.011763,671
+Bone,671_LMiddle2,29,28,0.050540,0.000000,0.000000,671
+Bone,671_LMiddle3,30,29,0.027568,0.000000,0.000000,671
+Bone,671_LRing1,31,9,0.086192,0.000000,-0.011763,671
+Bone,671_LRing2,32,31,0.045946,0.000000,0.000000,671
+Bone,671_LRing3,33,32,0.022973,0.000000,0.000000,671
+Bone,671_LPinky1,34,9,0.081122,0.000000,-0.035491,671
+Bone Marker,LPinky,671_LPinky1,671,0.077404,0.002081,-0.011799,
+Bone,671_LPinky2,35,34,0.036757,0.000000,0.000000,671
+Bone,671_LPinky3,36,35,0.018378,0.000000,0.000000,671
+Bone,671_RShoulder,10,3,-0.038649,0.192519,-0.000088,671
+Bone Marker,RShoulderBack,671_RShoulder,671,-0.097024,-0.005544,-0.118253,
+Bone Marker,RShoulderTop,671_RShoulder,671,-0.141366,0.059462,0.002188,
+Bone,671_RUArm,11,10,-0.109129,0.000000,0.000000,671
+Bone Marker,RElbowOut,671_RUArm,671,-0.272774,0.015216,-0.017325,
+Bone Marker,RUArmHigh,671_RUArm,671,-0.193290,-0.041174,-0.092857,
+Bone,671_RFArm,12,11,-0.309931,0.000000,0.000000,671
+Bone Marker,RWristOut,671_RFArm,671,-0.233345,-0.002585,-0.073135,
+Bone Marker,RFArm,671_RFArm,671,-0.109953,-0.010141,0.016245,
+Bone,671_RHand,13,12,-0.233916,0.000000,0.000000,671
+Bone Marker,RHandOut,671_RHand,671,-0.073174,-0.000982,-0.049926,
+Bone Marker,RHandIn,671_RHand,671,-0.085011,0.000982,0.062581,
+Bone,671_RThumb1,37,13,-0.022309,-0.025350,0.035491,671
+Bone,671_RThumb2,38,37,-0.030534,0.000000,0.000000,671
+Bone Marker,RThumb,671_RThumb2,671,-0.026809,-0.004156,0.031178,
+Bone,671_RThumb3,39,38,-0.026097,0.000000,0.000000,671
+Bone,671_RIndex1,40,13,-0.091262,0.000000,0.035491,671
+Bone Marker,RIndex,671_RIndex1,671,-0.055743,0.002259,0.015115,
+Bone,671_RIndex2,41,40,-0.045946,0.000000,0.000000,671
+Bone,671_RIndex3,42,41,-0.022973,0.000000,0.000000,671
+Bone,671_RMiddle1,43,13,-0.091262,0.000000,0.011763,671
+Bone,671_RMiddle2,44,43,-0.050540,0.000000,0.000000,671
+Bone,671_RMiddle3,45,44,-0.027568,0.000000,0.000000,671
+Bone,671_RRing1,46,13,-0.086192,0.000000,-0.011763,671
+Bone,671_RRing2,47,46,-0.045946,0.000000,0.000000,671
+Bone,671_RRing3,48,47,-0.022973,0.000000,0.000000,671
+Bone,671_RPinky1,49,13,-0.081122,0.000000,-0.035491,671
+Bone Marker,RPinky,671_RPinky1,671,-0.062061,-0.001661,0.009420,
+Bone,671_RPinky2,50,49,-0.036757,0.000000,0.000000,671
+Bone,671_RPinky3,51,50,-0.018378,0.000000,0.000000,671
+Bone,671_LThigh,14,1,0.096728,0.000000,0.000000,671
+Bone Marker,LKneeOut,671_LThigh,671,0.058930,-0.500256,0.000853,
+Bone Marker,LThighFront,671_LThigh,671,0.049598,-0.182644,0.138319,
+Bone Marker,LThighSide,671_LThigh,671,0.077703,-0.148427,-0.052161,
+Bone,671_LShin,15,14,-0.000000,-0.511597,0.000000,671
+Bone Marker,LAnkleOut,671_LShin,671,0.038467,-0.329872,-0.000919,
+Bone Marker,LShin,671_LShin,671,0.029310,-0.190564,0.085908,
+Bone,671_LFoot,16,15,-0.000000,-0.322650,0.000000,671
+Bone Marker,LToeOut,671_LFoot,671,0.067639,-0.054325,0.115848,
+Bone Marker,LToeIn,671_LFoot,671,-0.067639,-0.058019,0.108772,
+Bone Marker,LHeel,671_LFoot,671,-0.003767,-0.051267,-0.066815,
+Bone,671_LToe,17,16,-0.000000,-0.062873,0.145092,671
+Bone Marker,LToeTip,671_LToe,671,-0.011568,0.010959,0.091414,
+Bone,671_RThigh,18,1,-0.096728,0.000000,0.000000,671
+Bone Marker,RKneeOut,671_RThigh,671,-0.031421,-0.533101,-0.000099,
+Bone Marker,RThighFront,671_RThigh,671,-0.012823,-0.314149,0.068717,
+Bone Marker,RThighSide,671_RThigh,671,-0.068589,-0.178215,-0.073260,
+Bone,671_RShin,19,18,-0.000000,-0.511597,0.000000,671
+Bone Marker,RAnkleOut,671_RShin,671,-0.038620,-0.321764,0.000601,
+Bone Marker,RShin,671_RShin,671,-0.067804,-0.091126,-0.092576,
+Bone,671_RFoot,20,19,-0.000000,-0.322650,0.000000,671
+Bone Marker,RToeOut,671_RFoot,671,-0.068518,-0.056255,0.115438,
+Bone Marker,RToeIn,671_RFoot,671,0.068518,-0.052469,0.132862,
+Bone Marker,RHeel,671_RFoot,671,0.021576,-0.029975,-0.067810,
+Bone,671_RToe,21,20,-0.000000,-0.062873,0.145092,671
+Bone Marker,RToeTip,671_RToe,671,0.008066,0.011398,0.085168,
+Marker set,671,
+Marker,671_WaistLFront,671,
+Marker,671_WaistLBack,671,
+Marker,671_WaistCBack,671,
+Marker,671_WaistRBack,671,
+Marker,671_WaistRFront,671,
+Marker,671_BackTop,671,
+Marker,671_BackLeft,671,
+Marker,671_BackRight,671,
+Marker,671_ChestTop,671,
+Marker,671_ChestLow,671,
+Marker,671_HeadFront,671,
+Marker,671_HeadLeft,671,
+Marker,671_HeadTop,671,
+Marker,671_HeadRight,671,
+Marker,671_LShoulderBack,671,
+Marker,671_LShoulderTop,671,
+Marker,671_LUArmHigh,671,
+Marker,671_LElbowOut,671,
+Marker,671_LFArm,671,
+Marker,671_LWristOut,671,
+Marker,671_LHandOut,671,
+Marker,671_LHandIn,671,
+Marker,671_LThumb,671,
+Marker,671_LIndex,671,
+Marker,671_LPinky,671,
+Marker,671_RShoulderBack,671,
+Marker,671_RShoulderTop,671,
+Marker,671_RUArmHigh,671,
+Marker,671_RElbowOut,671,
+Marker,671_RFArm,671,
+Marker,671_RWristOut,671,
+Marker,671_RHandOut,671,
+Marker,671_RHandIn,671,
+Marker,671_RThumb,671,
+Marker,671_RIndex,671,
+Marker,671_RPinky,671,
+Marker,671_LThighFront,671,
+Marker,671_LThighSide,671,
+Marker,671_LKneeOut,671,
+Marker,671_LShin,671,
+Marker,671_LAnkleOut,671,
+Marker,671_LHeel,671,
+Marker,671_LToeIn,671,
+Marker,671_LToeOut,671,
+Marker,671_LToeTip,671,
+Marker,671_RThighFront,671,
+Marker,671_RThighSide,671,
+Marker,671_RKneeOut,671,
+Marker,671_RShin,671,
+Marker,671_RAnkleOut,671,
+Marker,671_RHeel,671,
+Marker,671_RToeIn,671,
+Marker,671_RToeOut,671,
+Marker,671_RToeTip,671,
+Marker set,all,
+Marker,671_WaistLFront,all,
+Marker,671_WaistLBack,all,
+Marker,671_WaistCBack,all,
+Marker,671_WaistRBack,all,
+Marker,671_WaistRFront,all,
+Marker,671_BackTop,all,
+Marker,671_BackLeft,all,
+Marker,671_BackRight,all,
+Marker,671_ChestTop,all,
+Marker,671_ChestLow,all,
+Marker,671_HeadFront,all,
+Marker,671_HeadLeft,all,
+Marker,671_HeadTop,all,
+Marker,671_HeadRight,all,
+Marker,671_LShoulderBack,all,
+Marker,671_LShoulderTop,all,
+Marker,671_LUArmHigh,all,
+Marker,671_LElbowOut,all,
+Marker,671_LFArm,all,
+Marker,671_LWristOut,all,
+Marker,671_LHandOut,all,
+Marker,671_LHandIn,all,
+Marker,671_LThumb,all,
+Marker,671_LIndex,all,
+Marker,671_LPinky,all,
+Marker,671_RShoulderBack,all,
+Marker,671_RShoulderTop,all,
+Marker,671_RUArmHigh,all,
+Marker,671_RElbowOut,all,
+Marker,671_RFArm,all,
+Marker,671_RWristOut,all,
+Marker,671_RHandOut,all,
+Marker,671_RHandIn,all,
+Marker,671_RThumb,all,
+Marker,671_RIndex,all,
+Marker,671_RPinky,all,
+Marker,671_LThighFront,all,
+Marker,671_LThighSide,all,
+Marker,671_LKneeOut,all,
+Marker,671_LShin,all,
+Marker,671_LAnkleOut,all,
+Marker,671_LHeel,all,
+Marker,671_LToeIn,all,
+Marker,671_LToeOut,all,
+Marker,671_LToeTip,all,
+Marker,671_RThighFront,all,
+Marker,671_RThighSide,all,
+Marker,671_RKneeOut,all,
+Marker,671_RShin,all,
+Marker,671_RAnkleOut,all,
+Marker,671_RHeel,all,
+Marker,671_RToeIn,all,
+Marker,671_RToeOut,all,
+Marker,671_RToeTip,all,
+Camera,Prime 17W #82387,2.582345,1.579821,2.926675,-0.302736,0.195619,-0.655817,0.663316,
+Camera,Prime 17W #82389,2.803214,1.558367,-2.232098,0.687980,-0.586092,0.281392,-0.322486,
+Camera,Prime 17W #82391,3.063994,1.500281,0.296222,0.410461,0.531069,0.577729,0.464454,
+Camera,Prime 17W #82392,-2.825325,1.433669,-2.629266,0.666248,0.636541,-0.275601,-0.273813,
+Camera,Prime 17W #82393,0.126845,1.679900,-3.014237,-0.020797,0.987940,0.153034,0.011061,
+Camera,Prime 17W #82395,-2.811870,1.584231,2.506785,-0.353063,-0.227165,0.618288,0.664427,
+Camera,Prime 17W #82401,-3.036889,1.577838,0.361539,-0.540868,-0.380794,0.466044,0.587589,
+Camera,PrimeX 22 #118514,0.258522,1.265695,3.773895,-0.084984,0.010276,-0.005438,0.996314,

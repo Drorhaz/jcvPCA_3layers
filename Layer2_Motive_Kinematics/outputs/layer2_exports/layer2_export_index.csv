@@ -1,0 +1,2 @@
+session_id,run_label,export_folder,skeleton_template,frame_count,duration_sec,n_links_total,n_core_candidate_links,n_review_provisional_links,n_excluded_links,n_stage07_jump_frames,n_stage08_jump_context_rows,n_analysis_eligible_rows,n_analysis_ineligible_rows,integrity_status,ready_for_segmentation_notebook,notes
+671_T1_P1_R1,671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,outputs/layer2_exports/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001,Core + Passive Fingers (54),30604,255.025,50,16,2,32,19,1159,489481,1040719,pass,True,

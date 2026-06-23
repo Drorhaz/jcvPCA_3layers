@@ -1,0 +1,70 @@
+marker_name,marker_short_name,subject_or_asset_prefix,is_labeled,is_unlabeled,marker_type_raw,body_region_group,x_column_source,y_column_source,z_column_source,has_x,has_y,has_z,parse_status
+671:BackLeft,BackLeft,671,True,False,Marker,torso_chest_back,2,3,4,True,True,True,ok
+671:BackRight,BackRight,671,True,False,Marker,torso_chest_back,5,6,7,True,True,True,ok
+671:BackTop,BackTop,671,True,False,Marker,torso_chest_back,8,9,10,True,True,True,ok
+671:ChestLow,ChestLow,671,True,False,Marker,torso_chest_back,11,12,13,True,True,True,ok
+671:ChestTop,ChestTop,671,True,False,Marker,torso_chest_back,14,15,16,True,True,True,ok
+671:HeadFront,HeadFront,671,True,False,Marker,head_neck,17,18,19,True,True,True,ok
+671:HeadLeft,HeadLeft,671,True,False,Marker,head_neck,20,21,22,True,True,True,ok
+671:HeadRight,HeadRight,671,True,False,Marker,head_neck,23,24,25,True,True,True,ok
+671:HeadTop,HeadTop,671,True,False,Marker,head_neck,26,27,28,True,True,True,ok
+671:LAnkleOut,LAnkleOut,671,True,False,Marker,shank_ankle,29,30,31,True,True,True,ok
+671:LElbowOut,LElbowOut,671,True,False,Marker,elbow_forearm,32,33,34,True,True,True,ok
+671:LFArm,LFArm,671,True,False,Marker,shoulder_upper_arm,35,36,37,True,True,True,ok
+671:LHandIn,LHandIn,671,True,False,Marker,wrist_hand,38,39,40,True,True,True,ok
+671:LHandOut,LHandOut,671,True,False,Marker,wrist_hand,41,42,43,True,True,True,ok
+671:LHeel,LHeel,671,True,False,Marker,foot,44,45,46,True,True,True,ok
+671:LIndex,LIndex,671,True,False,Marker,fingers,47,48,49,True,True,True,ok
+671:LKneeOut,LKneeOut,671,True,False,Marker,thigh_knee,50,51,52,True,True,True,ok
+671:LPinky,LPinky,671,True,False,Marker,fingers,53,54,55,True,True,True,ok
+671:LShin,LShin,671,True,False,Marker,shank_ankle,56,57,58,True,True,True,ok
+671:LShoulderBack,LShoulderBack,671,True,False,Marker,torso_chest_back,59,60,61,True,True,True,ok
+671:LShoulderTop,LShoulderTop,671,True,False,Marker,shoulder_upper_arm,62,63,64,True,True,True,ok
+671:LThighFront,LThighFront,671,True,False,Marker,thigh_knee,65,66,67,True,True,True,ok
+671:LThighSide,LThighSide,671,True,False,Marker,thigh_knee,68,69,70,True,True,True,ok
+671:LThumb,LThumb,671,True,False,Marker,fingers,71,72,73,True,True,True,ok
+671:LToeIn,LToeIn,671,True,False,Marker,foot,74,75,76,True,True,True,ok
+671:LToeOut,LToeOut,671,True,False,Marker,foot,77,78,79,True,True,True,ok
+671:LToeTip,LToeTip,671,True,False,Marker,foot,80,81,82,True,True,True,ok
+671:LUArmHigh,LUArmHigh,671,True,False,Marker,shoulder_upper_arm,83,84,85,True,True,True,ok
+671:LWristOut,LWristOut,671,True,False,Marker,wrist_hand,86,87,88,True,True,True,ok
+671:RAnkleOut,RAnkleOut,671,True,False,Marker,shank_ankle,89,90,91,True,True,True,ok
+671:RElbowOut,RElbowOut,671,True,False,Marker,elbow_forearm,92,93,94,True,True,True,ok
+671:RFArm,RFArm,671,True,False,Marker,shoulder_upper_arm,95,96,97,True,True,True,ok
+671:RHandIn,RHandIn,671,True,False,Marker,wrist_hand,98,99,100,True,True,True,ok
+671:RHandOut,RHandOut,671,True,False,Marker,wrist_hand,101,102,103,True,True,True,ok
+671:RHeel,RHeel,671,True,False,Marker,foot,104,105,106,True,True,True,ok
+671:RIndex,RIndex,671,True,False,Marker,fingers,107,108,109,True,True,True,ok
+671:RKneeOut,RKneeOut,671,True,False,Marker,thigh_knee,110,111,112,True,True,True,ok
+671:RPinky,RPinky,671,True,False,Marker,fingers,113,114,115,True,True,True,ok
+671:RShin,RShin,671,True,False,Marker,shank_ankle,116,117,118,True,True,True,ok
+671:RShoulderBack,RShoulderBack,671,True,False,Marker,torso_chest_back,119,120,121,True,True,True,ok
+671:RShoulderTop,RShoulderTop,671,True,False,Marker,shoulder_upper_arm,122,123,124,True,True,True,ok
+671:RThighFront,RThighFront,671,True,False,Marker,thigh_knee,125,126,127,True,True,True,ok
+671:RThighSide,RThighSide,671,True,False,Marker,thigh_knee,128,129,130,True,True,True,ok
+671:RThumb,RThumb,671,True,False,Marker,fingers,131,132,133,True,True,True,ok
+671:RToeIn,RToeIn,671,True,False,Marker,foot,134,135,136,True,True,True,ok
+671:RToeOut,RToeOut,671,True,False,Marker,foot,137,138,139,True,True,True,ok
+671:RToeTip,RToeTip,671,True,False,Marker,foot,140,141,142,True,True,True,ok
+671:RUArmHigh,RUArmHigh,671,True,False,Marker,shoulder_upper_arm,143,144,145,True,True,True,ok
+671:RWristOut,RWristOut,671,True,False,Marker,wrist_hand,146,147,148,True,True,True,ok
+671:WaistCBack,WaistCBack,671,True,False,Marker,torso_chest_back,149,150,151,True,True,True,ok
+671:WaistLBack,WaistLBack,671,True,False,Marker,torso_chest_back,152,153,154,True,True,True,ok
+671:WaistLFront,WaistLFront,671,True,False,Marker,pelvis_waist,155,156,157,True,True,True,ok
+671:WaistRBack,WaistRBack,671,True,False,Marker,torso_chest_back,158,159,160,True,True,True,ok
+671:WaistRFront,WaistRFront,671,True,False,Marker,pelvis_waist,161,162,163,True,True,True,ok
+Unlabeled 2934,Unlabeled 2934,,False,True,Marker,unlabeled,164,165,166,True,True,True,ok
+Unlabeled 2935,Unlabeled 2935,,False,True,Marker,unlabeled,167,168,169,True,True,True,ok
+Unlabeled 2936,Unlabeled 2936,,False,True,Marker,unlabeled,170,171,172,True,True,True,ok
+Unlabeled 2937,Unlabeled 2937,,False,True,Marker,unlabeled,173,174,175,True,True,True,ok
+Unlabeled 2941,Unlabeled 2941,,False,True,Marker,unlabeled,176,177,178,True,True,True,ok
+Unlabeled 2945,Unlabeled 2945,,False,True,Marker,unlabeled,179,180,181,True,True,True,ok
+Unlabeled 2955,Unlabeled 2955,,False,True,Marker,unlabeled,182,183,184,True,True,True,ok
+Unlabeled 2962,Unlabeled 2962,,False,True,Marker,unlabeled,185,186,187,True,True,True,ok
+Unlabeled 2971,Unlabeled 2971,,False,True,Marker,unlabeled,188,189,190,True,True,True,ok
+Unlabeled 2974,Unlabeled 2974,,False,True,Marker,unlabeled,191,192,193,True,True,True,ok
+Unlabeled 2995,Unlabeled 2995,,False,True,Marker,unlabeled,194,195,196,True,True,True,ok
+Unlabeled 3002,Unlabeled 3002,,False,True,Marker,unlabeled,197,198,199,True,True,True,ok
+Unlabeled 3003,Unlabeled 3003,,False,True,Marker,unlabeled,200,201,202,True,True,True,ok
+Unlabeled 3011,Unlabeled 3011,,False,True,Marker,unlabeled,203,204,205,True,True,True,ok
+Unlabeled 3012,Unlabeled 3012,,False,True,Marker,unlabeled,206,207,208,True,True,True,ok

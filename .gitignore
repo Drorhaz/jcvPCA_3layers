@@ -1,0 +1,70 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+build/
+*.so
+
+# Environments and local config
+.venv/
+venv/
+env/
+.env
+.mplconfig/
+.matplotlib/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+htmlcov/
+
+# Nested git repositories (monorepo absorbs subprojects)
+**/.git/
+
+# Logs and temp
+*.log
+tmp/
+temp/
+.cache/
+
+# Large binary / array data
+**/*.parquet
+**/*.npy
+**/*.npz
+
+# Motion capture raw / export formats
+**/*.c3d
+**/*.bvh
+**/*.mp4
+**/*.mov
+**/*.avi
+**/*.mkv
+
+# Raw Motive full-resolution CSV exports (100MB+ frame-level marker data)
+671_test_data_des/*_Take*.csv
+Layer1_motive_qc/motive_qc/data/**/*.csv
+Layer2_Motive_Kinematics/data/**/*.csv
+Layer2.5_Segmentation/reevluate_project/*_Take*.csv
+
+# Large regenerated frame-level kinematic CSVs (Layer 2 intermediate stages)
+**/06_relative_quaternions/relative_quaternions.csv
+**/07_rotation_vectors/relative_rotation_vectors.csv
+**/08_filtered_rotvecs/filtered_relative_rotation_vectors.csv
+**/05_sign_continuity/global_quaternions_sign_continuous.csv
+
+# Large frame-level QC event exports (debug/smoke runs; regenerate from notebook)
+**/combined_qc_events.csv
+**/qc_event_display.csv
+
+# Optional local tooling
+.orchestra-skills.json

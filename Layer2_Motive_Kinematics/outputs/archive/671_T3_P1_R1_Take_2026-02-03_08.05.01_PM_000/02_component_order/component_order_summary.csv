@@ -1,0 +1,14 @@
+metric,value
+input_file,data/671/671_T3_P1_R1_Take 2026-02-03 08.05.01 PM_000.csv
+rotation_type,Quaternion
+coordinate_space,Global
+bone_rotation_quaternion_groups_checked,55
+groups_with_complete_xyzw_columns,55
+groups_with_incomplete_xyzw_columns,0
+groups_passing_constructability,55
+groups_failing_constructability,0
+groups_with_non_finite_rows,0
+selected_scipy_component_order,"x,y,z,w"
+motive_to_scipy_mapping,"Motive X,Y,Z,W -> SciPy x,y,z,w"
+labels_compatible_with_scipy,True
+stage03_may_proceed_for_file,True

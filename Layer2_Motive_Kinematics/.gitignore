@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local raw Motive CSVs (full-resolution exports)
+data/**/*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Orchestra / optional external skills (if installed locally)
+.orchestra-skills.json

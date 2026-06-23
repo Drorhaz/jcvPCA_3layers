@@ -1,6 +1,6 @@
 # Stage 02 — Quaternion component-order / SciPy compatibility
 
-Generated: 2026-06-19 13:24:44 UTC
+Generated: 2026-06-21 12:24:23 UTC
 
 ## Input files used
 

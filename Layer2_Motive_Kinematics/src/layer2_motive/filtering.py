@@ -1,4 +1,4 @@
-"""Butterworth filtering, jump-context masking, and analysis eligibility (Stage 08 V1)."""
+"""Butterworth filtering, jump-context flagging, and analysis eligibility (Stage 08 V1)."""
 
 from __future__ import annotations
 
@@ -19,7 +19,9 @@ from layer2_motive.validation import HardStopError
 class FilterLinkStatus(str, Enum):
     PASS = "pass"
     PASS_WITH_WARNING = "pass_with_warning"
-    FILTERED_BUT_JUMP_CONTEXT_MASKED = "filtered_but_jump_context_masked"
+    FILTERED_BUT_JUMP_CONTEXT_FLAGGED = "filtered_but_jump_context_flagged"
+    # Backward-compatible alias for readers expecting the pre-contract-revision name.
+    FILTERED_BUT_JUMP_CONTEXT_MASKED = "filtered_but_jump_context_flagged"
     PROVISIONAL_MANUAL_REVIEW = "provisional_manual_review"
     EXCLUDED_FROM_ANALYSIS = "excluded_from_analysis"
     BLOCKED_NEEDS_REVIEW = "blocked_needs_review"
@@ -295,7 +297,7 @@ def _link_filter_status(
     if feature_scope == "review_provisional" or requires_manual_review:
         status = FilterLinkStatus.PROVISIONAL_MANUAL_REVIEW.value
     elif jump_context_rows > 0 or branch_cut_context_rows > 0:
-        status = FilterLinkStatus.FILTERED_BUT_JUMP_CONTEXT_MASKED.value
+        status = FilterLinkStatus.FILTERED_BUT_JUMP_CONTEXT_FLAGGED.value
     elif (
         stage07_jump_status == "warning"
         or stage07_branch_cut_status == "warning"
@@ -404,10 +406,10 @@ def process_link_filtering(
             )
         )
 
+    # Analysis columns mirror native filtered values. QC/risk is expressed via flags and
+    # reports; NaNs appear only when filtering genuinely failed (filter_not_applied).
     analysis_filtered = filtered.copy()
-    analysis_filtered[~analysis_eligible] = np.nan
     analysis_norm = filtered_norm.copy()
-    analysis_norm[~analysis_eligible] = np.nan
 
     filter_failed = bool(np.all(~applied) and np.any(np.all(np.isfinite(raw), axis=1)))
     link_status = _link_filter_status(
@@ -655,7 +657,7 @@ def process_file_filtering(
             [
                 FilterLinkStatus.PASS.value,
                 FilterLinkStatus.PASS_WITH_WARNING.value,
-                FilterLinkStatus.FILTERED_BUT_JUMP_CONTEXT_MASKED.value,
+                FilterLinkStatus.FILTERED_BUT_JUMP_CONTEXT_FLAGGED.value,
             ]
         )
         .to_numpy()
@@ -716,3 +718,199 @@ def process_file_filtering(
     )
 
     return filtered_table, summary_df, jump_df, branch_cut_df, diagnostics_df, file_result
+
+
+QC_MASK_REASONS = {
+    "stage07_jump_context",
+    "stage07_branch_cut_context",
+    "excluded_feature_scope",
+    "excluded_from_analysis_policy",
+    "blocked_needs_review",
+    "manual_review_provisional",
+}
+
+COMPUTATIONAL_NAN_REASONS = {
+    "filter_not_applied",
+}
+
+
+def _report_base_columns(filtered_table: pd.DataFrame) -> list[str]:
+    candidates = [
+        "session_id",
+        "run_label",
+        "frame",
+        "time_sec",
+        "link_id",
+        "parent_canonical",
+        "child_canonical",
+        "stage07_jump_status",
+        "stage07_jump_magnitude_rad",
+        "stage08_analysis_eligible",
+        "stage08_filter_status",
+        "stage08_mask_reason",
+    ]
+    return [col for col in candidates if col in filtered_table.columns]
+
+
+def build_stage08_flag_report(
+    filtered_table: pd.DataFrame,
+    *,
+    jump_df: pd.DataFrame | None = None,
+    branch_cut_df: pd.DataFrame | None = None,
+) -> pd.DataFrame:
+    """Rows flagged for downstream review; numeric values are preserved."""
+    base_columns = [
+        *_report_base_columns(filtered_table),
+        "reason",
+        "context_start_frame",
+        "context_end_frame",
+    ]
+    if filtered_table.empty:
+        return pd.DataFrame(columns=base_columns)
+
+    flagged = filtered_table.loc[~filtered_table["stage08_analysis_eligible"].astype(bool)].copy()
+    if flagged.empty:
+        return pd.DataFrame(columns=base_columns)
+
+    flagged["reason"] = flagged["stage08_mask_reason"].fillna("").astype(str)
+    flagged["reason"] = flagged["reason"].where(
+        flagged["reason"].ne(""),
+        "flagged_for_downstream_review",
+    )
+    flagged["context_start_frame"] = np.nan
+    flagged["context_end_frame"] = np.nan
+
+    if jump_df is not None and not jump_df.empty:
+        for _, event in jump_df.iterrows():
+            in_context = (
+                (flagged["link_id"] == event["link_id"])
+                & (flagged["frame"] >= event["context_start_frame"])
+                & (flagged["frame"] <= event["context_end_frame"])
+            )
+            flagged.loc[in_context, "context_start_frame"] = int(event["context_start_frame"])
+            flagged.loc[in_context, "context_end_frame"] = int(event["context_end_frame"])
+
+    if branch_cut_df is not None and not branch_cut_df.empty:
+        for _, event in branch_cut_df.iterrows():
+            in_context = (
+                (flagged["link_id"] == event["link_id"])
+                & (flagged["frame"] >= event["context_start_frame"])
+                & (flagged["frame"] <= event["context_end_frame"])
+            )
+            flagged.loc[in_context, "context_start_frame"] = int(event["context_start_frame"])
+            flagged.loc[in_context, "context_end_frame"] = int(event["context_end_frame"])
+
+    return flagged[base_columns].sort_values(["link_id", "frame"]).reset_index(drop=True)
+
+
+def build_stage08_ineligible_rows_report(
+    filtered_table: pd.DataFrame,
+    *,
+    jump_df: pd.DataFrame | None = None,
+    branch_cut_df: pd.DataFrame | None = None,
+) -> pd.DataFrame:
+    """Ineligible frame×link rows with explicit note that values remain numeric when computed."""
+    report = build_stage08_flag_report(
+        filtered_table,
+        jump_df=jump_df,
+        branch_cut_df=branch_cut_df,
+    )
+    if report.empty:
+        report["value_kept_numeric"] = pd.Series(dtype=bool)
+        return report
+
+    analysis_cols = ["rx_filtered_analysis", "ry_filtered_analysis", "rz_filtered_analysis"]
+    present_cols = [col for col in analysis_cols if col in filtered_table.columns]
+    if not present_cols:
+        report["value_kept_numeric"] = True
+        return report
+
+    values = filtered_table[["frame", "link_id", *present_cols]]
+    report = report.merge(values, on=["frame", "link_id"], how="left")
+    report["value_kept_numeric"] = np.all(
+        np.isfinite(report[present_cols].to_numpy(dtype=float)),
+        axis=1,
+    )
+    return report.drop(columns=present_cols)
+
+
+def build_stage08_nan_report(filtered_table: pd.DataFrame) -> pd.DataFrame:
+    """True computational NaNs in analysis columns, distinct from QC-flagged rows."""
+    if filtered_table.empty:
+        return pd.DataFrame(
+            columns=[
+                *_report_base_columns(filtered_table),
+                "nan_classification",
+                "reason",
+            ]
+        )
+
+    analysis_cols = ["rx_filtered_analysis", "ry_filtered_analysis", "rz_filtered_analysis"]
+    if not all(col in filtered_table.columns for col in analysis_cols):
+        return pd.DataFrame(
+            columns=[
+                *_report_base_columns(filtered_table),
+                "nan_classification",
+                "reason",
+            ]
+        )
+
+    analysis_finite = np.all(
+        np.isfinite(filtered_table[analysis_cols].to_numpy(dtype=float)),
+        axis=1,
+    )
+    nan_rows = filtered_table.loc[~analysis_finite].copy()
+    if nan_rows.empty:
+        return pd.DataFrame(
+            columns=[
+                *_report_base_columns(filtered_table),
+                "nan_classification",
+                "reason",
+            ]
+        )
+
+    mask_reason = nan_rows["stage08_mask_reason"].fillna("").astype(str)
+    is_computational = mask_reason.isin(COMPUTATIONAL_NAN_REASONS) | ~np.all(
+        np.isfinite(nan_rows[["rx_raw", "ry_raw", "rz_raw"]].to_numpy(dtype=float)),
+        axis=1,
+    )
+    nan_rows["nan_classification"] = np.where(
+        is_computational.to_numpy(),
+        "computational_failure",
+        "unexpected_nan",
+    )
+    nan_rows["reason"] = mask_reason.where(mask_reason.ne(""), "analysis_value_not_computed")
+    columns = [
+        *_report_base_columns(filtered_table),
+        "nan_classification",
+        "reason",
+    ]
+    return nan_rows[columns].sort_values(["link_id", "frame"]).reset_index(drop=True)
+
+
+def enrich_jump_context_report(
+    jump_df: pd.DataFrame,
+    filtered_table: pd.DataFrame,
+) -> pd.DataFrame:
+    """Add eligibility/flag columns to the per-event jump context report."""
+    if jump_df.empty:
+        return jump_df
+
+    enriched = jump_df.copy()
+    for col in (
+        "session_id",
+        "run_label",
+        "stage08_analysis_eligible",
+        "stage08_filter_status",
+        "stage08_mask_reason",
+    ):
+        if col in filtered_table.columns and col not in enriched.columns:
+            link_values = (
+                filtered_table.groupby("link_id", sort=True)[col]
+                .first()
+                .to_dict()
+            )
+            enriched[col] = enriched["link_id"].map(link_values)
+
+    enriched["reason"] = "value_kept_numeric_row_flagged_for_downstream_review"
+    return enriched

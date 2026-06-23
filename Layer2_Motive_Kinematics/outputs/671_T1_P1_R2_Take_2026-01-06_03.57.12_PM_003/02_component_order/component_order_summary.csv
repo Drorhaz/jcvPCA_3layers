@@ -1,0 +1,14 @@
+metric,value
+input_file,/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T1_P1_R2_Take 2026-01-06 03.57.12 PM_003.csv
+rotation_type,Quaternion
+coordinate_space,Global
+bone_rotation_quaternion_groups_checked,51
+groups_with_complete_xyzw_columns,51
+groups_with_incomplete_xyzw_columns,0
+groups_passing_constructability,51
+groups_failing_constructability,0
+groups_with_non_finite_rows,0
+selected_scipy_component_order,"x,y,z,w"
+motive_to_scipy_mapping,"Motive X,Y,Z,W -> SciPy x,y,z,w"
+labels_compatible_with_scipy,True
+stage03_may_proceed_for_file,True

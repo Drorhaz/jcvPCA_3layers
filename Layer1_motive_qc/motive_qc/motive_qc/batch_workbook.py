@@ -96,8 +96,8 @@ def build_executive_summary_sections(
                 "total_frames": total_frames,
                 "frame_rate_hz": md.get("effective_frame_rate_hz"),
                 "duration_seconds": round(dur_s, 3),
-                "preprocessing_status": s.get("raw_qc_preprocessing_status"),
-                "status_reason": s.get("raw_qc_status_reason"),
+                "gap_evidence_summary": s.get("gap_evidence_summary"),
+                "markers_with_gap_ge_0p5s": s.get("markers_with_gap_ge_0p5s"),
             }
         )
         gap_rows.append(

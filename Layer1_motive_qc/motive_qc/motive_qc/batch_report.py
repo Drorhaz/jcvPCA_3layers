@@ -27,6 +27,12 @@ def _session_label(row: pd.Series) -> str:
     return f"{row.get('subject_id', '')}_{row.get('session_id', '')}"
 
 
+def _union_gap_flag_col(df: pd.DataFrame) -> str:
+    if "pct_frames_union_flag_gap_0p5" in df.columns:
+        return "pct_frames_union_flag_gap_0p5"
+    return "pct_frames_flag_gap_0p5"
+
+
 def build_dataset_eda_markdown(
     eda_df: pd.DataFrame,
     top_markers: pd.DataFrame,
@@ -40,8 +46,11 @@ def build_dataset_eda_markdown(
     ok_df = eda_df[eda_df["batch_status"] == "ok"] if not eda_df.empty else eda_df
     subjects = sorted(eda_df["subject_id"].unique().tolist()) if not eda_df.empty else []
 
-    status_counts = (
-        ok_df["raw_qc_preprocessing_status"].value_counts().to_dict() if not ok_df.empty else {}
+    gap_col = _union_gap_flag_col(ok_df)
+    flag_gap_pct = (
+        float(ok_df[gap_col].median())
+        if not ok_df.empty and gap_col in ok_df.columns
+        else 0.0
     )
     median_usable = (
         float(ok_df["pct_frames_above_coverage"].median())
@@ -77,7 +86,7 @@ def build_dataset_eda_markdown(
         "",
         f"- **Sessions processed:** {n} across subject(s) {', '.join(subjects) or 'n/a'}",
         f"- **Successful runs:** {len(ok_df)}; **failures:** {len(failures_df)}",
-        f"- **Preprocessing status distribution:** {status_counts or 'n/a'}",
+        f"- **Median % frames with gap >=0.5 s flag (union mask):** {flag_gap_pct:.1f}%",
         f"- **Median usable frame % (coverage-based):** {median_usable:.1f}%",
         f"- **Phantom/never-solved markers quarantined (dataset-wide):** {total_quarantined}",
         f"- **Dominant artifact event class (dataset-wide):** {dom_artifact}",
@@ -104,7 +113,7 @@ def build_dataset_eda_markdown(
                 f"| {row['subject_id']} | {row['session_id']} | {row['duration_minutes']} | "
                 f"{row['total_frames_observed']} | "
                 f"{row.get('n_labeled_markers_in_analysis', '?')} / {row.get('n_quarantined_markers', 0)} | "
-                f"{row['raw_qc_preprocessing_status']} |"
+                f"{row.get(gap_col, 'n/a')}% union gap>=0.5 |"
             )
     else:
         lines.append("*No successful sessions.*")
@@ -277,7 +286,6 @@ def _collect_mask_interval_candidates(
                 "start_s",
                 "end_s",
                 "duration_s",
-                "status",
                 "criterion",
                 "affected_markers",
             ]
@@ -292,10 +300,7 @@ def _collect_mask_interval_candidates(
             continue
         key = _session_key(sr)
         work = intervals.copy()
-        if "status" in work.columns:
-            work["_prio"] = work["status"].map({"exclude": 0, "caution": 1}).fillna(2)
-            work = work.sort_values(["_prio", "duration_s"], ascending=[True, False])
-        elif "duration_s" in work.columns:
+        if "duration_s" in work.columns:
             work = work.sort_values("duration_s", ascending=False)
         for _, r in work.head(max_per_session).iterrows():
             rows.append(
@@ -304,7 +309,6 @@ def _collect_mask_interval_candidates(
                     "start_s": round(float(r.get("start_s", 0) or 0), 3),
                     "end_s": round(float(r.get("end_s", 0) or 0), 3),
                     "duration_s": round(float(r.get("duration_s", 0) or 0), 3),
-                    "status": r.get("status", ""),
                     "criterion": r.get("criterion", r.get("reason", "")),
                     "affected_markers": r.get("affected_markers", ""),
                 }
@@ -402,16 +406,18 @@ def _interval_summary_stats(intervals: pd.DataFrame, qc_mask: pd.DataFrame, conf
         n_art_frames = int(qc_mask["flag_artifact_sigma"].astype(bool).sum())
     if intervals.empty:
         return {
-            "n_exclude": 0,
-            "n_caution": 0,
+            "n_flagged_intervals": 0,
+            "n_gap_intervals": 0,
             "n_artifact_sigma_intervals": 0,
             "n_artifact_sigma_frames": n_art_frames,
             "art_sigma": art_sigma,
             "vel_percentile": vel_pct,
         }
+    flagged = intervals[intervals["reason"].astype(str).str.len() > 0] if "reason" in intervals.columns else intervals
+    gap_int = intervals[intervals.get("has_gap_ge_0p5", False).astype(bool)] if "has_gap_ge_0p5" in intervals.columns else flagged
     return {
-        "n_exclude": int((intervals["status"] == "exclude").sum()),
-        "n_caution": int((intervals["status"] == "caution").sum()),
+        "n_flagged_intervals": int(len(flagged)),
+        "n_gap_intervals": int(len(gap_int)),
         "n_artifact_sigma_intervals": int(intervals.get("has_artifact_sigma", pd.Series(dtype=bool)).sum())
         if "has_artifact_sigma" in intervals.columns
         else int(intervals["reason"].astype(str).str.contains("ARTIFACT_SIGMA", regex=False).sum()),
@@ -468,7 +474,7 @@ def _build_session_tabs_html(
 
         preview = ""
         if not intervals.empty:
-            excl = intervals[intervals["status"] == "exclude"].sort_values(
+            excl = intervals[intervals["reason"].astype(str).str.len() > 0].sort_values(
                 "duration_s", ascending=False
             ).head(10)
             if not excl.empty:
@@ -501,7 +507,7 @@ def _build_session_tabs_html(
   <h3>{key}</h3>
   {skel_note}
   <ul>
-    <li><strong>{stats['n_exclude']}</strong> exclude intervals · <strong>{stats['n_caution']}</strong> caution intervals</li>
+    <li><strong>{stats['n_flagged_intervals']}</strong> flagged intervals · <strong>{stats['n_gap_intervals']}</strong> gap intervals</li>
     <li><strong>{stats['n_artifact_sigma_frames']:,}</strong> frames flagged by velocity MAD
      (σ={stats['art_sigma']}, percentile={stats['vel_percentile']})</li>
     <li><strong>{stats['n_artifact_sigma_intervals']}</strong> artifact-sigma interval rows in CSV</li>
@@ -697,17 +703,16 @@ def write_pi_plots(eda_df: pd.DataFrame, plots_dir: Path, dpi: int = 150) -> lis
     ok["label"] = ok.apply(_session_label, axis=1)
     written: list[Path] = []
 
-    # Preprocessing status
+    # Gap >=0.5 s flag burden (union mask)
     fig, ax = plt.subplots(figsize=(max(8, len(ok) * 0.5), 5))
-    colors = {"acceptable": "#48bb78", "caution": "#ecc94b", "poor": "#e53e3e"}
-    statuses = ok["raw_qc_preprocessing_status"].fillna("unknown")
-    bar_colors = [colors.get(s, "#a0aec0") for s in statuses]
-    ax.bar(ok["label"], [1] * len(ok), color=bar_colors)
-    ax.set_yticks([])
-    ax.set_title("Preprocessing QC status by session (green=acceptable, yellow=caution, red=poor)")
+    gap_col = _union_gap_flag_col(ok)
+    pct = ok[gap_col].fillna(0.0) if gap_col in ok.columns else ok.get("pct_frames_exclude", pd.Series([0] * len(ok)))
+    ax.bar(ok["label"], pct, color="#4299e1")
+    ax.set_ylabel("% frames with flag_gap_0p5")
+    ax.set_title("Gap >=0.5 s frame-flag burden by session (union mask)")
     plt.xticks(rotation=45, ha="right")
     fig.tight_layout()
-    p = plots_dir / "batch_preprocessing_status.png"
+    p = plots_dir / "batch_gap_flag_burden.png"
     fig.savefig(p, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     written.append(p)

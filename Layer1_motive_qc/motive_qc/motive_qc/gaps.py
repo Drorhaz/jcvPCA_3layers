@@ -631,8 +631,16 @@ def update_session_summary_layer2(
   frame_rate = float(session.metadata["effective_frame_rate_hz"])
   gap_metrics = session_gap_timeline_metrics(gap_events, config, frame_rate)
   coverage_metrics = compute_coverage_metrics(session, analysis_markers, config)
-  raw_status, raw_reason = evaluate_preprocessing_status(
-    pct_lab, coverage_metrics, config
+  markers_ge_05: list[str] = []
+  if not labeled_gaps.empty:
+    large = labeled_gaps[labeled_gaps["duration_seconds"] >= float(thresholds["large_gap"])]
+    if "canonical_short_name" in large.columns:
+      markers_ge_05 = sorted(large["canonical_short_name"].astype(str).unique().tolist())
+    else:
+      markers_ge_05 = sorted(large["marker_name"].astype(str).unique().tolist())
+  gap_evidence_summary = (
+    f"Longest labeled gap: {longest_marker or 'none'} ({longest_seconds:.3f}s); "
+    f"{n_ge_05} gaps >=0.5s across {len(markers_ge_05) or 0} marker(s)."
   )
 
   summary.update(
@@ -666,8 +674,9 @@ def update_session_summary_layer2(
       ],
       "pct_time_below_coverage": coverage_metrics["pct_time_below_coverage"],
       "n_markers_sustained_dropout": coverage_metrics["n_markers_sustained_dropout"],
-      "raw_qc_preprocessing_status": raw_status,
-      "raw_qc_status_reason": raw_reason,
+      "markers_with_gap_ge_0p5s": ";".join(markers_ge_05),
+      "n_markers_with_gap_ge_0p5s": len(markers_ge_05),
+      "gap_evidence_summary": gap_evidence_summary,
     }
   )
   return pd.DataFrame([summary])
@@ -821,29 +830,19 @@ def build_frame_qc_mask(
     if gap["duration_seconds"] >= large_thr:
       large_gap_present |= in_gap
 
-  qc_status_list: list[str] = []
   reason_codes_list: list[str] = []
   for i in range(n_frames):
     reasons: list[str] = []
-    status = "use"
     if large_gap_present[i] and mask_cfg["flag_large_gap"]:
       reasons.append("LARGE_GAP")
-      status = "exclude_or_review"
     elif moderate_gap_present[i] and mask_cfg["flag_moderate_gap"]:
       reasons.append("MODERATE_GAP")
-      status = "caution"
     if missing_labeled_percent[i] >= mask_cfg["exclude_missing_labeled_percent"]:
       reasons.append("HIGH_MISSING_LABELED")
-      status = "exclude_or_review"
     elif missing_labeled_percent[i] >= mask_cfg["caution_missing_labeled_percent"]:
       reasons.append("ELEVATED_MISSING_LABELED")
-      if status == "use":
-        status = "caution"
     if unlabeled_present[i] and mask_cfg["flag_unlabeled_present"]:
       reasons.append("UNLABELED_PRESENT")
-      if status == "use":
-        status = "caution"
-    qc_status_list.append(status)
     reason_codes_list.append(";".join(reasons))
 
   return pd.DataFrame(
@@ -856,7 +855,6 @@ def build_frame_qc_mask(
       "large_gap_present": large_gap_present,
       "unlabeled_present": unlabeled_present,
       "unlabeled_count": unlabeled_count,
-      "qc_status": qc_status_list,
       "reason_codes": reason_codes_list,
     }
   )

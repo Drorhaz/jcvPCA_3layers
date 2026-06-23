@@ -1,0 +1,2 @@
+input_file,quaternion_group_count,total_frames,total_sign_flips,max_sign_flips_any_bone,bones_with_zero_flips,min_consecutive_dot_observed,post_correction_valid,stage06_may_proceed,fail_reasons,warning_reasons
+/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T3_P1_R2_Take 2026-02-03 08.05.01 PM_005.csv,55,31392,0,0,55,0.600004633358,True,True,,No sign flips detected in any bone group

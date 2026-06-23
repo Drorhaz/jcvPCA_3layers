@@ -961,7 +961,7 @@ def summarize_stage08_output(csv_path: Path, out_dir: Path) -> dict[str, str | i
 
     links_pass = int(
         summary["stage08_filter_status"].isin(
-            ["pass", "pass_with_warning", "filtered_but_jump_context_masked"]
+            ["pass", "pass_with_warning", "filtered_but_jump_context_flagged", "filtered_but_jump_context_masked"]
         ).sum()
     )
     links_blocked = int((summary["stage08_filter_status"] == "blocked_needs_review").sum())

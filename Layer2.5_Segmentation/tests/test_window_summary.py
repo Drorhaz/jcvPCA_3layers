@@ -45,9 +45,11 @@ def test_layer1_summary_matches_brute_force(fixture_layer1_dir):
     window = l1.qc_mask[l1.qc_mask["frame"].between(start, end)]
 
     assert summary["n_window_frames"] == len(window)
-    assert summary["n_use_frames"] == int((window["status"].str.lower() == "use").sum())
-    assert summary["n_caution_frames"] == int((window["status"].str.lower() == "caution").sum())
-    assert summary["n_exclude_frames"] == int((window["status"].str.lower() == "exclude").sum())
+    any_flag = pd.Series(False, index=window.index)
+    for col in ("flag_gap_0p2", "flag_gap_0p5", "flag_artifact_sigma", "flag_segment_swap", "flag_edge_effect"):
+        if col in window.columns:
+            any_flag = any_flag | window[col].astype(bool)
+    assert summary["n_use_frames"] == int((~any_flag).sum())
     assert summary["flag_counts"]["flag_gap_0p2"] == int(window["flag_gap_0p2"].astype(bool).sum())
 
 

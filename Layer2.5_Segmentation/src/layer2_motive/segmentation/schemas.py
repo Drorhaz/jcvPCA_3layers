@@ -45,16 +45,14 @@ LAYER2_OPTIONAL_FILES = (
 )
 
 # --- Layer 1 qc_mask columns ---
-LAYER1_QC_MASK_REQUIRED_COLUMNS = ("frame", "status")
+LAYER1_QC_MASK_REQUIRED_COLUMNS = ("frame", "time_s", "reason")
 
 LAYER1_QC_MASK_EXPECTED_COLUMNS = (
-    "time_s",
     "flag_gap_0p2",
     "flag_gap_0p5",
     "flag_artifact_sigma",
     "flag_segment_swap",
     "flag_edge_effect",
-    "reason",
 )
 
 # --- Layer 2 parquet columns ---

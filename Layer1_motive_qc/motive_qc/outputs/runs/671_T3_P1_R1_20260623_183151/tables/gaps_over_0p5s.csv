@@ -1,0 +1,4 @@
+marker_name,body_region_group,n_gaps,total_gap_seconds,longest_gap_seconds,gap_intervals_s,marker_name_raw,marker_name_canonical,asset_prefix
+T3_671:RHandOut,wrist_hand,2,4.0167,2.8,152.16-153.37; 154.82-157.61,T3_671:RHandOut,RHandOut,T3_671
+T3_671:RHandIn,wrist_hand,2,1.6167,1.0,132.69-133.68; 219.36-219.97,T3_671:RHandIn,RHandIn,T3_671
+T3_671:ChestTop,torso_chest_back,1,4.3167,4.3167,17.90-22.21,T3_671:ChestTop,ChestTop,T3_671

@@ -107,7 +107,7 @@ def validate_layer1_contract(bundle: Layer1Bundle) -> list[ValidationCheck]:
         ValidationCheck(
             check_name="layer1_qc_mask_required_columns",
             status="fail" if col_errors else "pass",
-            details=col_errors[0] if col_errors else "frame, status present",
+            details=col_errors[0] if col_errors else "frame, time_s, reason present",
         )
     )
 

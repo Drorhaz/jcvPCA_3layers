@@ -18,17 +18,24 @@ from motive_qc.core import MotiveSession, QCResult
 
 
 def compute_window_yield(window_df: pd.DataFrame) -> float:
-    if window_df.empty or "window_quality_label" not in window_df.columns:
+    if window_df.empty or "reason_codes" not in window_df.columns:
         return 0.0
-    n_use = int((window_df["window_quality_label"] == "use").sum())
-    return round(100.0 * n_use / len(window_df), 4)
+    n_clean = int((window_df["reason_codes"].astype(str).str.len() == 0).sum())
+    return round(100.0 * n_clean / len(window_df), 4)
 
 
-def _mask_pct(analysis_mask: pd.DataFrame, status: str) -> float:
-    if analysis_mask.empty or "analysis_status" not in analysis_mask.columns:
+def _flag_pct(qc_mask: pd.DataFrame, flag_col: str) -> float:
+    if qc_mask.empty or flag_col not in qc_mask.columns:
+        return 0.0
+    return round(100.0 * qc_mask[flag_col].astype(bool).sum() / len(qc_mask), 4)
+
+
+def _mask_reason_pct(analysis_mask: pd.DataFrame) -> float:
+    if analysis_mask.empty or "analysis_reason_codes" not in analysis_mask.columns:
         return 0.0
     n = len(analysis_mask)
-    return round(100.0 * (analysis_mask["analysis_status"] == status).sum() / n, 4)
+    active = analysis_mask["analysis_reason_codes"].astype(str).str.len() > 0
+    return round(100.0 * active.sum() / n, 4)
 
 
 def _gap_counts(gap_events: pd.DataFrame) -> dict[str, int]:
@@ -69,9 +76,22 @@ def _gap_counts(gap_events: pd.DataFrame) -> dict[str, int]:
 
 
 def _qc_mask_status_pct(qc_mask: pd.DataFrame, status: str) -> float:
-    if qc_mask.empty or "status" not in qc_mask.columns:
+    """Deprecated verdict helper — retained for batch column compatibility."""
+    _ = status
+    if qc_mask.empty:
         return 0.0
-    return round(100.0 * (qc_mask["status"] == status).sum() / len(qc_mask), 4)
+    if "status" in qc_mask.columns:
+        return round(100.0 * (qc_mask["status"] == status).sum() / len(qc_mask), 4)
+    if status == "use":
+        if "flag_gap_0p5" in qc_mask.columns:
+            clean = ~qc_mask["flag_gap_0p5"].astype(bool)
+            for col in ("flag_gap_0p2", "flag_artifact_sigma", "flag_segment_swap", "flag_edge_effect"):
+                if col in qc_mask.columns:
+                    clean &= ~qc_mask[col].astype(bool)
+            return round(100.0 * clean.sum() / len(qc_mask), 4)
+    if status == "exclude" and "flag_gap_0p5" in qc_mask.columns:
+        return _flag_pct(qc_mask, "flag_gap_0p5")
+    return 0.0
 
 
 def usable_after_remediation_pct(qc_mask: pd.DataFrame) -> float:
@@ -345,8 +365,18 @@ def extract_session_metrics_row(
         "n_markers_sustained_dropout": s.get("n_markers_sustained_dropout"),
         **gap_ct,
         "n_markers_gaps_ge_0p5s": int(len(gaps_over_05)),
-        "raw_qc_preprocessing_status": s.get("raw_qc_preprocessing_status"),
-        "raw_qc_status_reason": s.get("raw_qc_status_reason"),
+        "gap_evidence_summary": s.get("gap_evidence_summary"),
+        "markers_with_gap_ge_0p5s": s.get("markers_with_gap_ge_0p5s"),
+        "pct_frames_union_flag_gap_0p5": s.get(
+            "pct_frames_union_flag_gap_0p5", _flag_pct(qc_mask, "flag_gap_0p5")
+        ),
+        "pct_frames_union_any_flag": s.get("pct_frames_union_any_flag"),
+        "dominant_gap_marker_canonical": s.get("dominant_gap_marker_canonical"),
+        "dominant_gap_marker_raw": s.get("dominant_gap_marker_raw"),
+        "pct_frames_dominant_marker_in_gap_ge_0p5": s.get("pct_frames_dominant_marker_in_gap_ge_0p5"),
+        "pct_session_time_dominant_marker_in_gap_ge_0p5": s.get(
+            "pct_session_time_dominant_marker_in_gap_ge_0p5"
+        ),
         "union_gap_seconds_ge_0p2_labeled": s.get("union_gap_seconds_ge_0p2_labeled"),
         "pct_session_gap_time_ge_0p2": pct_gap_time,
         "longest_gap_seconds_labeled": s.get("longest_gap_seconds_labeled"),
@@ -359,15 +389,15 @@ def extract_session_metrics_row(
         "pct_artifact_events_near_gap": pct_near_gap,
         "worst_artifact_body_segment": worst_segment,
         "pct_frames_use": _qc_mask_status_pct(qc_mask, "use"),
-        "pct_frames_caution": _qc_mask_status_pct(qc_mask, "caution"),
-        "pct_frames_exclude": _qc_mask_status_pct(qc_mask, "exclude"),
+        "pct_frames_caution": _flag_pct(qc_mask, "flag_gap_0p2"),
+        "pct_frames_exclude": _flag_pct(qc_mask, "flag_gap_0p5"),
         "pct_frames_above_coverage": pct_usable_frames,
         "usable_after_remediation_pct": pct_usable_frames,
         "pct_gap_time_0p2_to_0p5": pct_gap_02_05,
         "artifact_burden_summary": artifact_summary,
         "markers_to_remove": ";".join(markers_to_remove),
         "recommended_remediation": recommend_remediation(
-            str(s.get("raw_qc_preprocessing_status", "")),
+            "",
             int(md.get("n_quarantined_markers", 0)),
             int(s.get("n_markers_sustained_dropout", 0) or 0),
             n_segment_swap_events,
@@ -507,7 +537,7 @@ def extract_gap_windows(
             "start_second": flagged["start_time_s"],
             "end_second": flagged["end_time_s"],
             "max_gap_duration_s": flagged["max_gap_duration_s"],
-            "window_label": flagged["window_quality_label"],
+            "window_label": flagged["reason_codes"],
         }
     )
     if "worst_gap_marker" in flagged.columns:

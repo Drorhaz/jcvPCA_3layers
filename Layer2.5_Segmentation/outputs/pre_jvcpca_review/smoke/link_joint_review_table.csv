@@ -1,4 +1,0 @@
-link_id,link_or_joint,joint_family,l1_regional_gap_0p5_event_frames,l1_regional_gap_0p5_event_percent,l1_regional_gap_0p2_event_frames,l1_regional_gap_0p2_event_percent,l1_regional_artifact_sigma_event_frames,l1_regional_artifact_sigma_event_percent,l1_regional_segment_swap_event_frames,l1_regional_segment_swap_event_percent,layer2_ineligible_jump_fail_rad_frame_percent,layer2_ineligible_block_filter_frame_percent,mapped_qc_marker_names_related_to_link,layer2_problem_notes
-J005,LUArm->LFArm,left_elbow_forearm,0,0.0,109,10.89,3,0.3,20,2.0,0.0,6.09,671:LElbowOut; 671:LFArm; LHandIn__LWristOut,61 block-filter frames
-J007,LFArm->LHand,left_wrist_hand,0,0.0,64,6.39,3,0.3,20,2.0,6.09,100.0,671:LFArm; LHandIn__LWristOut,full-window block_filter; 61 jump_fail_rad frames
-J020,LThigh->LShin,left_thigh_knee,0,0.0,0,0.0,0,0.0,0,0.0,0.0,0.0,,no Layer 2 problem flags in selected window

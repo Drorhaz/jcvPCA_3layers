@@ -1,2 +1,2 @@
 input_file,quaternion_group_count,groups_pass,groups_warning,groups_fail,total_zero_norm_count,total_near_zero_norm_count,total_non_finite_count,max_abs_norm_error_observed,longest_invalid_gap_observed,file_qc_status,stage05_may_proceed,fail_reasons,warning_reasons
-data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv,51,51,0,0,0,0,0,1.0139809858422666e-06,0,pass,True,,
+/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv,51,51,0,0,0,0,0,1.0139809858422666e-06,0,pass,True,,

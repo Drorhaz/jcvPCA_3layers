@@ -1,0 +1,4 @@
+marker_name,marker_name_raw,marker_name_canonical,asset_prefix,body_region_group,n_gaps_ge_0p5,total_gap_seconds_ge_0p5,longest_gap_seconds,n_frames_in_gap_ge_0p5,pct_frames_in_gap_ge_0p5,pct_session_time_in_gap_ge_0p5
+T3_671:ChestTop,T3_671:ChestTop,ChestTop,T3_671,torso_chest_back,1,4.3167,4.3167,518,1.635411,1.635475
+T3_671:RHandIn,T3_671:RHandIn,RHandIn,T3_671,wrist_hand,2,1.6167,1.0,194,0.61249,0.612522
+T3_671:RHandOut,T3_671:RHandOut,RHandOut,T3_671,wrist_hand,2,4.0167,2.8,482,1.521753,1.521814

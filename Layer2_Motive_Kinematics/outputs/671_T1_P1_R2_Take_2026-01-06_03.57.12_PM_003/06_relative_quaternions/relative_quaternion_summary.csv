@@ -1,0 +1,2 @@
+input_file,parent_child_links_processed,parent_child_links_missing,total_frames,global_max_reconstruction_error_deg,links_pass,links_warning,links_fail,total_relative_sign_flips_raw,total_relative_sign_flips_corrected,relative_sign_continuity_valid,stage07_may_proceed,fail_reasons,warning_reasons
+/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T1_P1_R2_Take 2026-01-06 03.57.12 PM_003.csv,50,1,30235,3.428628969603152e-14,50,0,0,0,0,True,True,,

@@ -1,0 +1,2 @@
+input_file,links_processed,core_links_processed,review_links_processed,excluded_links_processed,max_rotvec_norm_core,max_rotvec_norm_all,max_jump_core,max_jump_all,core_warnings,core_failures,review_warnings,review_failures,excluded_warnings,excluded_failures,stage08_may_proceed,fail_reasons,warning_reasons
+/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T2_P1_R2_Take 2026-01-15 04.35.25 PM_009.csv,50,16,2,32,2.6632303132920425,2.6632303132920425,0.34089851489278283,0.3985822210178982,0,0,0,0,0,0,True,,

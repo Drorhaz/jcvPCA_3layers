@@ -1,0 +1,31 @@
+feature_name,canonical_link_name,parent_canonical,child_canonical,axis,source_layer2_column,include_in_pilot,feature_scope,notes
+Neck_to_Head_rx,Neck->Head,Neck,Head,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot head/neck
+Neck_to_Head_ry,Neck->Head,Neck,Head,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot head/neck
+Neck_to_Head_rz,Neck->Head,Neck,Head,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot head/neck
+Chest_to_Neck_rx,Chest->Neck,Chest,Neck,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot trunk/neck
+Chest_to_Neck_ry,Chest->Neck,Chest,Neck,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot trunk/neck
+Chest_to_Neck_rz,Chest->Neck,Chest,Neck,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot trunk/neck
+Chest_to_LShoulder_rx,Chest->LShoulder,Chest,LShoulder,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot left shoulder
+Chest_to_LShoulder_ry,Chest->LShoulder,Chest,LShoulder,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot left shoulder
+Chest_to_LShoulder_rz,Chest->LShoulder,Chest,LShoulder,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot left shoulder
+LShoulder_to_LUArm_rx,LShoulder->LUArm,LShoulder,LUArm,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot left shoulder/arm
+LShoulder_to_LUArm_ry,LShoulder->LUArm,LShoulder,LUArm,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot left shoulder/arm
+LShoulder_to_LUArm_rz,LShoulder->LUArm,LShoulder,LUArm,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot left shoulder/arm
+LUArm_to_LFArm_rx,LUArm->LFArm,LUArm,LFArm,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot left elbow/forearm
+LUArm_to_LFArm_ry,LUArm->LFArm,LUArm,LFArm,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot left elbow/forearm
+LUArm_to_LFArm_rz,LUArm->LFArm,LUArm,LFArm,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot left elbow/forearm
+LFArm_to_LHand_rx,LFArm->LHand,LFArm,LHand,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot left wrist/hand; review jump history
+LFArm_to_LHand_ry,LFArm->LHand,LFArm,LHand,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot left wrist/hand; review jump history
+LFArm_to_LHand_rz,LFArm->LHand,LFArm,LHand,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot left wrist/hand; review jump history
+Chest_to_RShoulder_rx,Chest->RShoulder,Chest,RShoulder,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot right shoulder
+Chest_to_RShoulder_ry,Chest->RShoulder,Chest,RShoulder,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot right shoulder
+Chest_to_RShoulder_rz,Chest->RShoulder,Chest,RShoulder,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot right shoulder
+RShoulder_to_RUArm_rx,RShoulder->RUArm,RShoulder,RUArm,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot right shoulder/arm
+RShoulder_to_RUArm_ry,RShoulder->RUArm,RShoulder,RUArm,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot right shoulder/arm
+RShoulder_to_RUArm_rz,RShoulder->RUArm,RShoulder,RUArm,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot right shoulder/arm
+RUArm_to_RFArm_rx,RUArm->RFArm,RUArm,RFArm,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot right elbow/forearm
+RUArm_to_RFArm_ry,RUArm->RFArm,RUArm,RFArm,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot right elbow/forearm
+RUArm_to_RFArm_rz,RUArm->RFArm,RUArm,RFArm,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot right elbow/forearm
+RFArm_to_RHand_rx,RFArm->RHand,RFArm,RHand,rx,rx_filtered_analysis,true,core_candidate,Group4 upper-body pilot right wrist/hand; review jump history
+RFArm_to_RHand_ry,RFArm->RHand,RFArm,RHand,ry,ry_filtered_analysis,true,core_candidate,Group4 upper-body pilot right wrist/hand; review jump history
+RFArm_to_RHand_rz,RFArm->RHand,RFArm,RHand,rz,rz_filtered_analysis,true,core_candidate,Group4 upper-body pilot right wrist/hand; review jump history

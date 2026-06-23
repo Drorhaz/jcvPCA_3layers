@@ -385,8 +385,9 @@ def build_layer1_session_summary(session: MotiveSession) -> pd.DataFrame:
     "n_gaps_ge_1p0s_labeled",
     "longest_gap_marker_labeled",
     "longest_gap_seconds_labeled",
-    "raw_qc_preprocessing_status",
-    "raw_qc_status_reason",
+    "gap_evidence_summary",
+    "markers_with_gap_ge_0p5s",
+    "n_markers_with_gap_ge_0p5s",
   ]
   for col in layer2_cols:
     row[col] = "not_computed"

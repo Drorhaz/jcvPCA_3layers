@@ -1,0 +1,10 @@
+body_region_group,n_events,n_single_frame,n_short_burst,n_sustained,n_segment_swap,events_per_minute
+wrist_hand,103,31,51,21,73,23.6246
+torso_chest_back,43,39,0,4,4,9.8627
+shoulder_upper_arm,31,31,0,0,0,7.1103
+thigh_knee,27,22,1,4,7,6.1929
+foot,24,24,0,0,0,5.5048
+shank_ankle,12,12,0,0,0,2.7524
+head_neck,11,11,0,0,0,2.523
+pelvis_waist,10,10,0,0,0,2.2937
+elbow_forearm,7,7,0,0,0,1.6056

@@ -1,0 +1,41 @@
+# Layer 3 JcvPCA V1 configuration
+#
+# This file is computational configuration only. It contains no scientific
+# interpretation thresholds. Any judgement about whether a change is
+# meaningful / robust / beyond variability is made later in a notebook.
+
+# Path to the analysis manifest CSV (see config/layer3_analysis_manifest_template.csv).
+manifest_path: config/layer3_analysis_manifest_template.csv
+
+# Directory where Layer 3 outputs are written.
+output_dir: outputs/layer3_jcvpca
+
+# Run mode:
+#   dry_validate : load every included matrix and run schema validation only.
+#                  No A/B comparisons, no PCA, no interpretation.
+#   full         : run the full V1 analysis (requires all six Group 4 matrices).
+mode: dry_validate
+
+# Required metadata columns (must be present, never enter PCA).
+required_metadata_cols:
+  - session_id
+  - run_label
+  - frame
+  - time_sec
+
+# PC selection.
+# selected_m is chosen as the smallest number of A-PCs reaching this cumulative
+# explained-variance ratio. variance_threshold is a computational default, not a
+# scientific conclusion.
+variance_threshold: 0.90
+
+# Optional override of selected_m. null => derive from A using variance_threshold.
+# If set, it is still validated against both A and B dimensions before PCA.
+selected_m_override: null
+
+# Minimum number of rows required for PCA (in addition to >= selected_m).
+min_rows_for_pca: 10
+
+# Weighted (A-variance-weighted) outputs. Default off per project decision.
+# When true, weighted columns are added as optional secondary outputs.
+export_weighted: false

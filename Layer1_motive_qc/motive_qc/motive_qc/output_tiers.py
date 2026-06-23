@@ -23,6 +23,9 @@ ESSENTIAL_TABLES = frozenset(
         "artifact_session_summary",
         "qc_mask",
         "qc_mask_intervals",
+        "layer1_marker_set",
+        "layer1_marker_gap_evidence",
+        "layer1_qc_handoff",
     }
 )
 

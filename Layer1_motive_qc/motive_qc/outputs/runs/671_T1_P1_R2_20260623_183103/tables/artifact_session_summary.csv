@@ -1,0 +1,2 @@
+n_frame_candidates,n_events,n_single_frame_events,n_short_burst_events,n_sustained_events,n_frames_velocity_candidate,n_frames_acceleration_candidate,n_frames_both_velocity_and_acceleration,recommendation
+1244,266,216,20,30,190,0,0,Most detections are single-frame spikes; review sustained events and critical-region overlaps first.

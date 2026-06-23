@@ -1,0 +1,14 @@
+# Sample dry-validation config for the single currently-available matrix.
+# Schema validation only. No A/B comparisons, no PCA, no interpretation.
+manifest_path: config/sample_dry_validate_manifest.csv
+output_dir: outputs/layer3_jcvpca/sample_dry_validate
+mode: dry_validate
+required_metadata_cols:
+  - session_id
+  - run_label
+  - frame
+  - time_sec
+variance_threshold: 0.90
+selected_m_override: null
+min_rows_for_pca: 10
+export_weighted: false

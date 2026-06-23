@@ -1,4 +1,4 @@
-"""Stage 08 — Butterworth filtering with jump-context masking (V1, no interpolation)."""
+"""Stage 08 — Butterworth filtering with jump-context flagging (V1, no interpolation)."""
 
 from __future__ import annotations
 
@@ -8,6 +8,10 @@ import pandas as pd
 
 from layer2_motive.filtering import (
     FileFilterResult,
+    build_stage08_flag_report,
+    build_stage08_ineligible_rows_report,
+    build_stage08_nan_report,
+    enrich_jump_context_report,
     load_filtering_config,
     load_stage07_rotation_vectors,
     process_file_filtering,
@@ -20,9 +24,10 @@ from layer2_motive.validation import HardStopError
 
 STAGE08_LIMITATIONS = [
     "Stage 08 V1 does not interpolate or repair Stage 07 jump frames.",
-    "Stage 07 jump and branch-cut failures use localized context masking, not whole-link blocks.",
-    "Native filtered values may exist inside QC context windows but are not analysis-clean.",
-    "Analysis-clean columns are NaN/masked in jump and branch-cut context windows.",
+    "Stage 07 jump and branch-cut failures use localized context flagging, not whole-link blocks.",
+    "Native and analysis filtered columns are numeric wherever filtering succeeded.",
+    "QC/risk rows are flagged via stage08_analysis_eligible and stage08_mask_reason; "
+    "analysis columns are not NaN-blanked for QC alone.",
     "Final inclusion/exclusion remains deferred to post–Layer 2 / pre–Layer 3 feature selection.",
     "Stage 08 does not implement Layer 3.",
     "Stage 08 does not overwrite Stage 07 outputs or modify Stage 07 thresholds.",
@@ -55,7 +60,7 @@ def _render_assumptions_and_limitations(
         "## Purpose",
         "",
         "Apply zero-phase Butterworth low-pass filtering to Stage 07 rotation-vector components "
-        "while preserving QC lineage and producing an analysis-clean mask.",
+        "while preserving QC lineage and producing analysis eligibility flags.",
         "",
         "## Filtering parameters",
         "",
@@ -68,14 +73,14 @@ def _render_assumptions_and_limitations(
         "",
         "## Stage 08 QC policy (V1)",
         "",
-        "| Stage 07 outcome | Stage 08 policy | Stage 08 masking |",
+        "| Stage 07 outcome | Stage 08 policy | Stage 08 flagging |",
         "|---|---|---|",
         "| Jump warning or fail | `allow_filter_with_warning` | Jump event ± context → "
         "`stage07_jump_context` |",
         "| Branch-cut warning or fail | `allow_filter_with_warning` | "
         f"`rotvec_norm` > {branch_cut_warning_rad:.6g} rad ± context → "
         "`stage07_branch_cut_context` |",
-        "| Quaternion / sign / reconstruction fail | `block_filter` | Whole link |",
+        "| Quaternion / sign / reconstruction fail | `block_filter` | Whole link flagged |",
         "",
         "## Mask reasons",
         "",
@@ -88,12 +93,13 @@ def _render_assumptions_and_limitations(
         "",
         "## Jump / branch-cut context rules",
         "",
-        "- **No interpolation** of masked rows.",
+        "- **No interpolation** of flagged rows.",
         "- Jump events: row-level `stage07_jump_magnitude_rad` on frame-to-frame transitions.",
         "- Branch-cut events: row-level `rotvec_norm` above branch-cut warning threshold.",
-        "- Rows inside a context window: `stage08_analysis_eligible = false`; analysis-clean "
-        "columns set to NaN.",
-        "- Native filtered columns may retain values inside context windows.",
+        "- Rows inside a context window: `stage08_analysis_eligible = false`; filtered numeric "
+        "values are preserved and the row is flagged for downstream review.",
+        "- NaNs in analysis columns appear only when filtering genuinely failed "
+        "(`filter_not_applied`) or source rotvec components were non-finite.",
         "- Stage 07 link-level `fail` labels are preserved for reporting; they do not imply "
         "whole-link analysis exclusion in Stage 08.",
         "",
@@ -101,8 +107,8 @@ def _render_assumptions_and_limitations(
         "",
         "- Native archive: `rx_filtered_native`, `ry_filtered_native`, `rz_filtered_native`, "
         "`rotvec_norm_filtered_native`",
-        "- Analysis-clean: `rx_filtered_analysis`, `ry_filtered_analysis`, `rz_filtered_analysis`, "
-        "`rotvec_norm_filtered_analysis`",
+        "- Analysis export: `rx_filtered_analysis`, `ry_filtered_analysis`, `rz_filtered_analysis`, "
+        "`rotvec_norm_filtered_analysis` (numeric when filtering succeeded; use flags for QC)",
         "- Raw preserved: `rx_raw`, `ry_raw`, `rz_raw`, `rotvec_norm_raw`",
         "- Jump QC: `stage08_stage07_jump_frame`, `stage08_within_jump_context_window`, "
         "`stage08_distance_to_nearest_stage07_jump_frame`",
@@ -166,9 +172,30 @@ def run_stage_08(
     write_parquet(filtered_table, stage_dir / "filtered_relative_rotation_vectors.parquet")
     write_csv(filtered_table, stage_dir / "filtered_relative_rotation_vectors.csv")
     write_csv(summary_df, stage_dir / "filtering_summary_by_link.csv")
+    jump_df = enrich_jump_context_report(jump_df, filtered_table)
     write_csv(jump_df, stage_dir / "stage08_jump_context_report.csv")
     write_csv(branch_cut_df, stage_dir / "stage08_branch_cut_context_report.csv")
     write_csv(diagnostics_df, stage_dir / "filter_diagnostics.csv")
+    write_csv(
+        build_stage08_flag_report(
+            filtered_table,
+            jump_df=jump_df,
+            branch_cut_df=branch_cut_df,
+        ),
+        stage_dir / "stage08_flag_report.csv",
+    )
+    write_csv(
+        build_stage08_ineligible_rows_report(
+            filtered_table,
+            jump_df=jump_df,
+            branch_cut_df=branch_cut_df,
+        ),
+        stage_dir / "stage08_ineligible_rows_report.csv",
+    )
+    write_csv(
+        build_stage08_nan_report(filtered_table),
+        stage_dir / "stage08_nan_report.csv",
+    )
 
     assumptions_md = _render_assumptions_and_limitations(
         cutoff_hz=file_result.cutoff_hz,
@@ -194,7 +221,7 @@ def run_stage_08(
 
     detected = [
         f"Links processed: {file_result.links_processed}",
-        f"Links pass / QC-context masked / excluded / blocked / review: "
+        f"Links pass / QC-context flagged / excluded / blocked / review: "
         f"{file_result.links_pass} / {file_result.links_with_jump_context} / "
         f"{file_result.links_excluded} / {file_result.links_blocked} / "
         f"{file_result.links_review}",
@@ -205,9 +232,11 @@ def run_stage_08(
         f"{file_result.total_branch_cut_context_frames}",
         f"Total analysis-eligible frames: {file_result.total_analysis_eligible_frames}",
         f"Interpolation applied: {file_result.interpolation_applied}",
-        "Native filtered columns retain values where filtering succeeded.",
-        "Analysis-clean columns are NaN outside eligibility "
-        "(QC context, excluded, blocked, review).",
+        "Native and analysis filtered columns retain numeric values where filtering succeeded.",
+        "QC/risk rows are flagged via stage08_analysis_eligible and stage08_mask_reason; "
+        "see stage08_flag_report.csv and stage08_ineligible_rows_report.csv.",
+        "Computational NaNs (filter failure / non-finite input) are listed in "
+        "stage08_nan_report.csv.",
     ]
 
     outputs = [
@@ -217,13 +246,16 @@ def run_stage_08(
         str(stage_dir / "filtering_summary_by_link.csv"),
         str(stage_dir / "stage08_jump_context_report.csv"),
         str(stage_dir / "stage08_branch_cut_context_report.csv"),
+        str(stage_dir / "stage08_flag_report.csv"),
+        str(stage_dir / "stage08_ineligible_rows_report.csv"),
+        str(stage_dir / "stage08_nan_report.csv"),
         str(stage_dir / "filter_diagnostics.csv"),
         str(stage_dir / "assumptions_and_limitations.md"),
     ]
 
     if file_result.links_pass == file_result.links_processed:
         validation_status = (
-            "PASS — filtered rotation vectors produced; localized QC masking applied where needed"
+            "PASS — filtered rotation vectors produced; localized QC flagging applied where needed"
         )
     elif file_result.links_blocked > 0:
         validation_status = (
@@ -247,10 +279,11 @@ def run_stage_08(
         errors=[],
         validation_status=validation_status,
         next_action=(
-            "Review filtering_summary_by_link.csv, stage08_jump_context_report.csv, and "
-            "stage08_branch_cut_context_report.csv. Use analysis-clean columns for downstream "
-            "feature work; native columns are archival. Final Layer 2 export/manifest can be "
-            "prepared next; Layer 3 remains out of scope."
+            "Review filtering_summary_by_link.csv, stage08_jump_context_report.csv, "
+            "stage08_flag_report.csv, and stage08_branch_cut_context_report.csv. "
+            "Use rx/ry/rz_filtered_analysis for downstream numeric export and read flags "
+            "separately for QC review. Final Layer 2 export/manifest can be prepared next; "
+            "Layer 3 remains out of scope."
         ),
     )
 
@@ -260,9 +293,9 @@ def run_stage_08(
         "",
         "- Stage 08 V1 does **not** interpolate or repair Stage 07 jump frames.",
         "- Jump and branch-cut Stage 07 failures are **localized** (event ± context window).",
-        "- Native filtered values may exist inside QC context windows but are "
-        "**not** analysis-clean.",
-        "- Analysis-clean columns are NaN/masked in jump and branch-cut context windows.",
+        "- Native and analysis filtered values are numeric wherever filtering succeeded.",
+        "- QC/risk rows are **flagged** (`stage08_analysis_eligible=false`); values are not "
+        "NaN-blanked for QC alone.",
         "- Whole-link blocks apply only to pipeline-integrity QC (`block_filter`).",
         "- Final inclusion/exclusion remains deferred to post–Layer 2 / "
         "pre–Layer 3 feature selection.",
@@ -275,7 +308,7 @@ def run_stage_08(
         f"- Branch-cut event frames (total): **{file_result.total_branch_cut_event_frames}**",
         f"- Branch-cut context frames (total, overlapping): "
         f"**{file_result.total_branch_cut_context_frames}**",
-        f"- Links with QC context masking: **{file_result.links_with_jump_context}**",
+        f"- Links with QC context flagging: **{file_result.links_with_jump_context}**",
         "",
     ]
     write_text(stage_dir / "report.md", report + "\n".join(extra_lines))
@@ -285,6 +318,17 @@ def run_stage_08(
         "filtered_table": filtered_table,
         "summary": summary_df,
         "jump_context": jump_df,
+        "flag_report": build_stage08_flag_report(
+            filtered_table,
+            jump_df=jump_df,
+            branch_cut_df=branch_cut_df,
+        ),
+        "ineligible_rows": build_stage08_ineligible_rows_report(
+            filtered_table,
+            jump_df=jump_df,
+            branch_cut_df=branch_cut_df,
+        ),
+        "nan_report": build_stage08_nan_report(filtered_table),
         "branch_cut_context": branch_cut_df,
         "diagnostics": diagnostics_df,
         "file_result": file_result,

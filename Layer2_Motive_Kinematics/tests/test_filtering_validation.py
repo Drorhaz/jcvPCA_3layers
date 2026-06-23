@@ -12,6 +12,9 @@ from scipy.signal import sosfiltfilt
 
 from layer2_motive.filtering import (
     FilteringConfig,
+    build_stage08_flag_report,
+    build_stage08_ineligible_rows_report,
+    build_stage08_nan_report,
     design_butterworth_sos,
     filter_rotvec_components,
     load_filtering_config,
@@ -170,7 +173,7 @@ def test_jump_context_window_marked() -> None:
     assert 40 not in context_frames
 
 
-def test_analysis_clean_nan_inside_jump_context() -> None:
+def test_jump_context_frames_keep_numeric_analysis_values() -> None:
     table = _jump_rotvec_table(jump_at=50)
     filtered, _, _, _, _, _ = process_file_filtering(
         stage07_table=table,
@@ -179,9 +182,29 @@ def test_analysis_clean_nan_inside_jump_context() -> None:
         rotvec_thresholds=DEFAULT_THRESHOLDS,
     )
     context = filtered[filtered["stage08_within_jump_context_window"]]
-    assert context["rx_filtered_analysis"].isna().all()
+    applied = context[context["stage08_filter_applied"]]
+    assert not applied.empty
+    assert bool(np.isfinite(applied["rx_filtered_analysis"]).all())
+    assert bool(np.isfinite(applied["ry_filtered_analysis"]).all())
+    assert bool(np.isfinite(applied["rz_filtered_analysis"]).all())
     assert context["stage08_analysis_eligible"].eq(False).all()
     assert context["stage08_mask_reason"].eq("stage07_jump_context").all()
+
+
+def test_jump_context_no_qc_mask_nan_in_analysis_columns() -> None:
+    table = _jump_rotvec_table(jump_at=50)
+    filtered, _, _, _, _, _ = process_file_filtering(
+        stage07_table=table,
+        sampling_rate_hz=SAMPLING_RATE_HZ,
+        filtering_config=DEFAULT_FILTERING,
+        rotvec_thresholds=DEFAULT_THRESHOLDS,
+    )
+    jump_context = filtered.loc[
+        filtered["stage08_mask_reason"].eq("stage07_jump_context")
+    ]
+    assert not jump_context.empty
+    for col in ("rx_filtered_analysis", "ry_filtered_analysis", "rz_filtered_analysis"):
+        assert jump_context[col].notna().all()
 
 
 def test_native_filtered_finite_where_filter_succeeds_in_jump_context() -> None:
@@ -198,7 +221,7 @@ def test_native_filtered_finite_where_filter_succeeds_in_jump_context() -> None:
     assert bool(np.isfinite(applied["rx_filtered_native"]).all())
 
 
-def test_excluded_links_nan_in_analysis_columns() -> None:
+def test_excluded_links_flagged_but_numeric_when_filtered() -> None:
     table = _smooth_rotvec_table()
     table["feature_scope"] = "excluded_distal"
     table["stage08_policy"] = "excluded_from_analysis"
@@ -208,7 +231,8 @@ def test_excluded_links_nan_in_analysis_columns() -> None:
         filtering_config=DEFAULT_FILTERING,
         rotvec_thresholds=DEFAULT_THRESHOLDS,
     )
-    assert filtered["rx_filtered_analysis"].isna().all()
+    assert filtered["stage08_analysis_eligible"].eq(False).all()
+    assert filtered["rx_filtered_analysis"].notna().all()
     assert summary.iloc[0]["stage08_filter_status"] == "excluded_from_analysis"
     assert bool((filtered["stage08_output_scope"] == "excluded_from_analysis").all())
 
@@ -319,7 +343,7 @@ def test_jump_fail_link_mostly_analysis_eligible_outside_context() -> None:
         filtering_config=DEFAULT_FILTERING,
         rotvec_thresholds=DEFAULT_THRESHOLDS,
     )
-    assert summary.iloc[0]["stage08_filter_status"] == "filtered_but_jump_context_masked"
+    assert summary.iloc[0]["stage08_filter_status"] == "filtered_but_jump_context_flagged"
     n_eligible = int(summary.iloc[0]["analysis_eligible_frames"])
     n_context = int(summary.iloc[0]["jump_context_frames"])
     assert n_eligible + n_context == 100 or n_eligible + n_context >= 95
@@ -328,7 +352,7 @@ def test_jump_fail_link_mostly_analysis_eligible_outside_context() -> None:
     assert outside["rx_filtered_analysis"].notna().all()
 
 
-def test_block_filter_still_blocks_whole_link() -> None:
+def test_block_filter_still_flags_whole_link() -> None:
     table = _smooth_rotvec_table(frames=100)
     table["stage08_policy"] = "block_filter"
     filtered, summary, _, _, _, _ = process_file_filtering(
@@ -339,10 +363,11 @@ def test_block_filter_still_blocks_whole_link() -> None:
     )
     assert filtered["stage08_analysis_eligible"].sum() == 0
     assert filtered["stage08_mask_reason"].eq("blocked_needs_review").all()
+    assert filtered["rx_filtered_analysis"].notna().all()
     assert summary.iloc[0]["stage08_filter_status"] == "blocked_needs_review"
 
 
-def test_branch_cut_context_masking() -> None:
+def test_branch_cut_context_flagging() -> None:
     table = _smooth_rotvec_table(frames=100)
     near_pi = float(DEFAULT_THRESHOLDS.branch_cut_warning_rad + 0.01)
     table.loc[50, "rotvec_norm"] = near_pi
@@ -365,6 +390,147 @@ def test_branch_cut_context_masking() -> None:
     context = filtered[filtered["stage08_within_branch_cut_context_window"]]
     assert 50 in set(context["frame"].astype(int))
     assert context["stage08_mask_reason"].eq("stage07_branch_cut_context").all()
-    assert context["rx_filtered_analysis"].isna().all()
+    assert context["rx_filtered_analysis"].notna().all()
     outside = filtered[~filtered["stage08_within_branch_cut_context_window"]]
     assert outside["stage08_analysis_eligible"].all()
+
+
+def test_native_and_analysis_filtered_match_when_filter_applied() -> None:
+    table = _jump_rotvec_table(jump_at=50)
+    filtered, _, _, _, _, _ = process_file_filtering(
+        stage07_table=table,
+        sampling_rate_hz=SAMPLING_RATE_HZ,
+        filtering_config=DEFAULT_FILTERING,
+        rotvec_thresholds=DEFAULT_THRESHOLDS,
+    )
+    applied = filtered[filtered["stage08_filter_applied"]]
+    for native_col, analysis_col in (
+        ("rx_filtered_native", "rx_filtered_analysis"),
+        ("ry_filtered_native", "ry_filtered_analysis"),
+        ("rz_filtered_native", "rz_filtered_analysis"),
+    ):
+        assert np.allclose(
+            applied[native_col].to_numpy(dtype=float),
+            applied[analysis_col].to_numpy(dtype=float),
+            equal_nan=True,
+        )
+
+
+def test_computational_nan_only_when_filter_not_applied() -> None:
+    table = _smooth_rotvec_table(frames=200)
+    table.loc[100, ["rx", "ry", "rz"]] = np.nan
+    filtered, _, _, _, _, _ = process_file_filtering(
+        stage07_table=table,
+        sampling_rate_hz=SAMPLING_RATE_HZ,
+        filtering_config=DEFAULT_FILTERING,
+        rotvec_thresholds=DEFAULT_THRESHOLDS,
+    )
+    nan_row = filtered.loc[filtered["frame"] == 100].iloc[0]
+    assert not np.isfinite(nan_row["rx_filtered_analysis"])
+    assert nan_row["stage08_mask_reason"] == "filter_not_applied"
+
+
+def test_stage08_nan_report_distinguishes_computational_from_qc_flagged() -> None:
+    table = _jump_rotvec_table(jump_at=50, frames=100)
+    table.loc[95, ["rx", "ry", "rz"]] = np.nan
+    filtered, _, _, _, _, _ = process_file_filtering(
+        stage07_table=table,
+        sampling_rate_hz=SAMPLING_RATE_HZ,
+        filtering_config=DEFAULT_FILTERING,
+        rotvec_thresholds=DEFAULT_THRESHOLDS,
+    )
+    nan_report = build_stage08_nan_report(filtered)
+    flag_report = build_stage08_flag_report(filtered)
+    assert not nan_report.empty
+    assert (nan_report["nan_classification"] == "computational_failure").any()
+    assert flag_report["stage08_mask_reason"].eq("stage07_jump_context").any()
+    assert not flag_report.loc[flag_report["frame"] == 95, "stage08_mask_reason"].eq(
+        "stage07_jump_context"
+    ).any()
+
+
+def test_stage08_reports_include_flagged_rows(tmp_path: Path) -> None:
+    out_dir = tmp_path / "run"
+    stage07_dir = out_dir / "07_rotation_vectors"
+    stage07_dir.mkdir(parents=True)
+    timing_dir = out_dir / "03_frame_time_validation"
+    timing_dir.mkdir(parents=True)
+
+    stage07_table = _jump_rotvec_table(jump_at=50, frames=100)
+    stage07_table.to_parquet(stage07_dir / "relative_rotation_vectors.parquet", index=False)
+    pd.DataFrame(
+        [
+            {
+                "inferred_sampling_rate_hz": SAMPLING_RATE_HZ,
+                "observed_unique_frame_count": 100,
+                "timing_status": "pass",
+            }
+        ]
+    ).to_csv(timing_dir / "frame_time_summary.csv", index=False)
+
+    for sub in ("04_quaternion_qc", "05_sign_continuity", "06_relative_quaternions"):
+        (out_dir / sub).mkdir(parents=True)
+    pd.DataFrame([{"file_qc_status": "pass"}]).to_csv(
+        out_dir / "04_quaternion_qc" / "quaternion_qc_summary.csv", index=False
+    )
+    pd.DataFrame([{"post_correction_valid": True}]).to_csv(
+        out_dir / "05_sign_continuity" / "sign_continuity_summary.csv", index=False
+    )
+    pd.DataFrame([{"links_fail": 0, "links_warning": 0}]).to_csv(
+        out_dir / "06_relative_quaternions" / "relative_quaternion_summary.csv", index=False
+    )
+    pd.DataFrame(columns=["source_bone_name", "qc_status"]).to_csv(
+        out_dir / "04_quaternion_qc" / "quaternion_qc_by_bone.csv", index=False
+    )
+    pd.DataFrame(columns=["source_bone_name", "post_correction_valid"]).to_csv(
+        out_dir / "05_sign_continuity" / "sign_flips_by_bone.csv", index=False
+    )
+
+    run_stage_08(VALID, out_dir)
+    stage_dir = out_dir / "08_filtered_rotvecs"
+    parquet_df = pd.read_parquet(stage_dir / "filtered_relative_rotation_vectors.parquet")
+    flag_report = pd.read_csv(stage_dir / "stage08_flag_report.csv")
+    ineligible_report = pd.read_csv(stage_dir / "stage08_ineligible_rows_report.csv")
+    nan_report = pd.read_csv(stage_dir / "stage08_nan_report.csv")
+
+    assert not flag_report.empty
+    assert flag_report["stage08_mask_reason"].eq("stage07_jump_context").any()
+    assert ineligible_report["value_kept_numeric"].astype(bool).any()
+    jump_context = parquet_df.loc[parquet_df["stage08_mask_reason"] == "stage07_jump_context"]
+    assert jump_context["rx_filtered_analysis"].notna().all()
+    assert nan_report.empty or (
+        nan_report["nan_classification"] == "computational_failure"
+    ).all()
+
+
+def test_jump_detection_thresholds_unchanged() -> None:
+    table = _jump_rotvec_table(jump_at=50)
+    table.loc[50, "stage07_jump_magnitude_rad"] = DEFAULT_THRESHOLDS.jump_warning_rad + 0.01
+    _, summary, jump_report, _, _, _ = process_file_filtering(
+        stage07_table=table,
+        sampling_rate_hz=SAMPLING_RATE_HZ,
+        filtering_config=DEFAULT_FILTERING,
+        rotvec_thresholds=DEFAULT_THRESHOLDS,
+    )
+    assert int(summary.iloc[0]["jump_event_frames"]) >= 1
+    assert 50 in set(jump_report["jump_event_frame"].astype(int))
+
+    below_threshold = table.copy()
+    below_threshold["stage07_jump_magnitude_rad"] = DEFAULT_THRESHOLDS.jump_warning_rad - 0.01
+    below_threshold["stage07_jump_from_previous_frame"] = False
+    _, summary_below, jump_below, _, _, _ = process_file_filtering(
+        stage07_table=below_threshold,
+        sampling_rate_hz=SAMPLING_RATE_HZ,
+        filtering_config=DEFAULT_FILTERING,
+        rotvec_thresholds=DEFAULT_THRESHOLDS,
+    )
+    assert int(summary_below.iloc[0]["jump_event_frames"]) == 0
+    assert jump_below.empty
+
+
+def test_filter_parameters_unchanged() -> None:
+    config = load_filtering_config()
+    assert config.cutoff_hz == 10.0
+    assert config.filter_order == 4
+    assert config.jump_context_window_frames == 30
+    assert config.filter_type == "butterworth"

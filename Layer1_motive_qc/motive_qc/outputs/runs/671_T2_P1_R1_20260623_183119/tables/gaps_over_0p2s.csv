@@ -1,0 +1,4 @@
+marker_name,body_region_group,n_gaps,total_gap_seconds,longest_gap_seconds,gap_intervals_s,marker_name_raw,marker_name_canonical,asset_prefix
+671:WaistLFront,pelvis_waist,1,0.375,0.375,191.55-191.92,671:WaistLFront,WaistLFront,671
+671:RHandIn,wrist_hand,1,0.2333,0.2333,190.62-190.84,671:RHandIn,RHandIn,671
+671:WaistRFront,pelvis_waist,1,0.225,0.225,172.66-172.88,671:WaistRFront,WaistRFront,671

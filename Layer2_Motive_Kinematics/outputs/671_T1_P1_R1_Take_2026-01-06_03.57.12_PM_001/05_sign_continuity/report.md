@@ -1,10 +1,10 @@
 # Stage 05 — Global quaternion sign-continuity correction
 
-Generated: 2026-06-21 12:24:42 UTC
+Generated: 2026-06-23 15:19:24 UTC
 
 ## Input files used
 
-- `data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv`
+- `/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv`
 
 ## What was detected
 

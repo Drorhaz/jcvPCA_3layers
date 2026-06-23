@@ -1,0 +1,282 @@
+project:
+  project_name: Motive raw marker QC
+  subject_id: '671'
+  session_id: T3_P1_R2
+  motive_version: Motive:Body 3.4.0.2
+  analysis_stage: raw_csv_before_preprocessing
+  notes: Raw marker XYZ export before Motive gap filling, smoothing, skeleton solving,
+    or BVH export.
+paths:
+  data_root: data
+  input_csv: data/671/671_T3_P1_R2_Take 2026-02-03 08.05.01 PM_005.csv
+  output_dir: outputs/runs
+  batch_output_dir: outputs/batch_runs
+  use_timestamp_subfolder: true
+  exclude_globs:
+  - archive/**
+  - '**/*raw test*'
+  include_globs:
+  - '{subject_id}/*.csv'
+batch:
+  continue_on_error: true
+  sort_by:
+  - subject_id
+  - session_id
+  progress_bar: true
+time:
+  infer_frame_rate_from_file: true
+  frame_rate_hz_override: null
+  require_capture_export_rate_match: true
+  allow_time_column_tolerance_seconds: 0.0005
+parsing:
+  require_marker_xyz_triplets: true
+  accepted_marker_types:
+  - Marker
+  fail_on_duplicate_marker_names: true
+  fail_on_missing_xyz_axis: true
+  fail_on_non_numeric_coordinate_values: false
+  convert_blank_cells_to_nan: true
+  preserve_raw_frame_numbers: true
+  fail_on_duplicate_frames: true
+  fail_on_non_monotonic_frames: true
+  fail_on_missing_frames: false
+markers:
+  include_labeled_markers: true
+  include_unlabeled_markers: true
+  include_unlabeled_in_master_tables: true
+  summarize_unlabeled_separately: true
+  include_unlabeled_in_session_missing_percent: false
+  unlabeled_name_patterns: []
+  exclude_markers: []
+  include_only_markers: []
+  exclude_body_groups_from_analysis:
+  - fingers
+  never_solved_missing_pct: 95.0
+  detect_duplicate_marker_sets: true
+  skeleton_overlap_min_markers: 10
+  expected_labeled_marker_count: null
+readiness:
+  min_marker_coverage_pct: 90.0
+  sustained_dropout_seconds: 2.0
+  caution_missing_percent: 5.0
+  poor_missing_percent: 15.0
+  caution_pct_time_below_coverage: 10.0
+  poor_pct_time_below_coverage: 30.0
+  caution_sustained_dropout_markers: 1
+  poor_sustained_dropout_markers: 5
+marker_groups:
+  head_neck:
+    keywords:
+    - Head
+    - Neck
+  torso_chest_back:
+    keywords:
+    - Chest
+    - Back
+    - Sternum
+    - Spine
+  pelvis_waist:
+    keywords:
+    - Waist
+    - Pelvis
+    - Hip
+    - Sacrum
+  shoulder_upper_arm:
+    keywords:
+    - Shoulder
+    - UpperArm
+    - Arm
+  elbow_forearm:
+    keywords:
+    - Elbow
+    - Forearm
+  wrist_hand:
+    keywords:
+    - Wrist
+    - Hand
+  fingers:
+    keywords:
+    - Thumb
+    - Index
+    - Pinky
+    - Finger
+  thigh_knee:
+    keywords:
+    - Thigh
+    - Knee
+  shank_ankle:
+    keywords:
+    - Shin
+    - Shank
+    - Ankle
+  foot:
+    keywords:
+    - Heel
+    - Toe
+    - Foot
+  unlabeled:
+    keywords:
+    - Unlabeled
+  unclassified:
+    keywords: []
+gaps:
+  use_greater_equal_thresholds: true
+  report_all_gaps: true
+  report_single_frame_gaps: true
+  thresholds_seconds:
+    any_gap: 0.0
+    tiny_gap: 0.025
+    minor_gap: 0.1
+    moderate_gap: 0.2
+    large_gap: 0.5
+    severe_gap: 1.0
+  primary_report_thresholds_seconds:
+  - 0.1
+  - 0.2
+  - 0.5
+  - 1.0
+quality_labels:
+  marker:
+    clean:
+      max_missing_percent: 1.0
+      max_large_gaps: 0
+    minor_issue:
+      max_missing_percent: 5.0
+      max_large_gaps: 0
+    caution:
+      max_missing_percent: 10.0
+      max_large_gaps: 1
+    poor:
+      missing_percent_above: 10.0
+      large_gaps_above: 1
+  session:
+    acceptable_for_preprocessing:
+      max_labeled_missing_percent: 5.0
+      max_union_gap_seconds_ge_0p2: 5.0
+      max_critical_single_gap_seconds: 1.0
+      max_large_gaps_labeled: 0
+    caution_for_preprocessing:
+      max_labeled_missing_percent: 10.0
+      max_union_gap_seconds_ge_0p2: 10.0
+      max_critical_single_gap_seconds: 5.0
+      max_large_gaps_labeled: 2
+    poor_if:
+      missing_percent_above: 10.0
+      union_gap_seconds_ge_0p2_above: 10.0
+      critical_single_gap_seconds_above: 5.0
+frame_qc_mask:
+  enabled: true
+  caution_missing_labeled_percent: 10.0
+  exclude_missing_labeled_percent: 20.0
+  flag_moderate_gap: true
+  flag_large_gap: true
+  flag_unlabeled_present: false
+frame_quality:
+  enabled: true
+  missing_marker_percent_warn: 5.0
+  missing_marker_percent_caution: 10.0
+  missing_marker_percent_bad: 20.0
+  critical_groups:
+  - torso_chest_back
+  - pelvis_waist
+  - head_neck
+  - thigh_knee
+  - shank_ankle
+  - foot
+windows:
+  enabled: true
+  window_lengths_seconds:
+  - 0.5
+  - 1.0
+  use_non_overlapping_windows: true
+  step_seconds: null
+  flag_if_gap_at_least_seconds: 0.2
+  flag_if_large_gap_at_least_seconds: 0.5
+  flag_if_missing_marker_percent_above: 10.0
+artifacts:
+  enabled: true
+  require_known_units: true
+  max_frames_after_gap_for_velocity: 0
+  methods:
+    velocity_mad: true
+    acceleration_mad: false
+    single_frame_spike: true
+    constant_position_hold: false
+  velocity_mad_multiplier: 8.0
+  acceleration_mad_multiplier: 11.0
+  velocity_percentile_threshold: 99.97
+  acceleration_percentile_threshold: 99.97
+  minimum_valid_neighbors: 2
+  single_frame_spike:
+    return_near_original_tolerance_m: 0.005
+    min_jump_distance_m: 0.1
+  constant_position_hold:
+    min_repeated_frames: 5
+    tolerance_m: 1.0e-06
+  rigid_body:
+    enabled: true
+    marker_pair_map: config/marker_pair_map.csv
+    max_segment_length_change_pct: 18.0
+    max_pair_distance_m: 0.5
+    max_rigid_cv: 0.05
+  edge_buffer_frames: 8
+  sigma_sensitivity:
+    enabled: true
+    sigmas:
+    - 4.0
+    - 8.0
+    - 12.0
+    chosen_sigma: 8.0
+spectral_screen:
+  enabled: false
+  require_known_units: true
+  min_segment_frames: 60
+  hf_band_hz:
+  - 15
+  - 60
+  rolloff_percentile: 95
+  movement_band_hz:
+  - 0.5
+  - 12
+  smoothing_suspicion:
+    hf_power_ratio_threshold: 0.02
+    peer_zscore_threshold: 2.5
+outputs:
+  tier: essential
+  write_csv_tables: true
+  write_excel_workbook: false
+  write_text_summary: true
+  write_duplicate_summary_md: false
+  write_frame_level_artifacts: false
+  write_unlabeled_frame_counts: true
+  write_html_report: true
+  fail_on_html_error: false
+  write_config_used: true
+  plots:
+    enabled: true
+    marker_completeness: true
+    gap_duration_histogram: true
+    missing_data_heatmap_labeled: true
+    missing_data_heatmap_unlabeled: false
+    gap_timeline: true
+    unlabeled_count_over_time: true
+    labeled_missing_count_over_time: true
+    artifact_timeline: true
+    artifact_velocity_histogram: true
+    window_quality_timeline: true
+    frame_missingness_timeline: true
+    gap_timeline_by_group: true
+    session_psd_summary: true
+  plot_format: png
+  dpi: 300
+  max_markers_per_heatmap: 80
+  heatmap_downsample_max_frames: 5000
+  batch:
+    write_workbook: false
+    write_eda_excel: false
+    plot_top_artifact_segments: 3
+reporting:
+  top_n_problem_markers: 20
+  top_n_longest_gaps: 20
+  include_methods_notes_stub: false
+  stop_after_layer: 5

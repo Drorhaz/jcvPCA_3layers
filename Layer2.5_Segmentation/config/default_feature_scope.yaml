@@ -1,0 +1,36 @@
+# Layer 2.5 default feature scope (Layer 3-bound exports)
+#
+# This file controls the DEFAULT feature scope used by the pre-JcvPCA notebook
+# and the canonical Layer 3 export path. Change scope HERE, not in notebook cells.
+#
+# Notes:
+# - The canonical feature identity/order is defined by `feature_manifest` below.
+#   The frozen, tested manifest is the Group4 upper-body pilot
+#   (10 parent->child links x rx/ry/rz = 30 canonical features), fingers/toes excluded.
+# - "core" here means the analysis-clean core link set (no fingers, no toes,
+#   no review_provisional spine links). To widen scope (e.g. add lower-body core
+#   links) edit `feature_manifest` to point at a wider canonical manifest CSV.
+# - feature_naming_policy is always canonical_parent_child_axis for Layer 3.
+
+default_body_scope: upper_body_core
+exclude_fingers: true
+exclude_toes: true
+core_link_set_name: group4_upper_body_pilot
+allowed_feature_scope: core_candidate
+feature_naming_policy: canonical_parent_child_axis
+feature_manifest: config/group4_upper_body_pilot_feature_manifest.csv
+
+# Canonical link families that must never enter a Layer 3 matrix as direct features.
+excluded_child_prefixes:
+  - LIndex
+  - LMiddle
+  - LPinky
+  - LRing
+  - LThumb
+  - RIndex
+  - RMiddle
+  - RPinky
+  - RRing
+  - RThumb
+  - LToe
+  - RToe

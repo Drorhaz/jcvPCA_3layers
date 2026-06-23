@@ -77,7 +77,7 @@ def build_session_quality_report_html(
 
     interval_preview = ""
     if not intervals.empty:
-        excl = intervals[intervals["status"] == "exclude"].sort_values(
+        excl = intervals[intervals["reason"].astype(str).str.len() > 0].sort_values(
             "duration_s", ascending=False
         ).head(10)
         if not excl.empty:
@@ -88,9 +88,13 @@ def build_session_quality_report_html(
             )
 
     mask_status_counts = ""
-    if not qc_mask.empty and "status" in qc_mask.columns:
-        counts = qc_mask["status"].value_counts().to_dict()
-        mask_status_counts = ", ".join(f"{k}: {v:,}" for k, v in counts.items())
+    if not qc_mask.empty:
+        parts = []
+        for col in ("flag_gap_0p5", "flag_gap_0p2", "flag_artifact_sigma"):
+            if col in qc_mask.columns:
+                n = int(qc_mask[col].astype(bool).sum())
+                parts.append(f"{col}: {n:,}")
+        mask_status_counts = ", ".join(parts)
 
     art_sigma = velocity_mad_sigma(config)
     vel_pct = velocity_percentile_threshold(config)
@@ -148,7 +152,7 @@ def build_session_quality_report_html(
   <li><strong>Subject / session:</strong> {subject_id} / {session_id}</li>
   <li><strong>Frames:</strong> {md.get('n_frames', summary_row.get('total_frames_observed', ''))}</li>
   <li><strong>Frame rate:</strong> {md.get('effective_frame_rate_hz', summary_row.get('effective_frame_rate_hz', ''))} Hz</li>
-  <li><strong>Preprocessing status:</strong> {summary_row.get('raw_qc_preprocessing_status', 'n/a')}</li>
+  <li><strong>Gap evidence:</strong> {summary_row.get('gap_evidence_summary', 'n/a')}</li>
   <li><strong>Labeled missing %:</strong> {summary_row.get('missing_percent_labeled', 'n/a')}</li>
 </ul>
 
@@ -159,8 +163,8 @@ def build_session_quality_report_html(
   Intervals: <a href="tables/qc_mask_intervals.csv"><strong>tables/qc_mask_intervals.csv</strong></a>
 </div>
 <ul>
-  <li><strong>Frame status counts:</strong> {mask_status_counts or 'n/a'}</li>
-  <li><strong>{stats['n_exclude']}</strong> exclude intervals · <strong>{stats['n_caution']}</strong> caution intervals</li>
+  <li><strong>Frame flag counts:</strong> {mask_status_counts or 'n/a'}</li>
+  <li><strong>{stats['n_flagged_intervals']}</strong> flagged intervals · <strong>{stats['n_gap_intervals']}</strong> gap intervals</li>
   <li><strong>{stats['n_artifact_sigma_frames']:,}</strong> frames flagged by velocity MAD
    (σ={stats['art_sigma']}, percentile={stats['vel_percentile']})</li>
 </ul>

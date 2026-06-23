@@ -15,26 +15,24 @@ from layer2_motive.segmentation.qc_events import (
 )
 
 
-def test_qc_mask_normalization_caution_and_flags():
+def test_qc_mask_normalization_uses_flags_only():
     qc_mask = pd.DataFrame(
         {
             "frame": [0, 1, 2],
             "time_s": [0.0, 0.008333, 0.016667],
-            "status": ["use", "caution", "exclude"],
             "flag_gap_0p2": [False, True, True],
             "flag_gap_0p5": [False, False, True],
             "flag_artifact_sigma": [False, False, False],
             "flag_segment_swap": [False, False, False],
             "flag_edge_effect": [False, False, False],
-            "reason": ["", "MODERATE_GAP", "LARGE_GAP"],
+            "reason": ["", "GAP_GE_0P2", "GAP_GE_0P5"],
         }
     )
     events = normalize_qc_mask_events(qc_mask, "TEST_SESSION")
     assert not events.empty
-    assert "frame_status" in events["qc_type"].values
+    assert "frame_status" not in set(events["qc_type"])
     assert "marker_gap_0p2" in events["qc_type"].values
-    assert events["source_layer"].eq("layer1").all()
-    assert "marker_gap_0p2" in set(events.loc[events["frame"] == 1, "qc_type"])
+    assert events.loc[events["frame"] == 1, "severity"].iloc[0] == "flag"
 
 
 def test_interval_normalization(fixture_layer1_dir):

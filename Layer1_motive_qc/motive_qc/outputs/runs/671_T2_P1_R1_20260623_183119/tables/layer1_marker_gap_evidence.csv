@@ -1,0 +1,3 @@
+marker_name,marker_name_raw,marker_name_canonical,asset_prefix,body_region_group,n_gaps_ge_0p5,total_gap_seconds_ge_0p5,longest_gap_seconds,n_frames_in_gap_ge_0p5,pct_frames_in_gap_ge_0p5,pct_session_time_in_gap_ge_0p5
+671:ChestLow,671:ChestLow,ChestLow,671,torso_chest_back,1,0.55,0.55,66,0.21742,0.217427
+671:ChestTop,671:ChestTop,ChestTop,671,torso_chest_back,1,3.9833,3.9833,478,1.574648,1.574686

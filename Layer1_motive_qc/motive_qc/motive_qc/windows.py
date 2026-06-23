@@ -68,22 +68,21 @@ def build_frame_quality_summary(
         affected_groups.append(";".join(groups))
 
         pct = float(frame_qc_mask.iloc[i]["missing_labeled_percent"])
-        label = "use"
-        if frame_qc_mask.iloc[i]["qc_status"] == "exclude_or_review":
-            label = "exclude_or_review"
-        elif frame_qc_mask.iloc[i]["qc_status"] == "caution":
-            label = "caution"
-        elif pct >= fq_cfg["missing_marker_percent_bad"]:
-            label = "exclude_or_review"
+        reasons: list[str] = []
+        rc = str(frame_qc_mask.iloc[i].get("reason_codes", "") or "")
+        if rc:
+            reasons.extend(r for r in rc.split(";") if r)
+        if pct >= fq_cfg["missing_marker_percent_bad"]:
+            reasons.append("HIGH_MISSING_LABELED")
         elif pct >= fq_cfg["missing_marker_percent_caution"]:
-            label = "caution"
+            reasons.append("ELEVATED_MISSING_LABELED")
         elif any(g in critical_groups for g in groups) and pct >= fq_cfg["missing_marker_percent_warn"]:
-            label = "caution"
-        frame_labels.append(label)
+            reasons.append("CRITICAL_GROUP_MISSING")
+        frame_labels.append(";".join(dict.fromkeys(reasons)))
 
     out = frame_qc_mask.copy()
     out["affected_body_groups"] = affected_groups
-    out["frame_quality_label"] = frame_labels
+    out["active_reason_codes"] = frame_labels
     return out
 
 
@@ -205,38 +204,27 @@ def _finalize_window_row(
     missing_thr = win_cfg.get("flag_if_missing_marker_percent_above", 10.0)
 
     reasons: list[str] = []
-    label = "use"
 
     if overlap_seconds >= large_gap_thr:
         reasons.append("LARGE_GAP_OVERLAP")
-        label = "exclude_or_review"
     elif overlap_seconds >= gap_thr:
         reasons.append("GAP_OVERLAP")
-        if label == "use":
-            label = "caution"
 
     if max_missing >= missing_thr * 2:
         reasons.append("HIGH_MISSING")
-        label = "exclude_or_review"
     elif max_missing >= missing_thr:
         reasons.append("ELEVATED_MISSING")
-        if label == "use":
-            label = "caution"
 
     if critical_affected and not overlapping.empty:
         reasons.append("CRITICAL_GROUP_GAP")
-        if label == "use":
-            label = "caution"
 
     if not win_events.empty:
         severe = win_events[win_events["severity"] == "severe"]
         sustained = win_events[win_events["event_class"] == "sustained"]
         if not severe.empty or not sustained.empty:
             reasons.append("SUSTAINED_ARTIFACT_IN_WINDOW")
-            label = "exclude_or_review"
-        elif label == "use":
+        else:
             reasons.append("ARTIFACT_EVENT_IN_WINDOW")
-            label = "caution"
 
     all_groups = sorted(
         g for g in (gap_groups | artifact_groups) if g and g != "unlabeled"
@@ -257,8 +245,7 @@ def _finalize_window_row(
             "max_artifact_event_duration_s": round(max_art_dur, 6),
             "affected_body_groups": ";".join(all_groups),
             "artifact_body_groups": ";".join(sorted(artifact_groups)),
-            "window_quality_label": label,
-            "reason_codes": ";".join(reasons),
+            "reason_codes": ";".join(dict.fromkeys(reasons)),
         }
     )
     return row
@@ -296,7 +283,7 @@ def build_window_quality_summary(
         if wdf.empty:
             continue
         length_s = float(wdf.iloc[0].get("window_length_s", 0.5))
-        flagged = wdf[wdf["window_quality_label"] != "use"]
+        flagged = wdf[wdf["reason_codes"].astype(str).str.len() > 0]
         flagged_time = float(
             flagged["end_time_s"].sum() - flagged["start_time_s"].sum()
         ) if not flagged.empty else 0.0
@@ -307,10 +294,7 @@ def build_window_quality_summary(
                 "n_windows": len(wdf),
                 "n_with_gap_overlap": int((wdf["n_gaps_overlapping"] > 0).sum()),
                 "n_with_artifact_events": int((wdf["n_artifact_events"] > 0).sum()),
-                "n_flagged_caution": int((wdf["window_quality_label"] == "caution").sum()),
-                "n_flagged_exclude": int(
-                    (wdf["window_quality_label"] == "exclude_or_review").sum()
-                ),
+                "n_windows_with_reason_codes": int(len(flagged)),
                 "pct_session_in_flagged_windows": round(
                     100.0 * flagged_time / duration_s, 4
                 )
@@ -333,7 +317,7 @@ def enrich_group_quality_summary(
         if wdf.empty:
             out[f"n_windows_flagged_{suffix}"] = 0
             continue
-        flagged = wdf[wdf["window_quality_label"] != "use"]
+        flagged = wdf[wdf["reason_codes"].astype(str).str.len() > 0]
         out[f"n_windows_flagged_{suffix}"] = len(flagged)
     return out
 

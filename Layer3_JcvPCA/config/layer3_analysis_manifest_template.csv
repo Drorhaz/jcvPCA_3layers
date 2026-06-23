@@ -1,0 +1,7 @@
+subject_id,timepoint,part_id,repetition_id,group_id,matrix_path,include_in_analysis,analysis_role
+671,T1,P1,R1,Group4,/ABSOLUTE/OR/REPO_RELATIVE/PATH/T1_P1_R1_Group4_window_jvcpca_matrix.parquet,true,A_T1_R1
+671,T1,P1,R2,Group4,/ABSOLUTE/OR/REPO_RELATIVE/PATH/T1_P1_R2_Group4_window_jvcpca_matrix.parquet,true,A_T1_R2
+671,T2,P1,R1,Group4,/ABSOLUTE/OR/REPO_RELATIVE/PATH/T2_P1_R1_Group4_window_jvcpca_matrix.parquet,true,B_T2_R1
+671,T2,P1,R2,Group4,/ABSOLUTE/OR/REPO_RELATIVE/PATH/T2_P1_R2_Group4_window_jvcpca_matrix.parquet,true,B_T2_R2
+671,T3,P1,R1,Group4,/ABSOLUTE/OR/REPO_RELATIVE/PATH/T3_P1_R1_Group4_window_jvcpca_matrix.parquet,true,B_T3_R1
+671,T3,P1,R2,Group4,/ABSOLUTE/OR/REPO_RELATIVE/PATH/T3_P1_R2_Group4_window_jvcpca_matrix.parquet,true,B_T3_R2

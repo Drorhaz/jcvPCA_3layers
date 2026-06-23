@@ -2,9 +2,9 @@ link_id,parent_canonical,child_canonical,feature_scope,stage08_policy,stage07_ju
 J002,671,Ab,review_provisional,manual_review_required,pass,pass,30604,30604,0,0,0,0,0,provisional_manual_review,10.0,4,120.00480019200238,10
 J003,Ab,Chest,review_provisional,manual_review_required,pass,pass,30604,30604,0,0,0,0,0,provisional_manual_review,10.0,4,120.00480019200238,10
 J004,Neck,Head,core_candidate,allow_filter,pass,pass,30604,30604,0,0,0,0,30604,pass,10.0,4,120.00480019200238,10
-J005,LUArm,LFArm,core_candidate,allow_filter_with_warning,warning,pass,30604,30604,1,61,0,0,30543,filtered_but_jump_context_masked,10.0,4,120.00480019200238,10
+J005,LUArm,LFArm,core_candidate,allow_filter_with_warning,warning,pass,30604,30604,1,61,0,0,30543,filtered_but_jump_context_flagged,10.0,4,120.00480019200238,10
 J006,LShin,LFoot,core_candidate,allow_filter,pass,pass,30604,30604,0,0,0,0,30604,pass,10.0,4,120.00480019200238,10
-J007,LFArm,LHand,core_candidate,allow_filter_with_warning,fail,pass,30604,30604,1,61,0,0,30543,filtered_but_jump_context_masked,10.0,4,120.00480019200238,10
+J007,LFArm,LHand,core_candidate,allow_filter_with_warning,fail,pass,30604,30604,1,61,0,0,30543,filtered_but_jump_context_flagged,10.0,4,120.00480019200238,10
 J008,LHand,LIndex1,excluded_distal,excluded_from_analysis,fail,pass,30604,30604,1,61,0,0,0,excluded_from_analysis,10.0,4,120.00480019200238,10
 J009,LIndex1,LIndex2,excluded_distal,excluded_from_analysis,fail,pass,30604,30604,1,61,0,0,0,excluded_from_analysis,10.0,4,120.00480019200238,10
 J010,LIndex2,LIndex3,excluded_distal,excluded_from_analysis,warning,pass,30604,30604,1,61,0,0,0,excluded_from_analysis,10.0,4,120.00480019200238,10
@@ -26,7 +26,7 @@ J025,LThumb2,LThumb3,excluded_distal,excluded_from_analysis,warning,pass,30604,3
 J026,LFoot,LToe,excluded_toe,excluded_from_analysis,pass,pass,30604,30604,0,0,0,0,0,excluded_from_analysis,10.0,4,120.00480019200238,10
 J027,LShoulder,LUArm,core_candidate,allow_filter,pass,pass,30604,30604,0,0,0,0,30604,pass,10.0,4,120.00480019200238,10
 J028,Chest,Neck,core_candidate,allow_filter,pass,pass,30604,30604,0,0,0,0,30604,pass,10.0,4,120.00480019200238,10
-J029,RUArm,RFArm,core_candidate,allow_filter_with_warning,warning,pass,30604,30604,1,61,0,0,30543,filtered_but_jump_context_masked,10.0,4,120.00480019200238,10
+J029,RUArm,RFArm,core_candidate,allow_filter_with_warning,warning,pass,30604,30604,1,61,0,0,30543,filtered_but_jump_context_flagged,10.0,4,120.00480019200238,10
 J030,RShin,RFoot,core_candidate,allow_filter,pass,pass,30604,30604,0,0,0,0,30604,pass,10.0,4,120.00480019200238,10
 J031,RFArm,RHand,core_candidate,allow_filter,pass,pass,30604,30604,0,0,0,0,30604,pass,10.0,4,120.00480019200238,10
 J032,RHand,RIndex1,excluded_distal,excluded_from_analysis,warning,pass,30604,30604,1,61,0,0,0,excluded_from_analysis,10.0,4,120.00480019200238,10

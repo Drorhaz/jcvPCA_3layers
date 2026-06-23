@@ -2,70 +2,46 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Callable
+from dataclasses import dataclass, field
 
 import ipywidgets as widgets
 import pandas as pd
 from IPython.display import HTML, display
 
 from pre_jvcpca_review.load_layer2 import LinkRecord
-from pre_jvcpca_review.mapping import link_joint_family
-
-FAMILY_LABELS = {
-    "left_wrist_hand": "Left wrist / hand",
-    "right_wrist_hand": "Right wrist / hand",
-    "left_elbow_forearm": "Left elbow / forearm",
-    "right_elbow_forearm": "Right elbow / forearm",
-    "left_shoulder_arm": "Left shoulder / upper arm",
-    "right_shoulder_arm": "Right shoulder / upper arm",
-    "left_thigh_knee": "Left knee / thigh",
-    "right_thigh_knee": "Right knee / thigh",
-    "left_foot": "Left foot / ankle",
-    "right_foot": "Right foot / ankle",
-    "left_shank_ankle": "Left ankle / shin",
-    "right_shank_ankle": "Right ankle / shin",
-    "hip_left": "Left hip",
-    "hip_right": "Right hip",
-    "head_neck": "Head / neck",
-    "trunk_chest": "Trunk / chest",
-    "unknown": "Other",
-}
 
 
-def _bone_fallback_label(link: LinkRecord) -> str:
-    """Readable label when joint_family is generic."""
-    parent, child = link.parent_canonical, link.child_canonical
-    token = child if len(child) > 1 else parent
-    side = "Left " if token.startswith("L") else "Right " if token.startswith("R") else ""
-    if "Hand" in token or child == "LHand" or child == "RHand":
-        return f"{side}wrist / hand".strip().title()
-    if "Shoulder" in parent and "UArm" in child:
-        return f"{side}shoulder / upper arm".strip().title()
-    if "Shoulder" in token or "Shoulder" in parent:
-        return f"{side}shoulder".strip().title()
-    if "FArm" in token or "UArm" in token:
-        return f"{side}elbow / forearm".strip().title()
-    if "Thigh" in token or "Shin" in token:
-        return f"{side}knee / leg".strip().title()
-    if "Foot" in token or "Shin" in parent:
-        return f"{side}foot / ankle".strip().title()
-    if child in ("Head", "Neck") or parent in ("Head", "Neck", "Chest"):
-        if child == "Head" or parent == "Neck":
-            return "Head / neck"
-        if "Shoulder" in child:
-            return f"{side}shoulder (chest)".strip().title()
-    if parent in ("671", "Ab", "Chest") or child in ("671", "Ab", "Chest"):
-        return "Trunk / spine"
-    return link.display_name.replace("->", " → ")
-
-
-def friendly_joint_label(link: LinkRecord) -> str:
-    family = link_joint_family(link)
-    plain = FAMILY_LABELS.get(family)
-    if not plain or family == "unknown" or family.startswith("left_unknown") or family.startswith("right_unknown"):
-        plain = _bone_fallback_label(link)
+def canonical_joint_label(
+    link: LinkRecord,
+    *,
+    overlap_classification: str | None = None,
+) -> str:
+    """Primary label matches ``joint_overlap_table.csv`` ``canonical_link_name``."""
+    meta: list[str] = []
+    if overlap_classification:
+        meta.append(overlap_classification)
     scope = link.feature_scope.replace("_", " ")
-    return f"{link.link_id}  |  {plain}  |  {link.display_name}  |  {scope}"
+    if scope:
+        meta.append(scope)
+    meta.append(link.link_id)
+    suffix = f" ({', '.join(meta)})" if meta else ""
+    return f"{link.display_name}{suffix}"
+
+
+def _sort_links(
+    links: list[LinkRecord],
+    canonical_order: list[tuple[str, str]] | None = None,
+) -> list[LinkRecord]:
+    if not canonical_order:
+        return sorted(links, key=lambda link: link.display_name)
+    rank = {key: index for index, key in enumerate(canonical_order)}
+
+    def sort_key(link: LinkRecord) -> tuple[int, str]:
+        key = (link.parent_canonical, link.child_canonical)
+        return (rank.get(key, len(rank)), link.display_name)
+
+    return sorted(links, key=sort_key)
 
 
 @dataclass
@@ -76,9 +52,16 @@ class JointSelector:
     container: widgets.VBox
     filter_core_only: widgets.Checkbox
     _all_links: list[LinkRecord]
+    _links_by_id: dict[str, LinkRecord]
+    _overlap_by_canonical: dict[str, str]
+    _selection_callbacks: list[Callable[[], None]] = field(default_factory=list)
 
     def selected_link_ids(self) -> list[str]:
         return [link_id for link_id, cb in self.checkboxes.items() if cb.value]
+
+    def selected_canonical_names(self) -> list[str]:
+        selected = set(self.selected_link_ids())
+        return [link.display_name for link in self._all_links if link.link_id in selected]
 
     def set_selected(self, link_ids: set[str]) -> None:
         for link_id, cb in self.checkboxes.items():
@@ -90,6 +73,21 @@ class JointSelector:
     def clear_selection(self) -> None:
         self.set_selected(set())
 
+    def on_selection_change(self, callback: Callable[[], None]) -> None:
+        """Run ``callback`` whenever a joint checkbox toggles."""
+        self._selection_callbacks.append(callback)
+
+        def _notify(_change) -> None:
+            for cb in self._selection_callbacks:
+                cb()
+
+        for checkbox in self.checkboxes.values():
+            checkbox.observe(_notify, names="value")
+
+    def _label_for(self, link: LinkRecord) -> str:
+        classification = self._overlap_by_canonical.get(link.display_name)
+        return canonical_joint_label(link, overlap_classification=classification)
+
     def _rebuild_rows(self) -> None:
         show_core = self.filter_core_only.value
         rows: list[widgets.Widget] = []
@@ -97,7 +95,7 @@ class JointSelector:
             if show_core and link.feature_scope != "core_candidate":
                 continue
             cb = self.checkboxes[link.link_id]
-            cb.description = friendly_joint_label(link)
+            cb.description = self._label_for(link)
             cb.layout = widgets.Layout(width="98%")
             rows.append(cb)
         if not rows:
@@ -105,15 +103,28 @@ class JointSelector:
         self.container.children = tuple(rows)
 
     @classmethod
-    def from_links(cls, links: list[LinkRecord], default_ids: set[str] | None = None) -> JointSelector:
-        default_ids = default_ids or {"J005", "J007", "J020"}
+    def from_links(
+        cls,
+        links: list[LinkRecord],
+        *,
+        default_link_ids: set[str] | None = None,
+        canonical_order: list[tuple[str, str]] | None = None,
+        overlap_by_canonical: dict[str, str] | None = None,
+    ) -> JointSelector:
+        ordered = _sort_links(links, canonical_order)
+        overlap_by_canonical = overlap_by_canonical or {}
+        default_link_ids = default_link_ids or set()
+        links_by_id = {link.link_id: link for link in ordered}
         checkboxes = {
             link.link_id: widgets.Checkbox(
-                value=link.link_id in default_ids,
-                description=friendly_joint_label(link),
+                value=link.link_id in default_link_ids,
+                description=canonical_joint_label(
+                    link,
+                    overlap_classification=overlap_by_canonical.get(link.display_name),
+                ),
                 layout=widgets.Layout(width="98%"),
             )
-            for link in links
+            for link in ordered
         }
         filter_core = widgets.Checkbox(value=False, description="Show only core_candidate joints")
         container = widgets.VBox(list(checkboxes.values()))
@@ -121,7 +132,9 @@ class JointSelector:
             checkboxes=checkboxes,
             container=container,
             filter_core_only=filter_core,
-            _all_links=links,
+            _all_links=ordered,
+            _links_by_id=links_by_id,
+            _overlap_by_canonical=overlap_by_canonical,
         )
 
         def on_filter_change(_change) -> None:

@@ -1,0 +1,2 @@
+joint_id,source_parent_bone,source_child_bone,parent_bone,child_bone,is_root_anchor_link,missing_reason
+J055,Root,T3_671:T3_671,Root,T3_671,True,parent is Root anchor (no global quaternion expected)

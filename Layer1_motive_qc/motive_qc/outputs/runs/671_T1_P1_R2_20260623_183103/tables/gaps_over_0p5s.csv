@@ -1,0 +1,8 @@
+marker_name,body_region_group,n_gaps,total_gap_seconds,longest_gap_seconds,gap_intervals_s,marker_name_raw,marker_name_canonical,asset_prefix
+671:LElbowOut,elbow_forearm,4,2.5083,0.75,136.03-136.78; 136.79-137.38; 167.03-167.53; 189.74-190.38,671:LElbowOut,LElbowOut,671
+671:RFArm,shoulder_upper_arm,3,2.05,0.8167,121.36-122.17; 130.97-131.60; 132.42-133.00,671:RFArm,RFArm,671
+671:LFArm,shoulder_upper_arm,2,2.0583,1.15,118.58-119.48; 119.80-120.94,671:LFArm,LFArm,671
+671:LShoulderTop,shoulder_upper_arm,1,5.4917,5.4917,41.82-47.30,671:LShoulderTop,LShoulderTop,671
+671:WaistLFront,pelvis_waist,1,4.625,4.625,7.95-12.57,671:WaistLFront,WaistLFront,671
+671:ChestTop,torso_chest_back,1,4.325,4.325,7.93-12.25,671:ChestTop,ChestTop,671
+671:RHandIn,wrist_hand,1,1.0417,1.0417,99.69-100.72,671:RHandIn,RHandIn,671

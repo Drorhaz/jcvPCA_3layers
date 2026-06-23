@@ -521,14 +521,15 @@ def plot_frame_missingness_timeline(
 def plot_window_quality_timeline(window_df: pd.DataFrame, config: dict[str, Any]) -> Path:
     path = _plot_output_path(config, "window_quality_timeline")
     dpi = _plot_dpi(config)
-    colors = {
-        "use": "#48bb78",
-        "caution": "#ecc94b",
-        "exclude_or_review": "#e53e3e",
-    }
     fig, ax = plt.subplots(figsize=(14, 4))
     for _, row in window_df.iterrows():
-        color = colors.get(row["window_quality_label"], "#a0aec0")
+        reason = str(row.get("reason_codes", "") or "")
+        if "LARGE_GAP" in reason or "SUSTAINED_ARTIFACT" in reason:
+            color = "#e53e3e"
+        elif reason:
+            color = "#ecc94b"
+        else:
+            color = "#48bb78"
         ax.barh(
             0,
             row["end_time_s"] - row["start_time_s"],

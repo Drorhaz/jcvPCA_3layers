@@ -1,0 +1,18 @@
+{
+  "motive_qc_version": "0.6.0",
+  "subject_id": "671",
+  "session_id": "T3_P1_R2",
+  "run_key": "671_T3_P1_R2",
+  "input_csv": "data/671/671_T3_P1_R2_Take 2026-02-03 08.05.01 PM_005.csv",
+  "frame_rate_hz": 120.0,
+  "n_frames": 31392,
+  "frame_index_column": "frame",
+  "time_column": "time_s",
+  "qc_mask_csv": "tables/qc_mask.csv",
+  "qc_mask_intervals_csv": "tables/qc_mask_intervals.csv",
+  "layer1_marker_set_csv": "tables/layer1_marker_set.csv",
+  "layer1_marker_gap_evidence_csv": "tables/layer1_marker_gap_evidence.csv",
+  "layer1_qc_handoff_csv": "tables/layer1_qc_handoff.csv",
+  "alignment_notes": "Join Layer 2 Stage 08 parquet on frame (preferred) or time_s",
+  "run_output_dir": "/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer1_motive_qc/motive_qc/outputs/runs/671_T3_P1_R2_20260623_183207"
+}

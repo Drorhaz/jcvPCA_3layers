@@ -1,0 +1,6 @@
+marker_name,body_region_group,n_gaps,total_gap_seconds,longest_gap_seconds,gap_intervals_s,marker_name_raw,marker_name_canonical,asset_prefix
+T3_671:RFArm,shoulder_upper_arm,9,2.2083,0.3667,144.05-144.24; 148.47-148.68; 152.17-152.37; 156.71-156.90; 159.03-159.28; 165.53-165.89; 172.52-172.76; 176.44-176.72; 179.70-179.91,T3_671:RFArm,RFArm,T3_671
+T3_671:LFArm,shoulder_upper_arm,7,1.7333,0.3333,145.61-145.93; 152.94-153.16; 170.45-170.69; 171.99-172.20; 194.30-194.51; 199.44-199.67; 210.40-210.65,T3_671:LFArm,LFArm,T3_671
+T3_671:ChestTop,torso_chest_back,3,1.0917,0.4833,162.49-162.97; 178.98-179.18; 256.87-257.27,T3_671:ChestTop,ChestTop,T3_671
+T3_671:LThighFront,thigh_knee,3,0.7,0.2833,102.37-102.58; 103.13-103.41; 104.02-104.21,T3_671:LThighFront,LThighFront,T3_671
+T3_671:LHandIn,wrist_hand,1,0.3917,0.3917,145.68-146.07,T3_671:LHandIn,LHandIn,T3_671

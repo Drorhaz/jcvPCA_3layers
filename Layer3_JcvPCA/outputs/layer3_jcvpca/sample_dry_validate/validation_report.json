@@ -1,0 +1,95 @@
+{
+  "mode": "dry_validate",
+  "manifest_path": "config/sample_dry_validate_manifest.csv",
+  "required_metadata_cols": [
+    "session_id",
+    "run_label",
+    "frame",
+    "time_sec"
+  ],
+  "n_included_rows": 1,
+  "input_files": [
+    {
+      "analysis_role": "A_T1_R1",
+      "matrix_path": "/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2.5_Segmentation/outputs/pre_jvcpca_review/session_window/window_jvcpca_matrix.parquet"
+    }
+  ],
+  "per_matrix": {
+    "A_T1_R1": {
+      "n_rows": 961,
+      "metadata_columns_found": [
+        "session_id",
+        "run_label",
+        "frame",
+        "time_sec"
+      ],
+      "feature_columns_found": [
+        "J004_Neck_to_Head_rx",
+        "J004_Neck_to_Head_ry",
+        "J004_Neck_to_Head_rz",
+        "J005_LUArm_to_LFArm_rx",
+        "J005_LUArm_to_LFArm_ry",
+        "J005_LUArm_to_LFArm_rz",
+        "J006_LShin_to_LFoot_rx",
+        "J006_LShin_to_LFoot_ry",
+        "J006_LShin_to_LFoot_rz",
+        "J007_LFArm_to_LHand_rx",
+        "J007_LFArm_to_LHand_ry",
+        "J007_LFArm_to_LHand_rz",
+        "J020_LThigh_to_LShin_rx",
+        "J020_LThigh_to_LShin_ry",
+        "J020_LThigh_to_LShin_rz",
+        "J021_Chest_to_LShoulder_rx",
+        "J021_Chest_to_LShoulder_ry",
+        "J021_Chest_to_LShoulder_rz",
+        "J022_671_to_LThigh_rx",
+        "J022_671_to_LThigh_ry",
+        "J022_671_to_LThigh_rz",
+        "J027_LShoulder_to_LUArm_rx",
+        "J027_LShoulder_to_LUArm_ry",
+        "J027_LShoulder_to_LUArm_rz",
+        "J028_Chest_to_Neck_rx",
+        "J028_Chest_to_Neck_ry",
+        "J028_Chest_to_Neck_rz",
+        "J029_RUArm_to_RFArm_rx",
+        "J029_RUArm_to_RFArm_ry",
+        "J029_RUArm_to_RFArm_rz",
+        "J030_RShin_to_RFoot_rx",
+        "J030_RShin_to_RFoot_ry",
+        "J030_RShin_to_RFoot_rz",
+        "J031_RFArm_to_RHand_rx",
+        "J031_RFArm_to_RHand_ry",
+        "J031_RFArm_to_RHand_rz",
+        "J044_RThigh_to_RShin_rx",
+        "J044_RThigh_to_RShin_ry",
+        "J044_RThigh_to_RShin_rz",
+        "J045_Chest_to_RShoulder_rx",
+        "J045_Chest_to_RShoulder_ry",
+        "J045_Chest_to_RShoulder_rz",
+        "J046_671_to_RThigh_rx",
+        "J046_671_to_RThigh_ry",
+        "J046_671_to_RThigh_rz",
+        "J051_RShoulder_to_RUArm_rx",
+        "J051_RShoulder_to_RUArm_ry",
+        "J051_RShoulder_to_RUArm_rz"
+      ],
+      "n_features": 48,
+      "nan_count": 0,
+      "inf_count": 0,
+      "constant_columns": [],
+      "triplet_completeness": true,
+      "non_numeric_feature_columns": [],
+      "missing_metadata_columns": [],
+      "status": "passed",
+      "errors": [],
+      "incomplete_links": {}
+    }
+  },
+  "feature_schema_match": "single_matrix_no_cross_check",
+  "status": "passed",
+  "errors": [],
+  "warnings": [
+    "Only one valid matrix available; cross-matrix feature-schema match was not performed. Full V1 analysis requires all six Group 4 matrices."
+  ],
+  "created_at": "2026-06-23T12:26:26.908016+00:00"
+}

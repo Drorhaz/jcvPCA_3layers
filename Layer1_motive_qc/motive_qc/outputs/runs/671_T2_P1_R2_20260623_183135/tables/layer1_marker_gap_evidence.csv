@@ -1,0 +1,6 @@
+marker_name,marker_name_raw,marker_name_canonical,asset_prefix,body_region_group,n_gaps_ge_0p5,total_gap_seconds_ge_0p5,longest_gap_seconds,n_frames_in_gap_ge_0p5,pct_frames_in_gap_ge_0p5,pct_session_time_in_gap_ge_0p5
+FKA-671_ChestLow,FKA-671_ChestLow,ChestLow,FKA-671,torso_chest_back,2,1.3167,0.7833,158,0.51839,0.51842
+FKA-671_ChestTop,FKA-671_ChestTop,ChestTop,FKA-671,torso_chest_back,3,7.4333,5.2667,892,2.926605,2.926688
+FKA-671_LHandOut,FKA-671_LHandOut,LHandOut,FKA-671,wrist_hand,2,2.2417,1.6167,269,0.882575,0.882617
+FKA-671_LThighFront,FKA-671_LThighFront,LThighFront,FKA-671,thigh_knee,1,0.5833,0.5833,70,0.229666,0.229661
+FKA-671_RKneeOut,FKA-671_RKneeOut,RKneeOut,FKA-671,thigh_knee,1,0.5333,0.5333,64,0.209981,0.209974

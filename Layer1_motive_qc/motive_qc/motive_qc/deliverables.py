@@ -209,38 +209,25 @@ def build_qc_mask(
     # Edge buffers never override a real gap frame.
     flag_edge &= ~(flag_gap_0p5 | flag_gap_0p2)
 
-    status = np.full(n, "use", dtype=object)
     reasons: list[str] = []
     for i in range(n):
         codes: list[str] = []
-        st = "use"
         if flag_gap_0p5[i]:
             codes.append("GAP_GE_0P5")
-            st = "exclude"
         if flag_gap_0p2[i]:
             codes.append("GAP_GE_0P2")
-            if st == "use":
-                st = "caution"
         if flag_artifact_sigma[i]:
             codes.append("ARTIFACT_SIGMA")
-            if st == "use":
-                st = "caution"
         if flag_segment_swap[i]:
             codes.append("SEGMENT_SWAP")
-            if st == "use":
-                st = "caution"
         if flag_edge[i]:
             codes.append("EDGE_EFFECT")
-            if st == "use":
-                st = "caution"
-        status[i] = st
         reasons.append(";".join(codes))
 
     mask = pd.DataFrame(
         {
             "frame": frames,
             "time_s": np.round(times, 6),
-            "status": status,
             "flag_gap_0p2": flag_gap_0p2,
             "flag_gap_0p5": flag_gap_0p5,
             "flag_artifact_sigma": flag_artifact_sigma,
@@ -278,8 +265,7 @@ def _merge_adjacent_artifact_intervals(rows: list[dict[str, Any]]) -> list[dict[
         row = rows[i]
         reason = str(row.get("reason", ""))
         if (
-            row.get("status") == "caution"
-            and "ARTIFACT_SIGMA" in reason
+            "ARTIFACT_SIGMA" in reason
             and "GAP_GE_0P5" not in reason
             and "GAP_GE_0P2" not in reason
             and "SEGMENT_SWAP" not in reason
@@ -290,8 +276,7 @@ def _merge_adjacent_artifact_intervals(rows: list[dict[str, Any]]) -> list[dict[
                 nxt = rows[j]
                 nr = str(nxt.get("reason", ""))
                 if (
-                    nxt.get("status") == "caution"
-                    and "ARTIFACT_SIGMA" in nr
+                    "ARTIFACT_SIGMA" in nr
                     and "GAP_GE_0P5" not in nr
                     and nxt["start_frame"] == rows[j - 1]["end_frame"] + 1
                 ):
@@ -340,7 +325,6 @@ def _mask_intervals(
         "start_s",
         "end_s",
         "duration_s",
-        "status",
         "reason",
         "criterion",
         "affected_markers",
@@ -349,21 +333,16 @@ def _mask_intervals(
         return pd.DataFrame(columns=cols)
     frames = mask["frame"].values
     times = mask["time_s"].values
-    statuses = mask["status"].values
     reasons = mask["reason"].values
     rows: list[dict[str, Any]] = []
     i = 0
     n = len(frames)
     while i < n:
-        if statuses[i] == "use":
+        if not str(reasons[i]).strip():
             i += 1
             continue
         start_i = i
-        while (
-            i < n
-            and statuses[i] == statuses[start_i]
-            and reasons[i] == reasons[start_i]
-        ):
+        while i < n and reasons[i] == reasons[start_i]:
             i += 1
         end_i = i - 1
         sf, ef = int(frames[start_i]), int(frames[end_i])
@@ -386,7 +365,6 @@ def _mask_intervals(
                 "start_s": round(float(times[start_i]), 4),
                 "end_s": round(float(times[end_i]), 4),
                 "duration_s": round(float(times[end_i] - times[start_i]), 4),
-                "status": statuses[start_i],
                 "reason": reasons[start_i],
                 "criterion": _primary_criterion(str(reasons[start_i])),
                 "affected_markers": ";".join(sorted(affected)[:12]),

@@ -157,19 +157,20 @@ outputs/runs/671_T1_P1_R1_{YYYYMMDD_HHMMSS}/
 
 Set `outputs.tier: full` for debug tables (`marker_inventory`, `gap_events`, `frame_qc_mask`, window tables, heatmaps, etc.).
 
-### `qc_mask.csv` columns
+### `qc_mask.csv` columns (evidence-only)
 
 | Column | Purpose |
 |--------|---------|
 | `frame` | Motive export frame index |
 | `time_s` | Seconds from Motive `Time (Seconds)` |
-| `status` | Advisory: `use` / `caution` / `exclude` |
 | `flag_gap_0p2` | Gap ≥ 0.2 s on any in-analysis labeled marker |
 | `flag_gap_0p5` | Gap ≥ 0.5 s |
 | `flag_artifact_sigma` | Velocity MAD / spike artifact |
 | `flag_segment_swap` | Rigid-body segment length violation |
 | `flag_edge_effect` | Buffer frames adjacent to large gaps |
-| `reason` | Semicolon-separated reason codes |
+| `reason` | Semicolon-separated criterion codes (e.g. `GAP_GE_0P5`) |
+
+There is **no** session verdict column (`status`, `caution`, `not_ready`). Per-marker detail is in `gaps_over_0p5s.csv` and `artifact_events.csv`. See [`docs/LAYER1_OUTPUT_CONTRACT.md`](docs/LAYER1_OUTPUT_CONTRACT.md).
 
 The pipeline validates row count, monotonic `frame`, and `time_s` alignment before writing `layer1_segmentation_notebook_manifest.json`. Mask validation failure **fails the run**; HTML failure does not (unless `outputs.fail_on_html_error: true`).
 
@@ -196,7 +197,7 @@ After each full run, read **`layer1_segmentation_notebook_manifest.json`** at th
 }
 ```
 
-**Join Layer 2 Stage 08 parquet** on `frame` (preferred) or `time_s` from `tables/qc_mask.csv`. Use `status` and `flag_*` columns to filter or flag frames downstream; the mask is advisory and does not modify the raw CSV.
+**Join Layer 2 Stage 08 parquet** on `frame` (preferred) or `time_s` from `tables/qc_mask.csv`. Use `flag_*` columns and per-marker tables downstream; Layer 1 does not assign session go/no-go labels.
 
 ---
 

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<title>Motive QC — 671_T3_P1_R2</title>
+<style>
+ body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+   margin: 0 auto; max-width: 1000px; padding: 32px; color: #1a202c; line-height: 1.5; }
+ h1 { font-size: 24px; margin-bottom: 4px; }
+ h2 { margin-top: 32px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+ h3 { font-size: 16px; }
+ .sub { color: #718096; font-size: 13px; }
+ table { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: 10px; }
+ th, td { border: 1px solid #e2e8f0; padding: 6px 8px; text-align: left; vertical-align: top; }
+ th { background: #f7fafc; }
+ figure { margin: 16px 0; } img { max-width: 100%; border: 1px solid #e2e8f0; border-radius: 6px; }
+ figcaption { color: #718096; font-size: 12px; }
+ .note { background: #ebf8ff; border-left: 4px solid #4299e1; padding: 10px 14px; font-size: 13px; }
+ ul { padding-left: 20px; }
+</style></head><body>
+<h1>Motive raw marker QC — 671_T3_P1_R2</h1>
+<p class="sub">Generated 2026-06-23T18:32:23 · Motive_QC 0.6.0</p>
+<p class="sub">Input: <code>/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer1_motive_qc/motive_qc/data/671/671_T3_P1_R2_Take 2026-02-03 08.05.01 PM_005.csv</code></p>
+
+
+<h2>Session summary</h2>
+<ul>
+  <li><strong>Subject / session:</strong> 671 / T3_P1_R2</li>
+  <li><strong>Frames:</strong> 31392</li>
+  <li><strong>Frame rate:</strong> 120.0 Hz</li>
+  <li><strong>Gap evidence:</strong> Longest labeled gap: T3_671:LThighFront (103.300s); 18 gaps >=0.5s across 5 marker(s).</li>
+  <li><strong>Labeled missing %:</strong> 2.089771</li>
+</ul>
+
+<h2>QC mask (primary deliverable)</h2>
+<div class="note">
+  Join Layer 2 Stage 08 parquet on <code>frame</code> (preferred) or <code>time_s</code>.
+  Full mask: <a href="tables/qc_mask.csv"><strong>tables/qc_mask.csv</strong></a> ·
+  Intervals: <a href="tables/qc_mask_intervals.csv"><strong>tables/qc_mask_intervals.csv</strong></a>
+</div>
+<ul>
+  <li><strong>Frame flag counts:</strong> flag_gap_0p5: 28,941, flag_gap_0p2: 776, flag_artifact_sigma: 165</li>
+  <li><strong>520</strong> flagged intervals · <strong>502</strong> gap intervals</li>
+  <li><strong>165</strong> frames flagged by velocity MAD
+   (σ=8.0, percentile=99.97)</li>
+</ul>
+<h3>Top exclude intervals (preview)</h3><table><thead><tr><th>start_s</th><th>end_s</th><th>duration_s</th><th>criterion</th><th>affected_markers</th></tr></thead><tbody><tr><td>71.6083</td><td>126.7417</td><td>55.1333</td><td>gaps_over_0p5</td><td>T3_671:LHandOut;T3_671:LThighFront</td></tr><tr><td>45.1167</td><td>65.8333</td><td>20.7167</td><td>gaps_over_0p5</td><td>T3_671:LThighFront;T3_671:RHandIn</td></tr><tr><td>0.0</td><td>13.1333</td><td>13.1333</td><td>gaps_over_0p5</td><td>T3_671:LThighFront</td></tr><tr><td>15.9583</td><td>28.0833</td><td>12.125</td><td>gaps_over_0p5</td><td>T3_671:ChestTop;T3_671:LThighFront;T3_671:RHandIn</td></tr><tr><td>221.7917</td><td>229.8333</td><td>8.0417</td><td>gaps_over_0p5</td><td>T3_671:LThighFront</td></tr><tr><td>202.825</td><td>209.6167</td><td>6.7917</td><td>gaps_over_0p5</td><td>T3_671:LThighFront</td></tr><tr><td>194.7083</td><td>200.85</td><td>6.1417</td><td>gaps_over_0p5</td><td>T3_671:LHandIn;T3_671:LThighFront;T3_671:RFArm</td></tr><tr><td>184.0667</td><td>190.1417</td><td>6.075</td><td>gaps_over_0p5</td><td>T3_671:LThighFront</td></tr><tr><td>256.9167</td><td>261.5917</td><td>4.675</td><td>gaps_over_0p5</td><td>T3_671:LThighFront</td></tr><tr><td>151.7</td><td>156.3</td><td>4.6</td><td>gaps_over_0p5</td><td>T3_671:LFArm;T3_671:LHandIn;T3_671:LThighFront;T3_671:RFArm;T3_671:RHandIn</td></tr></tbody></table>
+
+<h2>Plots</h2>
+<figure><img src="plots/gap_timeline.png" alt="gap_timeline"/><figcaption>Gap timeline</figcaption></figure><figure><img src="plots/artifact_timeline.png" alt="artifact_timeline"/><figcaption>Artifact event timeline</figcaption></figure><figure><img src="plots/window_quality_timeline.png" alt="window_quality_timeline"/><figcaption>Window quality (0.5 s bins)</figcaption></figure><figure><img src="plots/artifact_velocity_histogram.png" alt="artifact_velocity_histogram"/><figcaption>Artifact velocity histogram — Each cell is the strongest artifact candidate on that marker at that time. Velocity/acceleration MAD (σ=8): <strong>minor</strong> = metric 1.0–1.25× threshold, <strong>moderate</strong> = 1.25–2.0×, <strong>severe</strong> = ≥2.0×. Constant-hold and single-frame-spike candidates use the same ratio tiers on their respective metrics. <strong>Segment swap</strong> (rigid-body pair length): <strong>moderate</strong> = distance deviates &gt;18% from the session median, <strong>severe/swap</strong> = deviation ≥50% (likely marker identity error). When several methods fire on the same frame, the highest severity is shown.</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_elbow_forearm.png" alt="artifact_velocity_histogram__elbow_forearm"/><figcaption>Velocity histogram — elbow_forearm</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_foot.png" alt="artifact_velocity_histogram__foot"/><figcaption>Velocity histogram — foot</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_head_neck.png" alt="artifact_velocity_histogram__head_neck"/><figcaption>Velocity histogram — head_neck</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_pelvis_waist.png" alt="artifact_velocity_histogram__pelvis_waist"/><figcaption>Velocity histogram — pelvis_waist</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_shank_ankle.png" alt="artifact_velocity_histogram__shank_ankle"/><figcaption>Velocity histogram — shank_ankle</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_shoulder_upper_arm.png" alt="artifact_velocity_histogram__shoulder_upper_arm"/><figcaption>Velocity histogram — shoulder_upper_arm</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_thigh_knee.png" alt="artifact_velocity_histogram__thigh_knee"/><figcaption>Velocity histogram — thigh_knee</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_torso_chest_back.png" alt="artifact_velocity_histogram__torso_chest_back"/><figcaption>Velocity histogram — torso_chest_back</figcaption></figure><figure><img src="plots/artifact_velocity_histogram_wrist_hand.png" alt="artifact_velocity_histogram__wrist_hand"/><figcaption>Velocity histogram — wrist_hand</figcaption></figure>
+
+<p class="sub">See <code>qc_report.md</code> and <code>layer1_segmentation_notebook_manifest.json</code> for full details.</p>
+</body></html>

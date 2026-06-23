@@ -1,0 +1,2 @@
+subject_id,timepoint,part_id,repetition_id,group_id,matrix_path,include_in_analysis,analysis_role
+671,T1,P1,R1,Group4,/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2.5_Segmentation/outputs/pre_jvcpca_review/session_window/window_jvcpca_matrix.parquet,true,A_T1_R1

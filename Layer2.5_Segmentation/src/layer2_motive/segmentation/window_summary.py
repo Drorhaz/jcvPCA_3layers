@@ -117,10 +117,12 @@ def summarize_layer1_window(
     window = qc_mask_df.loc[window_mask]
 
     n_window_frames = int(len(window))
-    status_counts = window["status"].astype(str).str.lower().value_counts()
-    n_use = int(status_counts.get("use", 0))
-    n_caution = int(status_counts.get("caution", 0))
-    n_exclude = int(status_counts.get("exclude", 0))
+    any_flag = pd.Series(False, index=window.index)
+    for col in LAYER1_FLAG_COLUMNS:
+        if col in window.columns:
+            any_flag = any_flag | _coerce_bool(window[col])
+    n_clean = int((~any_flag).sum())
+    n_flagged = int(any_flag.sum())
 
     flag_counts: dict[str, int] = {}
     for col in LAYER1_FLAG_COLUMNS:
@@ -157,12 +159,14 @@ def summarize_layer1_window(
         "start_frame": start_frame,
         "end_frame": end_frame,
         "n_window_frames": n_window_frames,
-        "n_use_frames": n_use,
-        "n_caution_frames": n_caution,
-        "n_exclude_frames": n_exclude,
-        "percent_use": pct(n_use),
-        "percent_caution": pct(n_caution),
-        "percent_exclude": pct(n_exclude),
+        "n_clean_frames": n_clean,
+        "n_flagged_frames": n_flagged,
+        "n_use_frames": n_clean,
+        "n_caution_frames": int(flag_counts.get("flag_gap_0p2", 0)),
+        "n_exclude_frames": int(flag_counts.get("flag_gap_0p5", 0)),
+        "percent_use": pct(n_clean),
+        "percent_caution": pct(int(flag_counts.get("flag_gap_0p2", 0))),
+        "percent_exclude": pct(int(flag_counts.get("flag_gap_0p5", 0))),
         "flag_counts": flag_counts,
         "gap_0p5_percent": pct(flag_counts.get("flag_gap_0p5", 0)),
         "gap_0p2_percent": pct(flag_counts.get("flag_gap_0p2", 0)),

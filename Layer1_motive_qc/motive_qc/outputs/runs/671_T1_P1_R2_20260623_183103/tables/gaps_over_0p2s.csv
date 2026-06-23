@@ -1,0 +1,10 @@
+marker_name,body_region_group,n_gaps,total_gap_seconds,longest_gap_seconds,gap_intervals_s,marker_name_raw,marker_name_canonical,asset_prefix
+671:RFArm,shoulder_upper_arm,12,3.6,0.4083,36.67-36.88; 118.90-119.30; 119.85-120.17; 120.21-120.53; 124.09-124.38; 129.32-129.69; 134.47-134.67; 134.82-135.03; 161.38-161.67; 164.52-164.80; 166.65-167.01; 208.94-209.21,671:RFArm,RFArm,671
+671:LFArm,shoulder_upper_arm,8,2.675,0.475,118.01-118.34; 121.32-121.63; 124.78-125.05; 127.67-127.91; 129.98-130.45; 132.78-133.10; 134.97-135.38; 186.73-186.97,671:LFArm,LFArm,671
+671:ChestLow,torso_chest_back,5,1.5583,0.4667,119.51-119.71; 121.17-121.63; 121.80-122.05; 138.30-138.70; 149.96-150.17,671:ChestLow,ChestLow,671
+671:RHandIn,wrist_hand,4,0.9417,0.2833,58.28-58.48; 142.67-142.90; 169.17-169.38; 208.15-208.43,671:RHandIn,RHandIn,671
+671:LShoulderTop,shoulder_upper_arm,3,0.9167,0.3417,148.06-148.37; 159.41-159.66; 192.93-193.27,671:LShoulderTop,LShoulderTop,671
+671:WaistLFront,pelvis_waist,2,0.6833,0.3667,164.63-164.94; 165.93-166.29,671:WaistLFront,WaistLFront,671
+671:RShoulderTop,shoulder_upper_arm,2,0.6083,0.325,169.73-170.05; 246.36-246.63,671:RShoulderTop,RShoulderTop,671
+671:LKneeOut,thigh_knee,1,0.425,0.425,207.33-207.75,671:LKneeOut,LKneeOut,671
+671:ChestTop,torso_chest_back,1,0.2667,0.2667,172.20-172.46,671:ChestTop,ChestTop,671

@@ -138,7 +138,7 @@ def normalize_qc_mask_events(
     source_file: str = "qc_mask.csv",
     frame_rate_hz: float = 120.0,
 ) -> pd.DataFrame:
-    """Convert qc_mask frame rows into normalized events for caution/exclude/flagged frames."""
+    """Convert qc_mask frame rows into normalized events from boolean flag columns."""
     rows: list[dict] = []
     has_time = time_col in qc_mask.columns
     flag_cols = [c for c in LAYER1_FLAG_QC_TYPES if c in qc_mask.columns]
@@ -146,42 +146,17 @@ def normalize_qc_mask_events(
     for _, row in qc_mask.iterrows():
         frame = int(row[frame_col])
         time_sec = float(row[time_col]) if has_time else frame / frame_rate_hz
-        status = str(row.get("status", "use")).lower()
         reason = row.get("reason", "")
         reason_str = "" if pd.isna(reason) else str(reason)
 
-        active_flags = [
-            col for col in flag_cols if _coerce_bool(pd.Series([row[col]])).iloc[0]
-        ]
-
-        if status in {"caution", "exclude"}:
-            event = _row_base(session_key, source_file)
-            event.update(
-                {
-                    "qc_type": "frame_status",
-                    "severity": status,
-                    "frame": frame,
-                    "start_frame": frame,
-                    "end_frame": frame,
-                    "time_sec": time_sec,
-                    "start_time_sec": time_sec,
-                    "end_time_sec": time_sec,
-                    "duration_frames": 1,
-                    "duration_seconds": 1.0 / frame_rate_hz,
-                    "entity_type": "frame",
-                    "entity_name": str(frame),
-                    "reason": reason_str or status,
-                    "notes": f"status={status}",
-                }
-            )
-            rows.append(event)
-
-        for flag_col in active_flags:
+        for flag_col in flag_cols:
+            if not _coerce_bool(pd.Series([row[flag_col]])).iloc[0]:
+                continue
             event = _row_base(session_key, source_file)
             event.update(
                 {
                     "qc_type": LAYER1_FLAG_QC_TYPES[flag_col],
-                    "severity": "caution" if status == "use" else status,
+                    "severity": "flag",
                     "frame": frame,
                     "start_frame": frame,
                     "end_frame": frame,
@@ -226,16 +201,17 @@ def normalize_interval_events(
         if pd.isna(duration_s):
             duration_s = duration_frames / frame_rate_hz
 
-        status = str(row.get("status", "caution")).lower()
+        status = str(row.get("status", "")).lower()
         reason = row.get("reason", "")
         criterion = row.get("criterion", "")
         affected = row.get("affected_markers", "")
         qc_type = interval_criterion_to_qc_type(criterion)
         markers = parse_affected_markers(affected)
+        severity = str(criterion or reason or "interval").strip() or "interval"
 
         base = {
             "qc_type": qc_type,
-            "severity": status,
+            "severity": severity,
             "frame": start_frame,
             "start_frame": start_frame,
             "end_frame": end_frame,

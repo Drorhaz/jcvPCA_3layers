@@ -1,10 +1,10 @@
 # Stage 07 — Rotation-vector log-map conversion and diagnostics
 
-Generated: 2026-06-19 15:06:38 UTC
+Generated: 2026-06-21 12:25:31 UTC
 
 ## Input files used
 
-- `/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv`
+- `data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv`
 - `outputs/671_T1_P1_R1_Take_2026-01-06_03.57.12_PM_001/06_relative_quaternions/relative_quaternions.parquet`
 
 ## What was detected
@@ -18,7 +18,7 @@ Generated: 2026-06-19 15:06:38 UTC
 - Review warnings/failures: 0/0
 - Excluded warnings/failures: 8/8
 - Compact signal columns: 25
-- Stage 08 may proceed: False
+- Stage 08 may proceed: True
 
 ## Assumptions
 
@@ -34,6 +34,7 @@ Generated: 2026-06-19 15:06:38 UTC
 - Stage 07 does not resolve skeleton-version mismatch.
 - Stage 07 does not make Layer 3 ready.
 - Core and excluded link diagnostics are interpreted separately.
+- Jump/branch-cut failures on core links are flagged for localized Stage 08 masking.
 - Branch-cut/jump diagnostics are required before Stage 08 filtering.
 - Provisional joint selection from Stage 01 / pre–Stage 07 gate is preserved but not frozen.
 
@@ -76,7 +77,7 @@ Generated: 2026-06-19 15:06:38 UTC
 
 ## Validation status
 
-FAIL — core link rotation-vector diagnostics failed (see branch_cut_report and rotvec_jump_report)
+PASS WITH REVIEW — rotation vectors computed; jump/branch-cut diagnostics flagged for localized Stage 08 masking (see branch_cut_report and rotvec_jump_report)
 
 ## Next recommended action
 

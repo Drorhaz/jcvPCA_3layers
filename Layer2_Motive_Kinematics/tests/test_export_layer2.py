@@ -85,10 +85,10 @@ def _make_stage08_parquet(frames: int = 10, links: list[str] | None = None) -> p
                     "ry_filtered_native": 0.0,
                     "rz_filtered_native": 0.0,
                     "rotvec_norm_filtered_native": abs(rx_native),
-                    "rx_filtered_analysis": rx_native if eligible else np.nan,
-                    "ry_filtered_analysis": 0.0 if eligible else np.nan,
-                    "rz_filtered_analysis": 0.0 if eligible else np.nan,
-                    "rotvec_norm_filtered_analysis": abs(rx_native) if eligible else np.nan,
+                    "rx_filtered_analysis": rx_native,
+                    "ry_filtered_analysis": 0.0,
+                    "rz_filtered_analysis": 0.0,
+                    "rotvec_norm_filtered_analysis": abs(rx_native),
                     "stage08_filter_applied": True,
                     "stage08_filter_status": "pass",
                     "stage08_stage07_jump_frame": jump_frame,
@@ -130,7 +130,7 @@ def _write_minimal_run(tmp_path: Path, *, run_label: str = "test_run_label") -> 
                 "jump_event_frames": 1,
                 "jump_context_frames": 3,
                 "analysis_eligible_frames": 7,
-                "stage08_filter_status": "filtered_but_jump_context_masked",
+                "stage08_filter_status": "filtered_but_jump_context_flagged",
                 "cutoff_hz": 10.0,
                 "filter_order": 4,
                 "sampling_rate_hz": 120.0,
@@ -218,15 +218,24 @@ def test_jump_context_rows_analysis_ineligible(tmp_path: Path) -> None:
     assert jump_context["stage08_analysis_eligible"].sum() == 0
 
 
-def test_analysis_clean_nan_when_ineligible(tmp_path: Path) -> None:
+def test_qc_flagged_rows_keep_numeric_analysis_values(tmp_path: Path) -> None:
     run_dir = _write_minimal_run(tmp_path)
     export_root = tmp_path / "layer2_exports"
     export_session(run_dir, export_root, force=True)
 
     parquet_df = pd.read_parquet(export_root / "test_run_label" / EXPORT_PARQUET)
     ineligible = parquet_df.loc[~parquet_df["stage08_analysis_eligible"]]
+    qc_flagged = ineligible.loc[
+        ineligible["stage08_mask_reason"].isin(
+            {
+                "stage07_jump_context",
+                "excluded_feature_scope",
+                "manual_review_provisional",
+            }
+        )
+    ]
     for col in ANALYSIS_CLEAN_COLS:
-        assert ineligible[col].isna().all()
+        assert qc_flagged[col].notna().all()
 
 
 def test_no_combined_signal_parquet(tmp_path: Path) -> None:

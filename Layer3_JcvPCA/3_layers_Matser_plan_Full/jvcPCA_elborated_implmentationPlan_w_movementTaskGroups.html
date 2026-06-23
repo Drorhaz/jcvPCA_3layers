@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JcvPCA Three-Layer Pipeline Architecture — Gaga Movement Analysis</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #34d399;
+            --accent-amber: #fbbf24;
+            --border-color: #334155;
+            --code-bg: #0b0f19;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            line-height: 1.6;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 340px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        nav h1 {
+            font-size: 1.1rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            margin-bottom: 0.4rem;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: block;
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        nav a:hover {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        /* Main Content Container */
+        main {
+            margin-left: 340px;
+            flex-grow: 1;
+            padding: 3rem;
+            max-width: 1100px;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+        }
+
+        header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 850px;
+        }
+
+        /* Step Card Styling */
+        section {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .step-num {
+            font-family: monospace;
+            color: var(--accent-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--code-bg);
+            color: var(--accent-blue);
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Code & Framework Structures */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 1.25rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin: 1rem 0;
+        }
+
+        .code-title {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: -0.8rem;
+            margin-left: 0.5rem;
+            display: block;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            border-left: 4px solid;
+            padding: 1rem 1.25rem;
+            margin: 1.2rem 0;
+            border-radius: 0 6px 6px 0;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .callout.warning {
+            border-left-color: var(--accent-amber);
+            background-color: rgba(251, 191, 36, 0.04);
+        }
+        .callout.warning .title { color: var(--accent-amber); font-weight: bold; }
+
+        .callout.info {
+            border-left-color: var(--accent-blue);
+            background-color: rgba(56, 189, 248, 0.04);
+        }
+        .callout.info .title { color: var(--accent-blue); font-weight: bold; }
+
+        .callout.danger {
+            border-left-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.04);
+        }
+        .callout.danger .title { color: #ef4444; font-weight: bold; }
+
+        .callout.success {
+            border-left-color: var(--accent-green);
+            background-color: rgba(52, 211, 153, 0.04);
+        }
+        .callout.success .title { color: var(--accent-green); font-weight: bold; }
+
+        .title {
+            display: block;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        ul.requirements {
+            list-style-type: none;
+            margin: 1rem 0;
+        }
+
+        ul.requirements li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        ul.requirements li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h1>JcvPCA Architecture</h1>
+        <p>Three-Layer Pipeline Architecture</p>
+        <ul>
+            <li><a href="#pipeline-spec">Pipeline Specification</a></li>
+            <li><a href="#gaga-groups">Gaga Movement Groups</a></li>
+            <li><a href="#exercise-segmentation">Exercise-Level Segmentation</a></li>
+            <li><a href="#purpose">Purpose & Datasets</a></li>
+            <li><a href="#inputs">Inputs</a></li>
+            <li><a href="#step1">1. Validate Inputs</a></li>
+            <li><a href="#step2">2. Center Dataset A</a></li>
+            <li><a href="#step3">3. Fit PCA on A</a></li>
+            <li><a href="#step4">4. Center Dataset B</a></li>
+            <li><a href="#step5">5. Project B into A Space</a></li>
+            <li><a href="#step6">6. Run PCA on Projected B</a></li>
+            <li><a href="#step7">7. Reproject B Loadings</a></li>
+            <li><a href="#step8">8. Compute A Absolute Loadings</a></li>
+            <li><a href="#step9">9. Axis-Level JcvPCA</a></li>
+            <li><a href="#step10">10. Axis-Level JRW Table</a></li>
+            <li><a href="#step11">11. Joint-Level Values</a></li>
+            <li><a href="#step12">12. Variance Weighting</a></li>
+            <li><a href="#step13">13. Natural Variability</a></li>
+            <li><a href="#step14">14. Pipeline Outputs</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <header>
+            <h2>JcvPCA Pseudocode Pipeline</h2>
+            <p>An adaptation of the JcvPCA computational framework to OptiTrack/Motive-derived relative joint rotation-vector features, supported by raw marker quality control.</p>
+        </header>
+
+        <section id="pipeline-spec">
+            <span class="step-num">Core Framework</span>
+            <h3>Pipeline Specification & Framing Guardrails</h3>
+            <p>This implementation architecture outlines a three-layer pipeline adapting JcvPCA to 3D motion-capture data. It must be implemented conservatively and transparently.</p>
+            
+            <div class="callout warning">
+                <span class="title">Scientific Framing Guardrail</span>
+                This system <strong>does not claim to reproduce direct encoder-based anatomical joint-angle measurements</strong>. Instead, it is strictly framed as an adaptation of the JcvPCA computational framework to Motive-derived relative joint rotation-vector features, validated by Layer 1 raw marker quality control.
+            </div>
+
+            <h4>Experimental Design Structure</h4>
+            <p>The pipeline processes data from <strong>Gaga Task Part 1</strong>, where each participant goes through three distinct longitudinal timepoints, repeating Part 1 twice per session:</p>
+            <ul>
+                <li><strong>Timepoint 1 (Reference):</strong> <code>T1_P1_r1</code>, <code>T1_P1_r2</code></li>
+                <li><strong>Timepoint 2 (Comparison):</strong> <code>T2_P1_r1</code>, <code>T2_P1_r2</code></li>
+                <li><strong>Timepoint 3 (Comparison):</strong> <code>T3_P1_r1</code>, <code>T3_P1_r2</code></li>
+            </ul>
+
+            <table style="margin-top: 1rem;">
+                <thead>
+                    <tr>
+                        <th>Analytical Priority</th>
+                        <th>Target Movement Block</th>
+                        <th>Cues Covered / Biomechanical Characteristics</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Focus</strong></td>
+                        <td>Group 4 — Curvilinear exploration</td>
+                        <td>Hands, elbows, shoulders, nose, and whole-body curves (~61 seconds). Ideal, stable block length.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Secondary Focus</strong></td>
+                        <td>To Be Determined (TBD)</td>
+                        <td>Selected from remaining validated movement windows.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="gaga-groups">
+            <span class="step-num">Contextual Mapping</span>
+            <h3>Gaga Task Part 1 Movement Reference Window</h3>
+            <p>Movement segments compiled from the task transcript used to extract biomechanically coherent, stable time series for PCA analysis.</p>
+            
+            <div class="callout info">
+                <span class="title">Implementation Rule: Why use these grouped blocks?</span>
+                Some individual cues are relatively short, especially the curve-related cues such as hands, elbows, shoulders, and nose. Analyzing each short cue separately may be unstable for PCA-based methods. Grouping related cues creates longer and more interpretable movement blocks. 
+                <br><br>
+                <strong>Suggested minimum block duration:</strong> For JcvPCA-style analysis, it is preferable to use movement blocks of approximately <strong>20–40 seconds or longer</strong>, when possible. This helps ensure that each block contains enough movement variability for PCA.
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Group</th>
+                        <th>Movement Block Name</th>
+                        <th>Time Window</th>
+                        <th>Duration</th>
+                        <th>Analytical Status / Warnings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Trunk sagittal movement</td>
+                        <td>00:00:02.06–00:00:31.26</td>
+                        <td>~29 s</td>
+                        <td>Good independent block.</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Upper-limb elevation & arm wave</td>
+                        <td>00:00:31.26–00:01:08.13</td>
+                        <td>~37 s</td>
+                        <td><strong style="color:var(--accent-amber);">Caution:</strong> Combines vertical elevation and horizontal waving. Separable if troubleshooting.</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Axial rotation / arm rotation</td>
+                        <td>00:01:08.13–00:01:52.11</td>
+                        <td>~44 s</td>
+                        <td>Good block; video validation of boundary times suggested.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:var(--accent-green);">4</td>
+                        <td style="color:var(--accent-green);">Curvilinear exploration (PRIMARY)</td>
+                        <td style="color:var(--accent-green);">00:01:52.11–00:02:53.15</td>
+                        <td style="color:var(--accent-green);">~61 s</td>
+                        <td style="color:var(--accent-green);">Very strong independent candidate. Focus of this architecture.</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Single-leg balance with curves</td>
+                        <td>00:02:53.15–00:03:33.29</td>
+                        <td>~40 s</td>
+                        <td>Very good block; left/right balance phases sliceable.</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Whole-body shaking / dance</td>
+                        <td>00:03:33.29–End</td>
+                        <td>≥12 s</td>
+                        <td><strong style="color:var(--accent-amber);">Caution:</strong> Usable only if final tracking duration extends beyond 30 seconds.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="exercise-segmentation">
+            <span class="step-num">Granular Mapping</span>
+            <h3>Detailed Exercise-Level Segmentation</h3>
+            <p>The slice-by-slice timeline transcription maps directly to the designated pipeline processing filters.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align: right;">Exercise No.</th>
+                        <th>Transcript Time</th>
+                        <th>Cue / Exercise</th>
+                        <th>Proposed Group</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: right;">1</td>
+                        <td>00:00:02.06</td>
+                        <td>Bend over as far as you can and then roll up</td>
+                        <td>Group 1 — Trunk sagittal movement</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">2</td>
+                        <td>00:00:16.20</td>
+                        <td>Look up and arch your spine</td>
+                        <td>Group 1 — Trunk sagittal movement</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">3</td>
+                        <td>00:00:31.26</td>
+                        <td>Raise your arms over your head. Stretch your arms and yawn</td>
+                        <td>Group 2 — Upper-limb elevation and arm wave</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">4</td>
+                        <td>00:00:50.17</td>
+                        <td>Create a wave across your arms from side to side</td>
+                        <td>Group 2 — Upper-limb elevation and arm wave</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">5</td>
+                        <td>00:00:58.14</td>
+                        <td>Other side</td>
+                        <td>Group 2 — Upper-limb elevation and arm wave</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">6</td>
+                        <td>00:01:08.13</td>
+                        <td>Look behind you and twist your spine</td>
+                        <td>Group 3 — Axial rotation and reciprocal arm rotation</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">7</td>
+                        <td>00:01:14.18</td>
+                        <td>Come back to the center. Repeat this on the other side. Put your arms out to the side. Rotate one in and one out</td>
+                        <td>Group 3 — Axial rotation and reciprocal arm rotation</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">8</td>
+                        <td>00:01:40.23</td>
+                        <td>Switch</td>
+                        <td>Group 3 — Axial rotation and reciprocal arm rotation</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">9</td>
+                        <td>00:01:52.11</td>
+                        <td>Draw curves with your hands</td>
+                        <td>Group 4 — Curvilinear exploration</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">10</td>
+                        <td>00:02:02.26</td>
+                        <td>Add curves with your elbows</td>
+                        <td>Group 4 — Curvilinear exploration</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">11</td>
+                        <td>00:02:14.05</td>
+                        <td>Add curves with your shoulders</td>
+                        <td>Group 4 — Curvilinear exploration</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">12</td>
+                        <td>00:02:25.02</td>
+                        <td>Add curves with your nose</td>
+                        <td>Group 4 — Curvilinear exploration</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">13</td>
+                        <td>00:02:34.09</td>
+                        <td>Now use your whole body including these body parts to draw curves</td>
+                        <td>Group 4 — Curvilinear exploration</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">14</td>
+                        <td>00:02:53.15</td>
+                        <td>Stand on one leg and draw curves with multiple body parts</td>
+                        <td>Group 5 — Single-leg balance with whole-body curves</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">15</td>
+                        <td>00:03:12.18</td>
+                        <td>Stand on the other leg and draw curves with multiple body parts</td>
+                        <td>Group 5 — Single-leg balance with whole-body curves</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">16</td>
+                        <td>00:03:33.29</td>
+                        <td>Shake as many body parts as possible</td>
+                        <td>Group 6 — Whole-body shaking / dance</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">17</td>
+                        <td>00:03:45.03</td>
+                        <td>Keep shaking as you dance</td>
+                        <td>Group 6 — Whole-body shaking / dance</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="purpose">
+            <span class="step-num">Overview</span>
+            <h3>Purpose & Dataset Definition</h3>
+            <p>Compares whole-body joint contribution structural changes from reference (Dataset A, fixed at T1) to comparison targets (Dataset B, tracking T2 or T3 longitudinal variance).</p>
+            <div class="callout info">
+                <span class="title">Mathematical Feature Adaptation</span>
+                The baseline paper used simulated joint trajectories of scalar variables ($joint_i, joint_j$). This architecture adapts the framework to multi-component filtered relative joint rotation-vector features ($joint_{rx}, joint_{ry}, joint_{rz}$) inside the local bone frames.
+            </div>
+            <span class="code-title">Example Focus Pairings</span>
+            <pre>
+# Primary Evaluation: Longitudinal Phase T2
+A = T1_P1_r1_Group4 + T1_P1_r2_Group4
+B = T2_P1_r1_Group4 + T2_P1_r2_Group4
+
+# Primary Evaluation: Longitudinal Phase T3
+A = T1_P1_r1_Group4 + T1_P1_r2_Group4
+B = T3_P1_r1_Group4 + T3_P1_r2_Group4</pre>
+        </section>
+
+        <section id="inputs">
+            <span class="step-num">Configuration</span>
+            <h3>Pipeline Inputs</h3>
+            <span class="code-title">Required Matrices & Configuration Parameters</span>
+            <pre>
+A_data: Matrix[n_samples_A, n_features]        # Reference dataset (T1 base)
+B_data: Matrix[n_samples_B, n_features]        # Comparison dataset (T2 or T3 target)
+
+feature_names = [
+    "trunk_rx", "trunk_ry", "trunk_rz",
+    "left_hip_rx", "left_hip_ry", "left_hip_rz", ...
+]
+
+joint_map = {
+    "trunk": ["trunk_rx", "trunk_ry", "trunk_rz"],
+    "left_hip": ["left_hip_rx", "left_hip_ry", "left_hip_rz"]
+}
+
+selected_m: int                                # Retained PC dimensions (Calculated dynamically 
+                                               # from A to satisfy e.g., 80% or 90% cumulative variance)</pre>
+        </section>
+
+        <section id="step1">
+            <span class="step-num">Step 01</span>
+            <h3>Validate Inputs</h3>
+            <p>Enforce strict structural filters on the input spaces prior to coordinate transformations.</p>
+            <ul class="requirements">
+                <li>Assert <code>A_data</code> and <code>B_data</code> contain identical feature dimensions.</li>
+                <li>Assert <code>feature_names</code> maintain perfectly matching matrix column sorting sequences.</li>
+                <li>Assert input columns are strictly restricted to Layer 2 output features (filtered relative rotation-vector components).</li>
+            </ul>
+            <div class="callout danger">
+                <span class="title">Strict Processing Rejections</span>
+                DO NOT allow raw marker columns, raw quaternions, global bone quaternions, or previously z-scored features into the PCA execution space.
+            </div>
+        </section>
+
+        <section id="step2">
+            <span class="step-num">Step 02</span>
+            <h3>Center Dataset A Independently</h3>
+            <p>Isolate mean coordinates of the reference dataset.</p>
+            <pre>
+A_mean = mean(A_data, axis = samples)
+A_centered = A_data - A_mean</pre>
+            <div class="callout warning">
+                <span class="title">Normalization Limitation</span>
+                Matches paper logic. Do not z-score, divide by standard deviation, range-normalize, or scale variance across components.
+            </div>
+        </section>
+
+        <section id="step3">
+            <span class="step-num">Step 03</span>
+            <h3>Fit PCA on Reference Dataset A</h3>
+            <p>Construct the reference principal component frame of matrix $R_A$.</p>
+            <pre>
+PCA_A = PCA(n_components = selected_m)
+PCA_A.fit(A_centered)
+
+R_A = PCA_A.components_                       # Shape: [selected_m, n_features]
+explained_variance_ratio_A = PCA_A.explained_variance_ratio_</pre>
+        </section>
+
+        <section id="step4">
+            <span class="step-num">Step 04</span>
+            <h3>Center Dataset B Independently</h3>
+            <p>Center the comparison tracking set to its individual local frame origin.</p>
+            <pre>
+B_mean = mean(B_data, axis = samples)
+B_centered = B_data - B_mean</pre>
+            <div class="callout danger">
+                <span class="title">Crucial Deviation Warning</span>
+                This calculation must NOT use <code>B_data - A_mean</code>. Dataset B must step into its own zero-centered coordinate frame before being projected into A's framework.
+            </div>
+        </section>
+
+        <section id="step5">
+            <span class="step-num">Step 05</span>
+            <h3>Project B into A's PCA Space</h3>
+            <p>Map the independently centered data matrix of B onto the reference vectors of A.</p>
+            <pre>
+# Safe Manual Matrix Multiplication
+B_scores_in_A_space = B_centered @ transpose(R_A)   # Shape: [n_samples_B, selected_m]</pre>
+            <div class="callout warning">
+                <span class="title">Library Architecture Warning</span>
+                Avoid using automated blackbox library calls like <code>PCA_A.transform(B_raw)</code> if the backend pipeline implicitly recalculates and subtracts A's mean vector from B.
+            </div>
+        </section>
+
+        <section id="step6">
+            <span class="step-num">Step 06</span>
+            <h3>Run PCA on Projected B Space</h3>
+            <p>Compute internal variance directions of B inside the coordinates defined by A.</p>
+            <pre>
+PCA_B_in_A_space = PCA(n_components = selected_m)
+PCA_B_in_A_space.fit(B_scores_in_A_space)
+
+R_B_in_A_space = PCA_B_in_A_space.components_       # Shape: [selected_m, selected_m]</pre>
+        </section>
+
+        <section id="step7">
+            <span class="step-num">Step 07</span>
+            <h3>Reproject B Loadings into Original Feature Space</h3>
+            <p>Transform B's local subspace orientations back into native relative rotation features.</p>
+            <pre>
+B_reprojected_loadings = R_B_in_A_space @ R_A       # Shape: [selected_m, n_features]
+B_abs_loadings = abs(B_reprojected_loadings)</pre>
+        </section>
+
+        <section id="step8">
+            <span class="step-num">Step 08</span>
+            <h3>Compute A Absolute Loadings</h3>
+            <p>Establish structural base magnitude benchmarks from reference matrix configurations.</p>
+            <pre>
+A_loadings = R_A
+A_abs_loadings = abs(A_loadings)                    # Shape: [selected_m, n_features]</pre>
+        </section>
+
+        <section id="step9">
+            <span class="step-num">Step 09</span>
+            <h3>Compute Axis-Level JcvPCA</h3>
+            <p>Examine directional deviations across all component vectors.</p>
+            <pre>
+JcvPCA_axis = B_abs_loadings - A_abs_loadings</pre>
+            <div class="callout info">
+                <span class="title">Interpretation Guide</span>
+                <ul>
+                    <li><strong>Positive Value:</strong> Feature component vector demonstrates increased contribution weight in Dataset B relative to reference Dataset A.</li>
+                    <li><strong>Negative Value:</strong> Feature component vector demonstrates diminished contribution weight in Dataset B relative to reference Dataset A.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="step10">
+            <span class="step-num">Step 10</span>
+            <h3>Compile Axis-Level JRW Table</h3>
+            <p>Consolidate structural analytical properties across metrics into standardized row formats.</p>
+            <pre>
+for each pc_index in selected_m:
+    for each feature_name in feature_names:
+        emit_row(
+            pc_index, feature_name, joint_name, component,
+            A_loading, B_reprojected_loading, A_abs_loading, B_abs_loading,
+            JcvPCA_axis, explained_variance_ratio_A
+        )
+
+export_to_csv("JRW_axis_table.csv")
+export_to_csv("JcvPCA_axis_table.csv")</pre>
+        </section>
+
+        <section id="step11">
+            <span class="step-num">Step 11</span>
+            <h3>Group Coordinate Axes into Joint-Level Values</h3>
+            <p>Consolidate directional $rx, ry, rz$ vectors into Euclidean representations using root-sum-square calculations.</p>
+            <pre>
+for each joint in joint_map:
+    for each pc in selected_m:
+        # Extract axis components
+        A_rx, A_ry, A_rz = get_loadings(A_abs_loadings, joint, pc)
+        B_rx, B_ry, B_rz = get_loadings(B_abs_loadings, joint, pc)
+        
+        # Root-Sum-Square (RSS) transformation
+        JRW_A_joint = sqrt(A_rx^2 + A_ry^2 + A_rz^2)
+        JRW_B_joint = sqrt(B_rx^2 + B_ry^2 + B_rz^2)
+        
+        # Calculate Joint JcvPCA delta
+        JcvPCA_joint = JRW_B_joint - JRW_A_joint</pre>
+            <div class="callout success">
+                <span class="title">Custom Modification Rationale</span>
+                This RSS step is a designated structural extension accommodating 3D rotation vectors. The source literature utilizes pre-aggregated scalar metrics, bypassing this multi-dimensional consolidation phase.
+            </div>
+        </section>
+
+        <section id="step12">
+            <span class="step-num">Step 12</span>
+            <h3>Optional Explained-Variance Weighting</h3>
+            <p>Scale components by their relative importance within reference conditions.</p>
+            <pre>
+for each pc in selected_m:
+    Weighted_JcvPCA_axis = JcvPCA_axis * explained_variance_ratio_A[pc]
+    Weighted_JcvPCA_joint = JcvPCA_joint * explained_variance_ratio_A[pc]</pre>
+            <div class="callout info">
+                <span class="title">Retention Rule</span>
+                Retain both configurations. Unweighted arrays protect narrow component-specific resolution, while weighted parameters provide broad holistic summaries.
+            </div>
+        </section>
+
+        <section id="step13">
+            <span class="step-num">Step 13</span>
+            <h3>Natural Variability Wrapper</h3>
+            <p>Calibrate system observations against localized timepoint noise profiles using baseline repetitions ($r1$ vs $r2$).</p>
+            <pre>
+# Baseline Natural Variability Target (Group 4)
+A_var = T1_P1_r1_Group4
+B_var = T1_P1_r2_Group4
+
+Natural_Variability_Group4 = Compute_JcvPCA(A_var, B_var)</pre>
+            <div class="callout danger">
+                <span class="title">Terminology Restriction & Interpretation</span>
+                A change should be interpreted as more meaningful if it exceeds the within-baseline repetition variability, appears in task-relevant PCs, and shows a consistent direction. 
+                <br><br>
+                Categorize longitudinal changes explicitly as: 
+                <ul>
+                    <li><em>"increased beyond T1 repetition-level variability"</em></li>
+                    <li><em>"decreased beyond T1 repetition-level variability"</em></li>
+                    <li><em>"within T1 repetition-level variability / inconclusive"</em></li>
+                </ul>
+                <strong>Do not</strong> state that findings are <em>"statistically significant"</em> unless formal hypothesis testing frameworks are explicitly appended later.
+            </div>
+        </section>
+
+        <section id="step14">
+            <span class="step-num">Step 14</span>
+            <h3>Pipeline Outputs</h3>
+            <p>Generate comprehensive reports and data payloads across features, scales, and descriptive parameters.</p>
+            <pre>
+# Export Target Manifest
+- JRW_axis_table.csv
+- JcvPCA_axis_table.csv
+- JcvPCA_joint_table.csv
+- weighted_JcvPCA_axis_table.csv
+- weighted_JcvPCA_joint_table.csv
+- Natural_variability_table.csv
+- Interpretation_table.csv
+- pca_A_summary.csv
+- pca_B_projected_summary.csv
+- metadata.json</pre>
+            <span class="code-title">metadata.json Structural Schema</span>
+            <pre>
+{
+  "pipeline_type": "three-layer pipeline",
+  "primary_focus": "Group 4 — Curvilinear exploration",
+  "secondary_focus": "TBD",
+  "timepoints": ["T1", "T2", "T3"],
+  "repetitions_per_timepoint": ["r1", "r2"],
+  "centering_rule": "center each dataset independently",
+  "normalization_rule": "no z-score, no variance scaling",
+  "B_projection_rule": "manual projection of independently centered B",
+  "sign_convention": "JcvPCA = abs(B_reprojected_loading) - abs(A_loading)",
+  "joint_grouping_rule": "root-sum-square of rx/ry/rz loadings",
+  "natural_variability_rule": "T1_r1 vs T1_r2"
+}</pre>
+        </section>
+    </main>
+
+</body>
+</html>

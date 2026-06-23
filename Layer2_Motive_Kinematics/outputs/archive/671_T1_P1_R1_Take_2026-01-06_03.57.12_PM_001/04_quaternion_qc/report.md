@@ -1,10 +1,10 @@
 # Stage 04 — Quaternion norm / missingness / validity QC
 
-Generated: 2026-06-19 13:41:19 UTC
+Generated: 2026-06-21 12:24:29 UTC
 
 ## Input files used
 
-- `/Users/drorhazan/Desktop/gaga_psilo/projects/3Layers_project/Layer2_Motive_Kinematics/data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv`
+- `data/671/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv`
 
 ## What was detected
 

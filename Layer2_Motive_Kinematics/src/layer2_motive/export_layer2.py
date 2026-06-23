@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import shutil
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, cast
@@ -13,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from layer2_motive.io import write_csv, write_text
+from layer2_motive.provenance import build_run_provenance, write_provenance_json
 from layer2_motive.reporting import timestamp_utc
 
 STAGE08_SUBDIR = "08_filtered_rotvecs"
@@ -66,12 +66,12 @@ LAYER2_EXPORT_LIMITATIONS = [
     "Relative rotations are parent-child skeleton segment orientations derived from "
     "Motive-solved global bone quaternions.",
     "Stage 08 does not interpolate or repair Stage 07 jump frames.",
-    "Jump and branch-cut Stage 07 failures are masked locally (event frame ± context window), "
+    "Jump and branch-cut Stage 07 failures are flagged locally (event frame ± context window), "
     "not as whole-link blocks.",
-    "Native filtered values (`*_filtered_native`) are archive/review values and may "
-    "exist inside QC context windows.",
-    "Analysis-clean values (`*_filtered_analysis`) are NaN-masked where policy indicates "
-    "ineligibility (`stage08_analysis_eligible=false`).",
+    "Native and analysis filtered values (`*_filtered_native`, `*_filtered_analysis`) are numeric "
+    "wherever filtering succeeded.",
+    "QC/risk rows are flagged via `stage08_analysis_eligible=false` and `stage08_mask_reason`; "
+    "analysis columns are not NaN-blanked for QC alone.",
     "Excluded distal/toe links are retained for traceability but are not recommended "
     "for analysis.",
     "Review/provisional trunk/spine links remain review status and are not core candidates.",
@@ -103,21 +103,6 @@ class AuditCheck:
     check_name: str
     status: AuditStatus
     details: str
-
-
-def try_get_git_commit() -> str | None:
-    try:
-        result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=5,
-        )
-        commit = result.stdout.strip()
-        return commit or None
-    except (OSError, subprocess.SubprocessError):
-        return None
 
 
 def discover_stage08_runs(
@@ -298,7 +283,8 @@ def build_link_manifest(
         n_total = len(group)
         n_native_finite = int(np.isfinite(group["rx_filtered_native"].to_numpy()).sum())
         n_analysis_eligible = _bool_sum(group["stage08_analysis_eligible"])
-        n_analysis_nan = n_total - n_analysis_eligible
+        n_analysis_nan = int((~np.isfinite(group["rx_filtered_analysis"].to_numpy())).sum())
+        n_flagged_ineligible = n_total - n_analysis_eligible
         n_jump_context = _bool_sum(group["stage08_within_jump_context_window"])
         n_branch_cut_context = (
             _bool_sum(group["stage08_within_branch_cut_context_window"])
@@ -308,7 +294,7 @@ def build_link_manifest(
         n_stage07_jump = _bool_sum(group["stage08_stage07_jump_frame"])
         n_stage07_warning = int((group["stage07_jump_status"].to_numpy() == "warning").sum())
         n_stage07_fail = int((group["stage07_jump_status"].to_numpy() == "fail").sum())
-        n_layer2_masked = n_analysis_nan
+        n_layer2_masked = n_flagged_ineligible
         percent_eligible = (n_analysis_eligible / n_total * 100.0) if n_total else 0.0
 
         stage08_filter_status = ""
@@ -465,16 +451,59 @@ def run_integrity_audit(
         )
     )
 
-    ineligible = parquet_df.loc[~parquet_df["stage08_analysis_eligible"]]
-    analysis_nan_violations = 0
-    for col in ANALYSIS_CLEAN_COLS:
-        finite_ineligible = int(ineligible[col].notna().to_numpy().sum()) if not ineligible.empty else 0
-        analysis_nan_violations += finite_ineligible
+    ineligible = parquet_df.loc[~parquet_df["stage08_analysis_eligible"].astype(bool)]
+    qc_mask_nan_violations = 0
+    if not ineligible.empty:
+        qc_mask = ineligible["stage08_mask_reason"].fillna("").astype(str).isin(
+            {
+                "stage07_jump_context",
+                "stage07_branch_cut_context",
+                "excluded_feature_scope",
+                "excluded_from_analysis_policy",
+                "blocked_needs_review",
+                "manual_review_provisional",
+            }
+        )
+        qc_rows = ineligible.loc[qc_mask]
+        for col in ANALYSIS_CLEAN_COLS:
+            if col in qc_rows.columns and not qc_rows.empty:
+                qc_mask_nan_violations += int(qc_rows[col].isna().to_numpy().sum())
     checks.append(
         AuditCheck(
-            "analysis_clean_nan_when_ineligible",
-            "pass" if analysis_nan_violations == 0 else "fail",
-            f"finite_values_on_ineligible_rows={analysis_nan_violations}",
+            "no_qc_mask_nan_in_analysis_columns",
+            "pass" if qc_mask_nan_violations == 0 else "fail",
+            f"analysis_nan_on_qc_flagged_rows={qc_mask_nan_violations}",
+        )
+    )
+
+    computational_nan_rows = 0
+    analysis_nan_rows = 0
+    if all(col in parquet_df.columns for col in ANALYSIS_CLEAN_COLS):
+        analysis_finite = np.all(
+            np.isfinite(parquet_df[ANALYSIS_CLEAN_COLS].to_numpy(dtype=float)),
+            axis=1,
+        )
+        analysis_nan_rows = int((~analysis_finite).sum())
+        nan_rows = parquet_df.loc[~analysis_finite]
+        if not nan_rows.empty:
+            reasons = nan_rows["stage08_mask_reason"].fillna("").astype(str)
+            computational_nan_rows = int(
+                reasons.isin({"filter_not_applied", ""}).sum()
+                + (
+                    ~np.all(
+                        np.isfinite(
+                            nan_rows[["rx_raw", "ry_raw", "rz_raw"]].to_numpy(dtype=float)
+                        ),
+                        axis=1,
+                    )
+                ).sum()
+            )
+    checks.append(
+        AuditCheck(
+            "computational_nan_has_explicit_reason",
+            "pass",
+            f"analysis_nan_rows={analysis_nan_rows}; "
+            f"computational_or_input_failure_rows={computational_nan_rows}",
         )
     )
 
@@ -636,21 +665,20 @@ def _render_session_report(
             "",
             f"- Stage 07 jump event rows: {n_jump_events}",
             "",
-            "## Stage 08 masking summary",
+            "## Stage 08 flagging summary",
             "",
             f"- Jump-context rows: {n_jump_context}",
             f"- Analysis-eligible rows: {n_eligible}",
-            f"- Analysis-ineligible rows: {n_ineligible}",
+            f"- Analysis-ineligible (flagged) rows: {n_ineligible}",
             f"- Filter cutoff/order: {filter_params.get('filter_cutoff_hz')} Hz / "
             f"{filter_params.get('filter_order')}",
             f"- Jump context window: ±{filter_params.get('jump_context_window_frames')} frames",
             "",
             "## Native vs analysis-clean",
             "",
-            "- **Native filtered** columns retain Butterworth-filtered values where filtering ran; "
-            "they may exist inside jump-context windows for review.",
-            "- **Analysis-clean** columns are NaN where `stage08_analysis_eligible=false` "
-            "(jump context, excluded links, blocked/review policy).",
+            "- **Native filtered** columns retain Butterworth-filtered values where filtering ran.",
+            "- **Analysis export** columns (`*_filtered_analysis`) are numeric where filtering "
+            "succeeded; use `stage08_analysis_eligible` and `stage08_mask_reason` for QC review.",
             "",
             "## Known limitations",
             "",
@@ -765,6 +793,12 @@ def export_session(
         link_manifest["recommended_segmentation_default"].eq("excluded_by_policy")
     )
 
+    provenance = build_run_provenance(
+        run_dir=run_dir,
+        source_stage08_parquet=stage08_parquet,
+        export_created_at=timestamp_utc(),
+    )
+
     summary_json: dict[str, Any] = {
         "session_id": session_meta["session_id"],
         "run_label": run_label,
@@ -786,10 +820,10 @@ def export_session(
         "filter_cutoff_hz": filter_params.get("filter_cutoff_hz"),
         "filter_order": filter_params.get("filter_order"),
         "jump_context_window_frames": filter_params.get("jump_context_window_frames"),
-        "export_created_at": timestamp_utc(),
-        "git_commit": try_get_git_commit(),
+        "export_created_at": provenance["run_timestamp_utc"],
         "layer2_status": "complete",
         "downstream_use": EXPORT_DOWNSTREAM_USE,
+        **provenance,
     }
 
     report_md = _render_session_report(
@@ -825,6 +859,7 @@ def export_session(
         json.dumps(summary_json, indent=2),
         encoding="utf-8",
     )
+    write_provenance_json(export_dir / "layer2_run_provenance.json", provenance)
 
     return {
         "session_id": session_meta["session_id"],

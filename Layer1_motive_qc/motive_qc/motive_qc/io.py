@@ -145,12 +145,12 @@ def _validate_qc_mask(qc_mask: pd.DataFrame, layer1_result: QCResult, config: di
     required_cols = {
         "frame",
         "time_s",
-        "status",
         "flag_gap_0p2",
         "flag_gap_0p5",
         "flag_artifact_sigma",
         "flag_segment_swap",
         "flag_edge_effect",
+        "reason",
     }
     missing = required_cols - set(qc_mask.columns)
     if missing:
@@ -224,6 +224,9 @@ def _write_segmentation_manifest(
         "time_column": "time_s",
         "qc_mask_csv": "tables/qc_mask.csv",
         "qc_mask_intervals_csv": "tables/qc_mask_intervals.csv",
+        "layer1_marker_set_csv": "tables/layer1_marker_set.csv",
+        "layer1_marker_gap_evidence_csv": "tables/layer1_marker_gap_evidence.csv",
+        "layer1_qc_handoff_csv": "tables/layer1_qc_handoff.csv",
         "alignment_notes": "Join Layer 2 Stage 08 parquet on frame (preferred) or time_s",
         "run_output_dir": str(output_dir.resolve()),
     }
@@ -382,7 +385,7 @@ def write_validation_log(
 Input file: {md['input_file']}
 Run output: {run_dir}
 Date run: {datetime.now().isoformat(timespec='seconds')}
-Preprocessing status: {summary.get('raw_qc_preprocessing_status', 'n/a')}
+Preprocessing status: {summary.get('gap_evidence_summary', 'n/a')}
 
 Layer 1 decision: pending
 Layer 2 decision: pending

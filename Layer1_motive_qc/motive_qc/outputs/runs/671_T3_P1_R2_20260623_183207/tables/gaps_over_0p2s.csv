@@ -1,0 +1,8 @@
+marker_name,body_region_group,n_gaps,total_gap_seconds,longest_gap_seconds,gap_intervals_s,marker_name_raw,marker_name_canonical,asset_prefix
+T3_671:RFArm,shoulder_upper_arm,12,3.3417,0.3667,44.85-45.11; 129.70-129.89; 132.57-132.82; 139.32-139.59; 143.74-143.97; 146.48-146.82; 151.07-151.34; 156.31-156.66; 158.28-158.64; 160.43-160.69; 183.44-183.69; 213.47-213.70,T3_671:RFArm,RFArm,T3_671
+T3_671:LHandIn,wrist_hand,5,1.4167,0.3667,144.38-144.63; 190.15-190.51; 194.41-194.64; 215.07-215.30; 216.97-217.28,T3_671:LHandIn,LHandIn,T3_671
+T3_671:LFArm,shoulder_upper_arm,3,0.6417,0.2333,163.45-163.68; 194.51-194.70; 209.62-209.82,T3_671:LFArm,LFArm,T3_671
+T3_671:ChestTop,torso_chest_back,2,0.75,0.3917,159.78-160.16; 165.81-166.16,T3_671:ChestTop,ChestTop,T3_671
+T3_671:LHandOut,wrist_hand,1,0.2333,0.2333,241.06-241.28,T3_671:LHandOut,LHandOut,T3_671
+T3_671:LShoulderTop,shoulder_upper_arm,1,0.2167,0.2167,175.92-176.12,T3_671:LShoulderTop,LShoulderTop,T3_671
+T3_671:ChestLow,torso_chest_back,1,0.2,0.2,144.45-144.64,T3_671:ChestLow,ChestLow,T3_671

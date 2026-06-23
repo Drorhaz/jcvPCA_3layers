@@ -1,6 +1,6 @@
 # Stage 00 — CSV structure audit
 
-Generated: 2026-06-19 13:24:17 UTC
+Generated: 2026-06-21 12:23:49 UTC
 
 ## Input files used
 

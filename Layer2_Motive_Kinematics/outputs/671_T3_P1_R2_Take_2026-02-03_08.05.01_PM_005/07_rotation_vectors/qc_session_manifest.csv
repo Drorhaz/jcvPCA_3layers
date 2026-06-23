@@ -1,0 +1,2 @@
+session_id,run_label,skeleton_template,frame_count,sampling_rate_hz,stage03_timing_status,stage04_file_status,stage05_file_status,stage06_file_status,stage07_file_status,stage08_authorization_status,notes
+671_T3_P1_R2,671_T3_P1_R2_Take_2026-02-03_08.05.01_PM_005,Biomech (57),31392,120.00480019200238,pass,pass,pass,pass,warning,authorized,J006 (LFArm→LHand): jump warning (max jump=0.818209 rad); J007 (LHand→LIndex1) [excluded]: jump warning (max jump=0.648009 rad)

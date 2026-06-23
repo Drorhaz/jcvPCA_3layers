@@ -22,6 +22,7 @@ env/
 Thumbs.db
 .idea/
 .vscode/
+.cursor/
 .ruff_cache/
 .mypy_cache/
 .pyright/
@@ -41,6 +42,10 @@ temp/
 **/*.parquet
 **/*.npy
 **/*.npz
+**/*.zip
+
+# Archived / superseded pipeline outputs (regenerate locally)
+**/outputs/archive/
 
 # Motion capture raw / export formats
 **/*.c3d
@@ -61,10 +66,16 @@ Layer2.5_Segmentation/reevluate_project/*_Take*.csv
 **/07_rotation_vectors/relative_rotation_vectors.csv
 **/08_filtered_rotvecs/filtered_relative_rotation_vectors.csv
 **/05_sign_continuity/global_quaternions_sign_continuous.csv
+**/08_filtered_rotvecs/stage08_flag_report.csv
+**/08_filtered_rotvecs/stage08_ineligible_rows_report.csv
 
 # Large frame-level QC event exports (debug/smoke runs; regenerate from notebook)
 **/combined_qc_events.csv
 **/qc_event_display.csv
+**/window_joint_frame_flag_log.csv
+
+# Layer 2.5 diagnostic scratch (not deliverables)
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/_diag/
 
 # Optional local tooling
 .orchestra-skills.json

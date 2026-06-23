@@ -163,7 +163,9 @@ def run_batch(
                     "key_metrics": {
                         k: metrics[k]
                         for k in (
-                            "raw_qc_preprocessing_status",
+                            "pct_frames_union_flag_gap_0p5",
+                            "dominant_gap_marker_canonical",
+                            "pct_frames_dominant_marker_in_gap_ge_0p5",
                             "missing_percent_labeled",
                             "n_artifact_events",
                             "window_yield_0p5s_pct",

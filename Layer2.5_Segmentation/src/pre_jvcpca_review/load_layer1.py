@@ -33,12 +33,33 @@ def load_layer1_manifest(manifest_path: Path) -> Layer1Session:
     )
 
 
+_FLAG_COLS = (
+    "flag_gap_0p2",
+    "flag_gap_0p5",
+    "flag_artifact_sigma",
+    "flag_segment_swap",
+    "flag_edge_effect",
+)
+
+
 def load_qc_mask(qc_mask_path: Path, frame_start: int, frame_end: int) -> pd.DataFrame:
     df = pd.read_csv(qc_mask_path)
     window = df[(df["frame"] >= frame_start) & (df["frame"] <= frame_end)].copy()
-    for col in ("flag_gap_0p2", "flag_gap_0p5", "flag_artifact_sigma", "flag_segment_swap"):
+    for col in _FLAG_COLS:
         if col in window.columns:
             window[col] = window[col].astype(str).str.lower() == "true"
+    # Real Layer 1 qc_mask emits per-flag columns but not an aggregate `status`
+    # column. Derive it here (Layer 2.5 side) so downstream flag logging works
+    # without changing Layer 1 output.
+    if "status" not in window.columns:
+        present_flags = [c for c in _FLAG_COLS if c in window.columns]
+        if present_flags:
+            any_flag = window[present_flags].any(axis=1)
+            window["status"] = any_flag.map({True: "flagged", False: "ok"})
+        else:
+            window["status"] = "ok"
+    if "reason" not in window.columns:
+        window["reason"] = ""
     return window
 
 

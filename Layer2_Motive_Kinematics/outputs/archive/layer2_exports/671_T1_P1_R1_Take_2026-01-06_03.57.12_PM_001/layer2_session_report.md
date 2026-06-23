@@ -1,6 +1,6 @@
 # Layer 2 per-session export report
 
-Generated: 2026-06-19 15:53:19 UTC
+Generated: 2026-06-21 12:27:31 UTC
 
 ## Session identity
 
@@ -34,10 +34,10 @@ Generated: 2026-06-19 15:53:19 UTC
 ## Stage 08 masking summary
 
 - Jump-context rows: 1159
-- Analysis-eligible rows: 458938
-- Analysis-ineligible rows: 1071262
+- Analysis-eligible rows: 489481
+- Analysis-ineligible rows: 1040719
 - Filter cutoff/order: 10.0 Hz / 4
-- Jump context window: ±30 frames
+- Jump context window: ±None frames
 
 ## Native vs analysis-clean
 
@@ -48,7 +48,8 @@ Generated: 2026-06-19 15:53:19 UTC
 
 - Relative rotations are parent-child skeleton segment orientations derived from Motive-solved global bone quaternions.
 - Stage 08 does not interpolate or repair Stage 07 jump frames.
-- Native filtered values (`*_filtered_native`) are archive/review values and may exist inside jump-context windows.
+- Jump and branch-cut Stage 07 failures are masked locally (event frame ± context window), not as whole-link blocks.
+- Native filtered values (`*_filtered_native`) are archive/review values and may exist inside QC context windows.
 - Analysis-clean values (`*_filtered_analysis`) are NaN-masked where policy indicates ineligibility (`stage08_analysis_eligible=false`).
 - Excluded distal/toe links are retained for traceability but are not recommended for analysis.
 - Review/provisional trunk/spine links remain review status and are not core candidates.

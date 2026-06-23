@@ -7,7 +7,13 @@ from pathlib import Path
 import pandas as pd
 
 from pre_jvcpca_review.events import NormalizedEvent, event_relates_to_link
-from pre_jvcpca_review.layer2_flags import block_filter_mask, frame_percent, jump_fail_rad_mask, problem_notes
+from pre_jvcpca_review.layer2_flags import (
+    block_filter_mask,
+    frame_percent,
+    jump_fail_rad_mask,
+    problem_notes,
+    stage08_review_stats,
+)
 from pre_jvcpca_review.load_layer1 import flagged_frame_percent
 from pre_jvcpca_review.load_layer2 import Layer2Session, LinkRecord
 from pre_jvcpca_review.mapping import MappingEntry, link_joint_family, mapping_by_raw
@@ -165,8 +171,12 @@ def link_joint_review_dataframe(
         rows.append(
             {
                 "link_id": link.link_id,
+                "parent_canonical": link.parent_canonical,
+                "child_canonical": link.child_canonical,
+                "canonical_link_name": link.display_name,
                 "link_or_joint": link.display_name,
                 "joint_family": link_joint_family(link),
+                **stage08_review_stats(link_df, link, duration_frames),
                 "l1_regional_gap_0p5_event_frames": regional_frames("gap_0p5"),
                 "l1_regional_gap_0p5_event_percent": regional_percent(regional_frames("gap_0p5")),
                 "l1_regional_gap_0p2_event_frames": regional_frames("gap_0p2"),
@@ -198,7 +208,10 @@ def window_decision_summary_dataframe(
     joint_selection_preset: str | None,
     selected_links: list[LinkRecord],
     mapping_entries: list[MappingEntry],
-    datadescriptions_used: bool,
+    datadescriptions_meta: dict[str, object],
+    mapping_mode: str,
+    unmapped_link_ids: list[str],
+    mapping_warnings: list[str],
     events: list[NormalizedEvent],
     qc_window: pd.DataFrame,
     link_review: pd.DataFrame,
@@ -208,13 +221,14 @@ def window_decision_summary_dataframe(
     unmapped_names = [
         e.raw_marker_or_region for e in mapping_entries if e.mapping_status == "unmapped"
     ]
+    dd_used = bool(datadescriptions_meta.get("datadescriptions_used"))
     source_parts = []
-    if datadescriptions_used:
+    if dd_used:
         source_parts.append("DataDescriptions")
     source_parts.append("Layer1 event files")
 
     mapping_summary_parts = [
-        f"{mapped} datadescriptions-mapped" if datadescriptions_used else f"{mapped} mapped"
+        f"{mapped} datadescriptions-mapped" if dd_used else f"{mapped} mapped"
     ]
     if unmapped_names:
         mapping_summary_parts.append(f"{len(unmapped_names)} unmapped")
@@ -249,7 +263,12 @@ def window_decision_summary_dataframe(
         "unlabeled_marker_policy": "excluded_from_main_review",
         "layer2_total_links_available": all_links_count,
         "layer2_selected_links_count": len(selected_links),
-        "datadescriptions_used": datadescriptions_used,
+        "datadescriptions_path": datadescriptions_meta.get("datadescriptions_path", ""),
+        "datadescriptions_found": datadescriptions_meta.get("datadescriptions_found", False),
+        "datadescriptions_used": dd_used,
+        "mapping_mode": mapping_mode,
+        "unmapped_links": "; ".join(unmapped_link_ids),
+        "mapping_warnings": "; ".join(mapping_warnings),
         "mapping_source_summary": "; ".join(mapping_summary_parts),
         "n_gap_0p5_events": count_qc("gap_0p5"),
         "n_gap_0p2_events": count_qc("gap_0p2"),
@@ -289,7 +308,11 @@ def write_review_tables(
     selected_qc_types: set[str],
     joint_selection_preset: str | None,
     qc_window: pd.DataFrame,
-    datadescriptions_used: bool,
+    datadescriptions_meta: dict[str, object],
+    mapping_mode: str,
+    unmapped_link_ids: list[str],
+    mapping_warnings: list[str],
+    review_warnings: pd.DataFrame | None = None,
 ) -> dict[str, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     lookup = mapping_by_raw(mapping_entries)
@@ -308,7 +331,10 @@ def write_review_tables(
         joint_selection_preset,
         selected_links,
         mapping_entries,
-        datadescriptions_used,
+        datadescriptions_meta,
+        mapping_mode,
+        unmapped_link_ids,
+        mapping_warnings,
         events,
         qc_window,
         link_review,
@@ -333,4 +359,8 @@ def write_review_tables(
         paths["qc_event_review_table.csv"],
         QC_EVENT_REVIEW_COLUMNS,
     )
+    if review_warnings is not None and not review_warnings.empty:
+        warnings_path = out_dir / "window_warnings.csv"
+        review_warnings.to_csv(warnings_path, index=False)
+        paths["window_warnings.csv"] = warnings_path
     return paths

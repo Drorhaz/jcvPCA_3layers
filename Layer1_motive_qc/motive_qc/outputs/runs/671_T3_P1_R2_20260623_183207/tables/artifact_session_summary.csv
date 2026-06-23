@@ -1,0 +1,2 @@
+n_frame_candidates,n_events,n_single_frame_events,n_short_burst_events,n_sustained_events,n_frames_velocity_candidate,n_frames_acceleration_candidate,n_frames_both_velocity_and_acceleration,recommendation
+768,268,187,52,29,165,0,0,29 sustained artifact event(s) detected; priority visual review.

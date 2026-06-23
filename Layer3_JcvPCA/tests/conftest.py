@@ -1,11 +1,10 @@
-"""Shared synthetic fixtures for Layer 3 JcvPCA tests.
-
-Synthetic generators are a project-specific testing addition (not part of the
-paper script). They build small, deterministic matrices with the Layer 2.5
-schema so tests do not depend on real session data.
-"""
+"""Shared synthetic fixtures for Layer 3 JcvPCA tests."""
 
 from __future__ import annotations
+
+import os
+
+os.environ["MPLBACKEND"] = "Agg"
 
 import numpy as np
 import pandas as pd

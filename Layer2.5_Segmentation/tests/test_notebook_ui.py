@@ -59,6 +59,35 @@ def test_joint_selector_reports_canonical_names():
     assert selector.selected_canonical_names() == ["LUArm->LFArm"]
 
 
+def test_select_core_candidates_filters_and_selects_only_core():
+    links = [
+        _link("J005", "LUArm", "LFArm", scope="core_candidate"),
+        _link("J007", "LFArm", "LHand", scope="core_candidate"),
+        _link("J099", "LIndex", "LIndex2", scope="finger_excluded"),
+    ]
+    selector = JointSelector.from_links(links, default_link_ids={"J099"})
+    selector.select_core_candidates()
+    assert selector.filter_core_only.value is True
+    assert set(selector.selected_link_ids()) == {"J005", "J007"}
+    assert selector.checkboxes["J099"].value is False
+    assert selector.checkboxes["J005"].style.description_color == "#b00020"
+    assert selector.checkboxes["J099"].style.description_color == ""
+    visible_ids = {
+        link.link_id
+        for link in selector._all_links
+        if not selector.filter_core_only.value or link.feature_scope == "core_candidate"
+    }
+    assert visible_ids == {"J005", "J007"}
+
+
+def test_clear_selection_unchecks_all_and_updates_style():
+    links = [_link("J005", "LUArm", "LFArm"), _link("J007", "LFArm", "LHand")]
+    selector = JointSelector.from_links(links, default_link_ids={"J005", "J007"})
+    selector.clear_selection()
+    assert selector.selected_link_ids() == []
+    assert selector.checkboxes["J005"].style.description_color == ""
+
+
 def test_emit_joint_comparability_silent_for_unselected_bad_links():
     sess = {
         "T1": [_link("J001", "Neck", "Head"), _link("J002", "Chest", "Neck")],

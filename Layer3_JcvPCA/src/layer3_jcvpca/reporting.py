@@ -149,6 +149,174 @@ def write_interpretation_summary(
     return out
 
 
+def write_analysis_validation_report(
+    output_dir: str | Path,
+    preflight,
+) -> tuple[Path, Path]:
+    """Write validation report as CSV and markdown."""
+    out = ensure_output_dir(output_dir)
+    checks_df = pd.DataFrame(
+        [
+            {
+                "name": c.name,
+                "status": c.status,
+                "category": c.category,
+                "message": c.message,
+            }
+            for c in preflight.checks
+        ]
+    )
+    csv_path = out / "analysis_validation_report.csv"
+    write_csv(csv_path, checks_df)
+
+    lines = [
+        "# Analysis validation report",
+        "",
+        f"Overall status: **{preflight.status}**",
+        f"Blocking: {preflight.blocking_count}; Warnings: {preflight.warning_count}",
+        "",
+        "## Checks",
+        "",
+    ]
+    for c in preflight.checks:
+        lines.append(f"- [{c.status}] **{c.name}** ({c.category}): {c.message}")
+    lines.extend(
+        [
+            "",
+            "## Matrix Stability / PCA Readiness",
+            "",
+            "Matrix stability indicates numerical suitability for PCA/JcvPCA.",
+            "It does not establish statistical significance or biological meaning.",
+            "",
+        ]
+    )
+    if preflight.stability:
+        for role, stab in preflight.stability.items():
+            label = "A/reference" if role == "A" else role
+            lines.append(f"### {label}")
+            for k, v in stab.metrics.items():
+                if k not in ("pc_variance_profile",):
+                    lines.append(f"- {k}: {v}")
+            lines.append("")
+    md_path = out / "analysis_validation_report.md"
+    md_path.write_text("\n".join(lines))
+    return csv_path, md_path
+
+
+def write_matrix_stability_reports(output_dir: str | Path, preflight) -> None:
+    out = ensure_output_dir(output_dir)
+    if not preflight.stability:
+        return
+    from layer3_jcvpca.preflight import stability_summary_table
+
+    summary = stability_summary_table(preflight.stability)
+    write_csv(out / "matrix_stability_report.csv", summary)
+
+    lines = [
+        "# Matrix Stability / PCA Readiness Report",
+        "",
+        "Indicates whether selected windows are numerically suitable for PCA/JcvPCA.",
+        "Does not prove scientific truth.",
+        "",
+    ]
+    for role, stab in preflight.stability.items():
+        label = "**A/reference**" if role == "A" else role
+        lines.append(f"## {label} — {stab.status}")
+        for f in stab.findings:
+            lines.append(f"- [{f['severity']}] {f['message']}")
+        lines.append("")
+    (out / "matrix_stability_report.md").write_text("\n".join(lines))
+
+    # Per-matrix tables (A emphasized; save all)
+    for role, stab in preflight.stability.items():
+        prefix = role.lower()
+        if stab.feature_variance_table is not None and not stab.feature_variance_table.empty:
+            if role == "A":
+                write_csv(out / "feature_variance_table.csv", stab.feature_variance_table)
+            else:
+                write_csv(out / f"feature_variance_table_{prefix}.csv", stab.feature_variance_table)
+        if stab.joint_variance_table is not None and not stab.joint_variance_table.empty:
+            if role == "A":
+                write_csv(out / "joint_variance_table.csv", stab.joint_variance_table)
+            else:
+                write_csv(out / f"joint_variance_table_{prefix}.csv", stab.joint_variance_table)
+        if stab.singular_value_table is not None and not stab.singular_value_table.empty:
+            if role == "A":
+                write_csv(out / "singular_value_table.csv", stab.singular_value_table)
+        if stab.split_half_table is not None and not stab.split_half_table.empty:
+            write_csv(out / "split_half_stability_table.csv", stab.split_half_table)
+            break
+
+
+def write_analysis_summary(
+    output_dir: str | Path,
+    identity,
+    selected_m: int,
+    pc_selection_reason: str,
+    preflight,
+) -> Path:
+    lines = [
+        "# Layer 3 JcvPCA analysis summary",
+        "",
+        f"- analysis_id: {identity.analysis_id}",
+        f"- participant_id: {identity.participant_id}",
+        f"- analysis_type: {identity.analysis_type}",
+        f"- selected PCs: {selected_m} ({pc_selection_reason})",
+        f"- preflight status: {preflight.status}",
+        "",
+        "## Comparisons",
+        "- Main: A (reference) vs B (comparison)",
+        "- Natural variability: NV_A vs NV_B (descriptive baseline, not statistical proof)",
+        "",
+        "## Matrix Stability",
+        "",
+        "A/reference defines the PCA space. Review matrix_stability_report.md before interpreting.",
+        "",
+    ]
+    path = ensure_output_dir(output_dir) / "analysis_summary.md"
+    path.write_text("\n".join(lines))
+    return path
+
+
+def write_analysis_package(
+    output_dir: str | Path,
+    *,
+    identity,
+    paths: dict,
+    preflight,
+    params,
+    selected_m: int,
+    pc_selection_reason: str,
+    tables: dict[str, pd.DataFrame],
+    main_result: dict,
+    nv_result: dict,
+    distribution_metrics: dict,
+) -> Path:
+    out = ensure_output_dir(output_dir)
+    plots_dir = out / "plots"
+    plots_dir.mkdir(exist_ok=True)
+
+    for name, df in tables.items():
+        write_csv(out / name, df)
+
+    write_analysis_validation_report(out, preflight)
+    write_matrix_stability_reports(out, preflight)
+    write_analysis_summary(out, identity, selected_m, pc_selection_reason, preflight)
+
+    from layer3_jcvpca import viz
+
+    viz.save_analysis_plots(
+        plots_dir,
+        preflight=preflight,
+        main_result=main_result,
+        nv_result=nv_result,
+        tables=tables,
+        distribution_metrics=distribution_metrics,
+        feature_names=main_result.get("feature_names", []),
+    )
+    return out
+
+
 def _json_default(obj: object):
     if isinstance(obj, (np.integer,)):
         return int(obj)

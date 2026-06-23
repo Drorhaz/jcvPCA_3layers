@@ -11,6 +11,8 @@ from IPython.display import HTML, display
 
 from pre_jvcpca_review.load_layer2 import LinkRecord
 
+_SELECTED_DESCRIPTION_COLOR = "#b00020"
+
 
 def canonical_joint_label(
     link: LinkRecord,
@@ -55,6 +57,8 @@ class JointSelector:
     _links_by_id: dict[str, LinkRecord]
     _overlap_by_canonical: dict[str, str]
     _selection_callbacks: list[Callable[[], None]] = field(default_factory=list)
+    _updating: bool = field(default=False, init=False, repr=False)
+    _observers_attached: bool = field(default=False, init=False, repr=False)
 
     def selected_link_ids(self) -> list[str]:
         return [link_id for link_id, cb in self.checkboxes.items() if cb.value]
@@ -64,11 +68,25 @@ class JointSelector:
         return [link.display_name for link in self._all_links if link.link_id in selected]
 
     def set_selected(self, link_ids: set[str]) -> None:
-        for link_id, cb in self.checkboxes.items():
-            cb.value = link_id in link_ids
+        self._updating = True
+        try:
+            for link_id, cb in self.checkboxes.items():
+                selected = link_id in link_ids
+                if cb.value != selected:
+                    cb.value = selected
+                self._sync_checkbox_appearance(cb, self._links_by_id[link_id])
+        finally:
+            self._updating = False
+        self._rebuild_rows()
+        self._fire_selection_callbacks()
 
     def select_core_candidates(self) -> None:
-        self.set_selected({link.link_id for link in self._all_links if link.feature_scope == "core_candidate"})
+        """Check all core_candidate links, uncheck others, show core list only."""
+        self.filter_core_only.value = True
+        core_ids = {
+            link.link_id for link in self._all_links if link.feature_scope == "core_candidate"
+        }
+        self.set_selected(core_ids)
 
     def clear_selection(self) -> None:
         self.set_selected(set())
@@ -76,17 +94,43 @@ class JointSelector:
     def on_selection_change(self, callback: Callable[[], None]) -> None:
         """Run ``callback`` whenever a joint checkbox toggles."""
         self._selection_callbacks.append(callback)
+        self._attach_checkbox_observers()
 
-        def _notify(_change) -> None:
-            for cb in self._selection_callbacks:
-                cb()
+    def _fire_selection_callbacks(self) -> None:
+        for cb in self._selection_callbacks:
+            cb()
+
+    def _attach_checkbox_observers(self) -> None:
+        if self._observers_attached:
+            return
+
+        def on_checkbox_change(change) -> None:
+            if self._updating:
+                return
+            owner = change["owner"]
+            for link_id, cb in self.checkboxes.items():
+                if cb is owner:
+                    self._sync_checkbox_appearance(cb, self._links_by_id[link_id])
+                    break
+            self._fire_selection_callbacks()
 
         for checkbox in self.checkboxes.values():
-            checkbox.observe(_notify, names="value")
+            checkbox.observe(on_checkbox_change, names="value")
+        self._observers_attached = True
 
     def _label_for(self, link: LinkRecord) -> str:
         classification = self._overlap_by_canonical.get(link.display_name)
         return canonical_joint_label(link, overlap_classification=classification)
+
+    def _sync_checkbox_appearance(self, cb: widgets.Checkbox, link: LinkRecord) -> None:
+        cb.description = self._label_for(link)
+        cb.layout = widgets.Layout(width="98%")
+        if cb.value:
+            cb.style.description_color = _SELECTED_DESCRIPTION_COLOR
+            cb.style.font_weight = "bold"
+        else:
+            cb.style.description_color = ""
+            cb.style.font_weight = ""
 
     def _rebuild_rows(self) -> None:
         show_core = self.filter_core_only.value
@@ -95,8 +139,7 @@ class JointSelector:
             if show_core and link.feature_scope != "core_candidate":
                 continue
             cb = self.checkboxes[link.link_id]
-            cb.description = self._label_for(link)
-            cb.layout = widgets.Layout(width="98%")
+            self._sync_checkbox_appearance(cb, link)
             rows.append(cb)
         if not rows:
             rows.append(widgets.HTML("<i>No links match the current filter.</i>"))
@@ -136,11 +179,14 @@ class JointSelector:
             _links_by_id=links_by_id,
             _overlap_by_canonical=overlap_by_canonical,
         )
+        for link_id, cb in checkboxes.items():
+            selector._sync_checkbox_appearance(cb, links_by_id[link_id])
 
         def on_filter_change(_change) -> None:
             selector._rebuild_rows()
 
         filter_core.observe(on_filter_change, names="value")
+        selector._rebuild_rows()
         return selector
 
 

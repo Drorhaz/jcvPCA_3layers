@@ -59,6 +59,17 @@ temp/
 671_test_data_des/*_Take*.csv
 Layer1_motive_qc/motive_qc/data/**/*.csv
 Layer2_Motive_Kinematics/data/**/*.csv
+data/raw_layer2/**/*.csv
+
+# P6 unified processed trees (compat symlinks at legacy layer paths)
+processed/layer2/*_Take_*/
+processed/layer2/layer2_exports/
+processed/pre_jvcpca_review/252/
+processed/pre_jvcpca_review/671/
+processed/pre_jvcpca_review/_archive/
+processed/pre_jvcpca_review/layer25_export_*.csv
+processed/pre_jvcpca_review/layer25_session_coverage_report.csv
+processed/pre_jvcpca_review/review_table_repair_*.md
 # (reevluate_project moved to archive/ in Stage B — see archive/ rule below)
 
 # Large regenerated frame-level kinematic CSVs (Layer 2 intermediate stages)
@@ -115,3 +126,6 @@ Layer3_JcvPCA/outputs/layer3_jcvpca/
 outputs/poster_final_figures/*.pdf
 outputs/poster_final_figures/*.png
 outputs/poster_final_figures/*.svg
+results/poster/final_figures/*.pdf
+results/poster/final_figures/*.png
+results/poster/final_figures/*.svg

@@ -88,6 +88,7 @@ _PATH_REGISTRY: dict[tuple[str, ...], tuple[PathRequirement, bool]] = {
     ("data", "raw_layer2"): (PathRequirement.OPTIONAL, False),
     ("data", "raw_layer2_5_descriptions"): (PathRequirement.OPTIONAL, False),
     ("data", "test_exports"): (PathRequirement.OPTIONAL, False),
+    ("processed", "layer2"): (PathRequirement.OPTIONAL, False),
     ("processed", "layer2_outputs_root"): (PathRequirement.OPTIONAL, False),
     ("processed", "pre_jvcpca_review"): (PathRequirement.OPTIONAL, False),
     ("layer2", "active_outputs"): (PathRequirement.REQUIRED, False),
@@ -415,6 +416,10 @@ class ProjectPaths:
     @property
     def processed_pre_jvcpca_review(self) -> Path:
         return self.get("processed.pre_jvcpca_review")
+
+    @property
+    def processed_layer2(self) -> Path:
+        return self.get("processed.layer2")
 
     @property
     def data_raw_layer2(self) -> Path:

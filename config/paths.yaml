@@ -1,38 +1,39 @@
 # Canonical path registry — 3Layers JcvPCA research project
 # Relative paths are from repository root unless noted.
-# Last updated: 2026-06-30 (Phase 2 P3 — results symlinks + smoke archive)
+# Last updated: 2026-06-30 (Phase 2 P6 — physical data/processed migration)
 
 project:
   root: "."  # repository root (3Layers_project/)
 
 raw_data:
   layer1: "Layer1_motive_qc/motive_qc/data"
-  layer2: "Layer2_Motive_Kinematics/data"
+  layer2: "data/raw_layer2"  # physical; compat: Layer2_Motive_Kinematics/data → symlink
   layer2_5_descriptions: "Layer2.5_Segmentation/data_description"
   root_test_exports: "671_test_data_des"  # manual review — export type TBD
 
-# Navigation hubs (P5) — symlinks to legacy layer paths until P6 physical migration
+# Navigation hubs — physical paths after P6
 data:
-  raw_layer1: "data/raw_layer1"
+  raw_layer1: "data/raw_layer1"  # symlink → Layer1_motive_qc/motive_qc/data
   raw_layer2: "data/raw_layer2"
   raw_layer2_5_descriptions: "data/raw_layer2_5_descriptions"
   test_exports: "data/test_exports"
 
 processed:
-  layer2_outputs_root: "processed/layer2_outputs_root"
+  layer2: "processed/layer2"
+  layer2_outputs_root: "processed/layer2"  # alias
   pre_jvcpca_review: "processed/pre_jvcpca_review"
 
 layer2:
-  active_outputs: "Layer2_Motive_Kinematics/outputs"
-  active_session_glob: "Layer2_Motive_Kinematics/outputs/*_Take_*"
-  layer2_exports: "Layer2_Motive_Kinematics/outputs/layer2_exports"
-  stage_indices: "Layer2_Motive_Kinematics/outputs/stage*_index.*"
+  active_outputs: "processed/layer2"  # compat: Layer2_Motive_Kinematics/outputs → symlink
+  active_session_glob: "processed/layer2/*_Take_*"
+  layer2_exports: "processed/layer2/layer2_exports"
+  stage_indices: "processed/layer2/stage*_index.*"
   # Moved to external archive 2026-06-30 (Stage R1)
   historical_archive_external: "../gaga_psylo_external_archive/layer2_outputs_archive_2026-06-30"
 
 layer2_5:
-  pre_jvcpca_review: "Layer2.5_Segmentation/outputs/pre_jvcpca_review"
-  pre_jvcpca_archive_snapshot: "Layer2.5_Segmentation/outputs/pre_jvcpca_review/_archive"
+  pre_jvcpca_review: "processed/pre_jvcpca_review"  # compat: Layer2.5_Segmentation/outputs/pre_jvcpca_review
+  pre_jvcpca_archive_snapshot: "processed/pre_jvcpca_review/_archive"
   segmentation_xlsx: "Layer2.5_Segmentation/segmentation"
   config_manifests: "Layer2.5_Segmentation/config"
 
@@ -48,7 +49,7 @@ layer3:
   src: "Layer3_JcvPCA/src"
 
 poster:
-  final_figures: "outputs/poster_final_figures"
+  final_figures: "results/poster/final_figures"  # compat: outputs/poster_final_figures → symlink
   scripts:
     - "scripts/make_poster_final_figures.py"
     - "scripts/make_poster_671_figures.py"

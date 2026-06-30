@@ -61,7 +61,7 @@ flowchart LR
 
 | Artifact | Physical path | Approx size | yaml key |
 |----------|---------------|-------------|----------|
-| Final figures | `outputs/poster_final_figures/` | ~13 MB | `poster.final_figures` |
+| Final figures | `results/poster/final_figures/` (~13 MB) | `poster.final_figures` |
 
 **Index:** [`results/poster/FIGURE_MANIFEST.md`](../results/poster/FIGURE_MANIFEST.md)
 
@@ -79,22 +79,18 @@ flowchart LR
 
 ---
 
-## Navigation hubs (P5 — active)
+## Navigation hubs (P6 — physical)
 
-Unified browse paths at repo root (symlinks to legacy layer paths until P6):
+Bulk data lives under `data/` and `processed/`. Legacy layer paths are **compatibility symlinks**:
 
-| Hub | Resolves to |
-|-----|-------------|
-| `data/raw_layer1` | L1 raw markers |
-| `data/raw_layer2` | L2 raw CSVs |
-| `data/raw_layer2_5_descriptions` | L2.5 descriptions |
-| `data/test_exports` | `671_test_data_des/` |
-| `processed/layer2_outputs_root` | L2 outputs root |
-| `processed/pre_jvcpca_review` | L2.5 JcvPCA exports |
+| Physical path | Compat symlink |
+|---------------|----------------|
+| `data/raw_layer2/` | `Layer2_Motive_Kinematics/data` |
+| `processed/layer2/` | `Layer2_Motive_Kinematics/outputs` |
+| `processed/pre_jvcpca_review/` | `Layer2.5_Segmentation/outputs/pre_jvcpca_review` |
+| `results/poster/final_figures/` | `outputs/poster_final_figures` |
 
-yaml keys: `data.*`, `processed.*` (legacy `raw_data.*` / `layer2_5.pre_jvcpca_review` unchanged).
-
-After Phase P6, hubs become **physical** paths with compat symlinks at legacy layer locations.
+yaml keys: `data.*`, `processed.*`, updated `raw_data.layer2`, `layer2.*`, `layer2_5.pre_jvcpca_review`, `poster.final_figures`.
 
 ---
 

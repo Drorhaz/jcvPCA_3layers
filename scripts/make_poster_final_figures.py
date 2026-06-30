@@ -49,10 +49,8 @@ if str(_SRC) not in sys.path:
 from project_paths import load_project_paths  # noqa: E402
 
 PROJECT_ROOT = _SCRIPT_ROOT
-OUT_DIR = PROJECT_ROOT / "outputs" / "poster_final_figures"
-CANONICAL_BATCH_DIR = (
-    PROJECT_ROOT / "Layer3_JcvPCA" / "outputs" / "gaga_batch_jcvpca_20260626_193319"
-)
+OUT_DIR: Path
+CANONICAL_BATCH_DIR: Path
 SEARCH_DIRS: list[Path] = []
 
 

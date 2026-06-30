@@ -12,3 +12,12 @@ timestamp,phase,action,source,destination,notes
 2026-06-30,P3,symlink,results/smoke_tests/smoke_batch_671,external smoke_batch_671_20260630,
 2026-06-30,F3,rm,Layer3_JcvPCA/outputs/layer3_jcvpca,,stub
 2026-06-30,F3,rm,Layer2.5_Segmentation/outputs/pre_jvpca_review,,typo duplicate
+2026-06-30,P6,mv,Layer2_Motive_Kinematics/data,data/raw_layer2,L2 raw physical
+2026-06-30,P6,symlink,Layer2_Motive_Kinematics/data,../data/raw_layer2,compat
+2026-06-30,P6,mv,Layer2_Motive_Kinematics/outputs,processed/layer2,L2 outputs physical
+2026-06-30,P6,symlink,Layer2_Motive_Kinematics/outputs,../processed/layer2,compat
+2026-06-30,P6,mv,Layer2.5_Segmentation/outputs/pre_jvcpca_review,processed/pre_jvcpca_review,L2.5 exports
+2026-06-30,P6,symlink,Layer2.5_Segmentation/outputs/pre_jvcpca_review,../../processed/pre_jvcpca_review,compat
+2026-06-30,P6,mv,outputs/poster_final_figures,results/poster/final_figures,poster physical
+2026-06-30,P6,symlink,outputs/poster_final_figures,../results/poster/final_figures,compat
+2026-06-30,P6,symlink,processed/layer2_outputs_root,layer2,alias

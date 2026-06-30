@@ -1,6 +1,6 @@
 # Working Guide — 3Layers JcvPCA Project
 
-**Start here for daily work.**  
+**Commands:** [`RUN.md`](RUN.md) — copy-paste runner (start here for execution)  
 Scientific overview and git policy: [`README.md`](README.md)  
 Cleanup history: [`docs/CLEANUP_INDEX.md`](docs/CLEANUP_INDEX.md)
 
@@ -189,6 +189,7 @@ Also see:
 - [`FINAL_CLEANUP_PLAN.md`](docs/research_recovery/FINAL_CLEANUP_PLAN.md)
 - Legacy master plan: [`docs/legacy/master_plan/MASTER_PLAN.md`](docs/legacy/master_plan/MASTER_PLAN.md)
 - Workspace simplification: [`W1`](docs/research_recovery/W1_WORKSPACE_SURFACE_AUDIT.md) · [`FINAL_CLEANUP_PLAN`](docs/research_recovery/FINAL_CLEANUP_PLAN.md) · [`F1/F2 log`](docs/research_recovery/F1_F2_CLEANUP_LOG.md)
+- **Full cleanup execution plan (next):** [`PHASE2_FULL_IMPLEMENTATION_PLAN.md`](docs/research_recovery/PHASE2_FULL_IMPLEMENTATION_PLAN.md) — P1 runner through P5 data hub (+ optional P6 bulk migration)
 
 ---
 

@@ -475,8 +475,8 @@ Agents inspecting expected output structure should start there.
 | `docs/LAYER3_SCOPE.md` | Authoritative scope, input contract, output list |
 | `docs/METHOD_ADAPTATION_NOTES.md` | Paper vs project differences |
 | `docs/LAYER3_UI_IMPLEMENTATION_REPORT.md` | UI architecture, stability thresholds, PI review checklist |
-| `backend_readiness_report.md` | Pre-UI backend audit |
-| `3_layers_Matser_plan_Full/LAYER3_JCVPCA_PSEUDOCODE.md` | Project pseudocode |
+| [`docs/legacy/layer3/backend_readiness_report.md`](../docs/legacy/layer3/backend_readiness_report.md) | Pre-UI backend audit |
+| [`docs/legacy/master_plan/LAYER3_JCVPCA_PSEUDOCODE.md`](../docs/legacy/master_plan/LAYER3_JCVPCA_PSEUDOCODE.md) | Project pseudocode |
 | `references/S1_File.py` | Original paper Python (JcvPCA lines ~82–106) |
 
 ---

@@ -1,0 +1,59 @@
+# Canonical path registry — 3Layers JcvPCA research project
+# Relative paths are from repository root unless noted.
+# Last updated: 2026-06-30 (research continuation mode)
+
+project:
+  root: "."  # repository root (3Layers_project/)
+
+raw_data:
+  layer1: "Layer1_motive_qc/motive_qc/data"
+  layer2: "Layer2_Motive_Kinematics/data"
+  layer2_5_descriptions: "Layer2.5_Segmentation/data_description"
+  root_test_exports: "671_test_data_des"  # manual review — export type TBD
+
+layer2:
+  active_outputs: "Layer2_Motive_Kinematics/outputs"
+  active_session_glob: "Layer2_Motive_Kinematics/outputs/*_Take_*"
+  layer2_exports: "Layer2_Motive_Kinematics/outputs/layer2_exports"
+  stage_indices: "Layer2_Motive_Kinematics/outputs/stage*_index.*"
+  # Moved to external archive 2026-06-30 (Stage R1)
+  historical_archive_external: "../gaga_psylo_external_archive/layer2_outputs_archive_2026-06-30"
+
+layer2_5:
+  pre_jvcpca_review: "Layer2.5_Segmentation/outputs/pre_jvcpca_review"
+  pre_jvcpca_archive_snapshot: "Layer2.5_Segmentation/outputs/pre_jvcpca_review/_archive"
+  segmentation_xlsx: "Layer2.5_Segmentation/segmentation"
+  config_manifests: "Layer2.5_Segmentation/config"
+
+layer3:
+  outputs_root: "Layer3_JcvPCA/outputs"
+  canonical_batch_id: "gaga_batch_jcvpca_20260626_193319"
+  canonical_batch: "Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319"
+  poster_evidence_package: "Layer3_JcvPCA/outputs/poster_ready_evidence_package"
+  scripts: "Layer3_JcvPCA/scripts"
+  src: "Layer3_JcvPCA/src"
+
+poster:
+  final_figures: "outputs/poster_final_figures"
+  scripts:
+    - "scripts/make_poster_final_figures.py"
+    - "scripts/make_poster_671_figures.py"
+
+results:
+  # New research-continuation layout (symlinks or copies added later)
+  active: "results/active"
+  poster: "results/poster"
+  manuscript: "results/manuscript"
+  reports: "results/reports"
+  archive_index: "results/archive_index"
+
+external_archive:
+  parent: "../gaga_psylo_external_archive"
+  cleanup_stage_b: "../gaga_psylo_external_archive/archive_2026-06-30_cleanup_stage_B"
+  layer2_outputs_archive: "../gaga_psylo_external_archive/layer2_outputs_archive_2026-06-30"
+
+participants:
+  flagship: "671"
+  batch_cohort:
+    - "671"
+    - "252"

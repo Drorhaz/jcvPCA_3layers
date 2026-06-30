@@ -97,6 +97,9 @@ _PATH_REGISTRY: dict[tuple[str, ...], tuple[PathRequirement, bool]] = {
     ("layer3", "canonical_batch_id"): (PathRequirement.METADATA, False),
     ("layer3", "canonical_batch"): (PathRequirement.REQUIRED, False),
     ("layer3", "poster_evidence_package"): (PathRequirement.OPTIONAL, False),
+    ("layer3", "smoke_batch_external"): (PathRequirement.OPTIONAL, False),
+    ("layer3", "movement_organization_report"): (PathRequirement.OPTIONAL, False),
+    ("layer3", "nullspace_link_stability_report"): (PathRequirement.OPTIONAL, False),
     ("layer3", "scripts"): (PathRequirement.REQUIRED, False),
     ("layer3", "src"): (PathRequirement.REQUIRED, False),
     ("poster", "final_figures"): (PathRequirement.OPTIONAL, False),
@@ -105,8 +108,13 @@ _PATH_REGISTRY: dict[tuple[str, ...], tuple[PathRequirement, bool]] = {
     ("results", "manuscript"): (PathRequirement.OPTIONAL, False),
     ("results", "reports"): (PathRequirement.OPTIONAL, False),
     ("results", "archive_index"): (PathRequirement.OPTIONAL, False),
+    ("results", "canonical_batch_symlink"): (PathRequirement.OPTIONAL, False),
+    ("results", "smoke_batch_symlink"): (PathRequirement.OPTIONAL, False),
+    ("results", "poster_figures_symlink"): (PathRequirement.OPTIONAL, False),
+    ("results", "poster_evidence_symlink"): (PathRequirement.OPTIONAL, False),
     ("external_archive", "parent"): (PathRequirement.OPTIONAL, False),
     ("external_archive", "cleanup_stage_b"): (PathRequirement.OPTIONAL, False),
+    ("external_archive", "final_cleanup_2026_06_30"): (PathRequirement.OPTIONAL, False),
     ("external_archive", "layer2_outputs_archive"): (PathRequirement.OPTIONAL, False),
 }
 

@@ -1,6 +1,6 @@
 # Canonical path registry — 3Layers JcvPCA research project
 # Relative paths are from repository root unless noted.
-# Last updated: 2026-06-30 (research continuation mode)
+# Last updated: 2026-06-30 (Phase 2 P3 — results symlinks + smoke archive)
 
 project:
   root: "."  # repository root (3Layers_project/)
@@ -30,6 +30,9 @@ layer3:
   canonical_batch_id: "gaga_batch_jcvpca_20260626_193319"
   canonical_batch: "Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319"
   poster_evidence_package: "Layer3_JcvPCA/outputs/poster_ready_evidence_package"
+  smoke_batch_external: "../gaga_psylo_external_archive/final_cleanup_2026-06-30/smoke_batch_671_20260630"
+  movement_organization_report: "Layer3_JcvPCA/outputs/movement_organization_question_report"
+  nullspace_link_stability_report: "Layer3_JcvPCA/outputs/nullspace_link_stability_review"
   scripts: "Layer3_JcvPCA/scripts"
   src: "Layer3_JcvPCA/src"
 
@@ -40,16 +43,20 @@ poster:
     - "scripts/make_poster_671_figures.py"
 
 results:
-  # New research-continuation layout (symlinks or copies added later)
   active: "results/active"
   poster: "results/poster"
   manuscript: "results/manuscript"
   reports: "results/reports"
   archive_index: "results/archive_index"
+  canonical_batch_symlink: "results/active/canonical_batch"
+  smoke_batch_symlink: "results/smoke_tests/smoke_batch_671"
+  poster_figures_symlink: "results/poster/final_figures"
+  poster_evidence_symlink: "results/poster/evidence_package"
 
 external_archive:
   parent: "../gaga_psylo_external_archive"
   cleanup_stage_b: "../gaga_psylo_external_archive/archive_2026-06-30_cleanup_stage_B"
+  final_cleanup_2026_06_30: "../gaga_psylo_external_archive/final_cleanup_2026-06-30"
   layer2_outputs_archive: "../gaga_psylo_external_archive/layer2_outputs_archive_2026-06-30"
 
 participants:

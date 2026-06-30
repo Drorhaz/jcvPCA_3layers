@@ -1,0 +1,26 @@
+relative_path,role_in_project,why_keep_active,needed_for_reproducibility,notes
+Layer1_motive_qc/motive_qc/,Layer 1 raw marker QC pipeline,Upstream raw data QC; produces qc_mask,yes,
+Layer1_motive_qc/motive_qc/data/671/,Raw marker CSVs participant 671,Primary raw data canonical path,yes,Use subfolder layout as canonical
+Layer1_motive_qc/motive_qc/data/252/,Raw marker CSVs participant 252,Primary raw data,yes,
+Layer2_Motive_Kinematics/data/,Layer 2 input CSVs (+252 video),Pipeline input; 252 AVI has no in-repo regeneration,yes,671 CSV differs from Layer1 export type
+Layer2_Motive_Kinematics/outputs/671_T*_P1_R*,Active Layer 2 session outputs 671,Feeds Layer 2.5; current filtering policy,yes,6 session folders at outputs root
+Layer2_Motive_Kinematics/outputs/252_T*_P1_R*,Active Layer 2 session outputs 252,Batch cohort kinematics,yes,
+Layer2_Motive_Kinematics/src/,Layer 2 source code,Reproducibility,yes,
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/,JcvPCA-ready matrix exports,Direct Layer 3 input contract,yes,1.2 GB
+Layer2.5_Segmentation/segmentation/,Manual segmentation xlsx,Scientific annotation; hard to recreate,yes,
+Layer2.5_Segmentation/src/,Layer 2.5 source + export logic,Reproducibility,yes,
+Layer2.5_Segmentation/notebooks/,Interactive segmentation review,Human-in-loop workflow,yes,
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/,Canonical JcvPCA batch run,Poster + numeric reports; 20 completed comparisons + full downstream artifacts,yes,72 comparison dirs include expanded DR grid beyond 20 core
+Layer3_JcvPCA/outputs/poster_ready_evidence_package/,Curated poster CSV inputs,Used by make_poster_final_figures.py,yes,
+Layer3_JcvPCA/outputs/671_g4_validation_001/,First documented validation run,Reference in Layer3 README,partial,
+Layer3_JcvPCA/src/,Layer 3 JcvPCA core implementation,Sacred core compute_jcvpca,yes,
+Layer3_JcvPCA/scripts/,Layer 3 analysis/report scripts,Regenerate reports and batch,yes,
+Layer3_JcvPCA/config/,Layer 3 configuration,Reproducibility,yes,
+Layer3_JcvPCA/docs/LAYER3_SCOPE.md,Authoritative scope doc,Scientific framing,yes,
+outputs/poster_final_figures/,Final poster deliverables,Publication outputs + plot tables,partial,Regeneratable from scripts if CSV sources kept
+scripts/make_poster_final_figures.py,Poster figure generator A-D,Reproducibility,yes,
+scripts/make_poster_671_figures.py,Poster figure generator 671 set,Reproducibility,yes,
+3_layers_Matser_plan_Full/,Master plan at repo root,Project architecture reference,yes,
+671_test_data_des/*_DataDescriptions.csv,Data description sidecar,Session metadata,yes,Keep sidecar even if raw CSV relocated
+docs/PROJECT_AUDIT_DRAFT.md,Project audit,Cleanup planning baseline,no,Will track in git optionally
+docs/cleanup_stage_A/,Stage A verification artifacts,This cleanup stage evidence,no,

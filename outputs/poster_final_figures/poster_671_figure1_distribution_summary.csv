@@ -1,0 +1,3 @@
+table_type,comparison_label,n_links,sum_abs_longitudinal_delta,gini_link_change_share,top3_share,top3_share_pct
+distribution_summary,T1_vs_T2,14,0.15606045182740694,0.475493721352525,0.5424850740234654,54.24850740234653
+distribution_summary,T1_vs_T3,14,0.1652227219754941,0.4739665318997215,0.5447624029844176,54.47624029844176

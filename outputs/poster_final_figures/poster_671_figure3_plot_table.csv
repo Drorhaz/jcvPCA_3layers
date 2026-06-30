@@ -1,0 +1,14 @@
+table_type,comparison_label,focus_mode,anatomical_family,relative_family_share,n_links_in_family,family_rank,top_link_in_family,timepoint,null_p50_to_all_ratio,null_p60_to_all_ratio,null_p70_to_all_ratio_if_available
+family_share,T1_vs_T2,functional_p50,distal_upper_limb,0.3545217603505177,2.0,1.0,LFArm_to_LHand,,,,
+family_share,T1_vs_T2,functional_p50,shoulder_chain,0.2633098257033899,4.0,2.0,RShoulder_to_RUArm,,,,
+family_share,T1_vs_T2,functional_p50,proximal_upper_limb,0.2333052372744473,2.0,3.0,LUArm_to_LFArm,,,,
+family_share,T1_vs_T2,functional_p50,lower_limb,0.1033127264723989,4.0,4.0,LShin_to_LFoot,,,,
+family_share,T1_vs_T2,functional_p50,trunk_neck_head,0.045550450199246,2.0,5.0,Neck_to_Head,,,,
+family_share,T1_vs_T2,null_space_after_p50,lower_limb,0.343990262835287,4.0,1.0,LThigh_to_LShin,,,,
+family_share,T1_vs_T2,null_space_after_p50,shoulder_chain,0.2675977245870751,4.0,2.0,LShoulder_to_LUArm,,,,
+family_share,T1_vs_T2,null_space_after_p50,distal_upper_limb,0.1644326309739316,2.0,3.0,LFArm_to_LHand,,,,
+family_share,T1_vs_T2,null_space_after_p50,proximal_upper_limb,0.1570134348019486,2.0,4.0,LUArm_to_LFArm,,,,
+family_share,T1_vs_T2,null_space_after_p50,trunk_neck_head,0.0669659468017575,2.0,5.0,Neck_to_Head,,,,
+null_all_ratio,,,,,,,,T1,1.4759760591809368,1.8953843792464091,2.5414159966644445
+null_all_ratio,,,,,,,,T2,2.4769218435293436,2.4769218435293436,3.0680193445457693
+null_all_ratio,,,,,,,,T3,3.3480453511229715,4.765012625073259,14.93659195399374

@@ -59,7 +59,7 @@ temp/
 671_test_data_des/*_Take*.csv
 Layer1_motive_qc/motive_qc/data/**/*.csv
 Layer2_Motive_Kinematics/data/**/*.csv
-Layer2.5_Segmentation/reevluate_project/*_Take*.csv
+# (reevluate_project moved to archive/ in Stage B — see archive/ rule below)
 
 # Large regenerated frame-level kinematic CSVs (Layer 2 intermediate stages)
 **/06_relative_quaternions/relative_quaternions.csv
@@ -79,3 +79,39 @@ Layer2.5_Segmentation/outputs/pre_jvcpca_review/_diag/
 
 # Optional local tooling
 .orchestra-skills.json
+
+# ---------------------------------------------------------------------------
+# Stage B.6 cleanup — local archives and generated outputs (2026-06-30)
+# Keep source, configs, docs, and small curated poster CSV/MD trackable.
+# ---------------------------------------------------------------------------
+
+# Local cleanup archives (Stage B moves; never push to remote)
+archive/
+
+# Layer 1 generated QC run outputs
+Layer1_motive_qc/motive_qc/outputs/batch_runs/
+Layer1_motive_qc/motive_qc/outputs/runs/
+
+# Layer 2 full session output trees (regenerate via layer2-motive; archive/ deferred Stage C)
+Layer2_Motive_Kinematics/outputs/*_Take_*/
+Layer2_Motive_Kinematics/outputs/layer2_exports/
+
+# Layer 2.5 generated export trees (parquet already ignored globally; ignore bulk export dirs)
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/252/
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/671/
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/_archive/
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/layer25_export_*.csv
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/layer25_session_coverage_report.csv
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/review_table_repair_*.md
+Layer2.5_Segmentation/outputs/pre_jvpca_review/
+
+# Layer 3 batch and exploratory outputs (regenerate from scripts + Layer 2.5 exports)
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_*/
+Layer3_JcvPCA/outputs/_workbench_*/
+Layer3_JcvPCA/outputs/671_g4_validation_001/
+Layer3_JcvPCA/outputs/layer3_jcvpca/
+
+# Poster figure binaries only — keep plot tables and captions trackable
+outputs/poster_final_figures/*.pdf
+outputs/poster_final_figures/*.png
+outputs/poster_final_figures/*.svg

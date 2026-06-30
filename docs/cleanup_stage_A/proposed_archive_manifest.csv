@@ -1,0 +1,21 @@
+relative_path,size_mb,reason_for_archive,evidence,risk_level,action_later,notes
+Layer2_Motive_Kinematics/outputs/archive/,22543.19,Layer2 archived session outputs mirror active 671 runs; stage07 rotvec CSVs match active for 4/6 sessions; filtered_rotvecs differ in size/hash (older pipeline),checksum_comparison.csv + size mismatch on stage08,medium,keep_until_manual_review,Archive folder is 22GB; active outputs must remain until stage08 equivalence confirmed
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_174553/,89.21,"Failed smoke run: 0/20 completed, 6 failed, 14 skipped",batch_summary.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_175138/,89.83,"Partial run: 6/20 completed, 671-only subset",batch_summary.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_180044/,89.83,"Partial run: 6/20 completed, duplicate of 175138 pattern",batch_summary.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193110/,769.26,Full 20/20 completed but missing downstream reports; jcvpca_link_results matches 193319; lacks FINAL_integrated review and PC-focus hierarchy,checksum + batch_summary,low,move_to_archive,Keep until 193319 reproducibility confirmed
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193235/,364.77,Partial 671-only run: 10/20 completed,batch_summary.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_dataset_preview/,6.86,Exploratory workbench preview,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_full/,1.41,Exploratory workbench,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_phase6/,1.0,Exploratory workbench phase,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_phase7/,1.14,Exploratory workbench phase,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_phase9/,1.15,Exploratory workbench phase,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_preflight/,0.0,Exploratory preflight preview,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_comparability/,0.01,Exploratory comparability preview,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer3_JcvPCA/outputs/_workbench_inventory_preview/,0.01,Exploratory inventory preview,PROJECT_AUDIT_DRAFT.md,low,move_to_archive,
+Layer2.5_Segmentation/reevluate_project/,317.79,Scratch re-evaluation; 671 raw CSV duplicates Layer1; parquets are regeneratable,checksum: reevluate CSV = Layer1 copy,medium,keep_until_manual_review,Read revised_pre_jvcpca_review_tables.md before archiving
+Layer2.5_Segmentation/outputs/archive/,337.93,Superseded Layer 2.5 exports,PROJECT_AUDIT_DRAFT.md,medium,move_to_archive,
+Layer2.5_Segmentation/outputs/pre_jvcpca_review/_diag/,0.0,Diagnostic scratch (gitignored),gitignore,low,move_to_archive,
+Layer1_motive_qc/motive_qc/data/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv,48.22,Flat duplicate of Layer1/data/671/ same file (identical SHA256),checksum_comparison.csv,low,move_to_archive,Keep one canonical path under data/671/
+671_test_data_des/671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001.csv,232.12,NOT duplicate of Layer1/Layer2 copies (different size/hash); may be distinct export type,checksum_comparison.csv,high,keep_until_manual_review,Do NOT archive until export type verified
+Layer3_JcvPCA/3_layers_Matser_plan_Full/,0.08,Partial duplicate of root master plan,file comparison,low,move_to_archive,Or merge docs only

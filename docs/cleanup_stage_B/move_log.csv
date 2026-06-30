@@ -1,0 +1,8 @@
+original_path,new_path,size_bytes,moved_successfully,risk_level,reason,notes
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_174553,archive/2026-06-30_cleanup_stage_B/layer3_superseded_batches/gaga_batch_jcvpca_20260626_174553,93547201,yes,low,Failed smoke run 0/20 completed,Group A1
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_175138,archive/2026-06-30_cleanup_stage_B/layer3_superseded_batches/gaga_batch_jcvpca_20260626_175138,94190619,yes,low,Partial 671-only run 6/20,Group A2
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_180044,archive/2026-06-30_cleanup_stage_B/layer3_superseded_batches/gaga_batch_jcvpca_20260626_180044,94190619,yes,low,Partial duplicate run 6/20,Group A3
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193110,archive/2026-06-30_cleanup_stage_B/layer3_superseded_batches/gaga_batch_jcvpca_20260626_193110,806627075,yes,low,Superseded full core; missing downstream reports vs 193319,Group A4
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193235,archive/2026-06-30_cleanup_stage_B/layer3_superseded_batches/gaga_batch_jcvpca_20260626_193235,382492296,yes,low,Partial 671-only run 10/20,Group A5
+Layer2.5_Segmentation/reevluate_project,archive/2026-06-30_cleanup_stage_B/layer2_5_scratch_archive/reevluate_project,333226519,yes,medium,Scratch re-evaluation folder; CSV duplicates Layer1,Group B1
+Layer2.5_Segmentation/outputs/archive,archive/2026-06-30_cleanup_stage_B/layer2_5_scratch_archive/outputs/archive,354340771,yes,medium,Superseded Layer 2.5 exports,Group B2

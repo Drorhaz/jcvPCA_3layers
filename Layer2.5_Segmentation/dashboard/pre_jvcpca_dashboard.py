@@ -16,11 +16,13 @@ if str(DASHBOARD_ROOT) not in sys.path:
     sys.path.insert(0, str(DASHBOARD_ROOT))
 
 from dashboard_state import (  # noqa: E402
+    diagnostics_context_signature,
+    invalidate_diagnostics,
     joint_filter_signature,
     set_selected_joints,
     sync_joint_selection_to_filters,
 )
-from pre_jvcpca_review.app_controller import PreJcvpcaReviewController  # noqa: E402
+from pre_jvcpca_review.app_controller import DiagnosticsView, PreJcvpcaReviewController  # noqa: E402
 from pre_jvcpca_review.exercise_segments import GROUP4_LABEL, exercise_choice_label  # noqa: E402
 from pre_jvcpca_review.joint_body_sections import (  # noqa: E402
     BODY_SECTION_ALL,
@@ -82,6 +84,8 @@ def _init_state() -> PreJcvpcaReviewController:
         "joint_filter_body_section": BODY_SECTION_ALL,
         "allow_nan_matrix": False,
         "qc_types": ["gap_0p5", "gap_0p2", "artifact_sigma", "segment_swap"],
+        "datadescriptions_path": "",
+        "datadescriptions_manual_override": False,
     }
     for key, value in defaults.items():
         st.session_state.setdefault(key, value)
@@ -111,6 +115,34 @@ def _sync_window_label(ctrl: PreJcvpcaReviewController) -> None:
         st.session_state.frame_end,
         tag=st.session_state.get("window_label_tag", ""),
     )
+
+
+def _sync_datadescriptions_path(ctrl: PreJcvpcaReviewController) -> None:
+    if st.session_state.get("datadescriptions_manual_override"):
+        return
+    resolved = ctrl.resolve_datadescriptions()
+    st.session_state.datadescriptions_path = str(resolved) if resolved else ""
+    if resolved is not None:
+        st.session_state.pop("datadescriptions_issue", None)
+        return
+    candidate = ctrl.find_datadescriptions_candidate()
+    if candidate is not None:
+        st.session_state.datadescriptions_issue = (
+            f"Found `{candidate.name}` but it is empty — export a Motive DataDescriptions "
+            "file for this take and replace the placeholder."
+        )
+    else:
+        st.session_state.datadescriptions_issue = ctrl.datadescriptions_status()
+
+
+def _effective_datadescriptions_path() -> Path | None:
+    raw = str(st.session_state.get("datadescriptions_path", "")).strip()
+    if not raw:
+        return None
+    path = Path(raw)
+    if path.is_file() and path.stat().st_size > 0:
+        return path
+    return None
 
 
 def _render_joint_checkboxes(
@@ -143,6 +175,7 @@ def _render_joint_checkboxes(
     if new_selection != previous:
         st.session_state.selected_joints = new_selection
         st.session_state.pop("warning_summary", None)
+        invalidate_diagnostics(st.session_state)
 
 
 def _exercise_choices(ctrl: PreJcvpcaReviewController, session_id: str | None) -> list[str]:
@@ -166,6 +199,7 @@ def _apply_manual_frames(ctrl: PreJcvpcaReviewController) -> None:
     st.session_state.exercise_choice = None
     st.session_state.window_label_tag = ""
     _sync_window_label(ctrl)
+    invalidate_diagnostics(st.session_state)
 
 
 def _exercise_window_tag(choice: str) -> str:
@@ -185,6 +219,7 @@ def _on_participant_change(
     participant_id: str,
     output_root: Path,
 ) -> None:
+    invalidate_diagnostics(st.session_state)
     ctrl.build_overlap_table(participant_id, output_root)
     sess_df = ctrl.participant_sessions(participant_id)
     if sess_df.empty:
@@ -196,13 +231,37 @@ def _on_participant_change(
     set_selected_joints(st.session_state, ctrl.default_selected_joint_ids())
     _reset_joint_filter_baseline()
     _sync_window_label(ctrl)
+    _sync_datadescriptions_path(ctrl)
 
 
 def _on_session_change(ctrl: PreJcvpcaReviewController, session_id: str) -> None:
+    invalidate_diagnostics(st.session_state)
     ctrl.select_session(session_id)
     set_selected_joints(st.session_state, ctrl.default_selected_joint_ids())
     _reset_joint_filter_baseline()
     _sync_window_label(ctrl)
+    _sync_datadescriptions_path(ctrl)
+
+
+def _participant_selectbox(
+    ctrl: PreJcvpcaReviewController,
+    participant_ids: list[str],
+    output_root: Path,
+    *,
+    key: str,
+) -> str:
+    participant_id = st.selectbox(
+        "Participant",
+        options=participant_ids,
+        index=participant_ids.index(st.session_state.participant_id)
+        if st.session_state.participant_id in participant_ids
+        else 0,
+        key=key,
+    )
+    if participant_id != st.session_state.participant_id:
+        st.session_state.participant_id = participant_id
+        _on_participant_change(ctrl, participant_id, output_root)
+    return participant_id
 
 
 def _render_participant_session_selectors(
@@ -211,16 +270,12 @@ def _render_participant_session_selectors(
     output_root: Path,
 ) -> None:
     st.subheader("Participant & session")
-    participant_id = st.selectbox(
-        "Participant",
-        options=participant_ids,
-        index=participant_ids.index(st.session_state.participant_id)
-        if st.session_state.participant_id in participant_ids
-        else 0,
+    participant_id = _participant_selectbox(
+        ctrl,
+        participant_ids,
+        output_root,
+        key="participant_select_window",
     )
-    if participant_id != st.session_state.participant_id:
-        st.session_state.participant_id = participant_id
-        _on_participant_change(ctrl, participant_id, output_root)
 
     sess_df = ctrl.participant_sessions(participant_id)
     session_options = sess_df["session_id"].tolist()
@@ -258,9 +313,36 @@ def _sidebar(ctrl: PreJcvpcaReviewController) -> dict[str, Path]:
     output_root = Path(
         st.sidebar.text_input("Review output root", value=str(ctrl.default_output_root))
     )
-    datadescriptions = Path(
-        st.sidebar.text_input("DataDescriptions CSV", value=str(ctrl.default_datadescriptions))
+
+    st.sidebar.caption(
+        f"Auto-search folder: `{ctrl.default_datadescriptions_dir.name}/` per session"
     )
+    previous_dd = st.session_state.get("datadescriptions_path", "")
+    datadescriptions_text = st.sidebar.text_input(
+        "DataDescriptions CSV",
+        value=previous_dd,
+        help=(
+            "Auto-filled from data_description/ when you change session. "
+            "Edit manually to override; click Reset to re-enable auto-resolve."
+        ),
+    )
+    if datadescriptions_text != previous_dd:
+        st.session_state.datadescriptions_path = datadescriptions_text
+        st.session_state.datadescriptions_manual_override = True
+        invalidate_diagnostics(st.session_state)
+    if st.sidebar.button("Reset DataDescriptions auto-resolve", use_container_width=True):
+        st.session_state.datadescriptions_manual_override = False
+        _sync_datadescriptions_path(ctrl)
+        invalidate_diagnostics(st.session_state)
+        st.rerun()
+
+    dd_issue = st.session_state.get("datadescriptions_issue")
+    if dd_issue:
+        st.sidebar.warning(dd_issue)
+    elif _effective_datadescriptions_path() is not None:
+        st.sidebar.success(Path(st.session_state.datadescriptions_path).name)
+
+    datadescriptions = _effective_datadescriptions_path()
 
     if st.sidebar.button(
         "Discover participants / sessions",
@@ -287,6 +369,155 @@ def _sidebar(ctrl: PreJcvpcaReviewController) -> dict[str, Path]:
         "output_root": output_root,
         "datadescriptions": datadescriptions,
     }
+
+
+def _selected_joint_labels(
+    ctrl: PreJcvpcaReviewController,
+    selected_link_ids: list[str],
+) -> list[str]:
+    by_id = {opt.link_id: opt.display_name for opt in ctrl.joint_options}
+    return [by_id.get(link_id, link_id) for link_id in selected_link_ids]
+
+
+def _render_decision_summary(df: pd.DataFrame, title: str) -> None:
+    st.subheader(title)
+    if df.empty:
+        st.info("No summary data.")
+        return
+    row = df.iloc[0]
+    cols = st.columns(min(4, len(df.columns)))
+    for index, col in enumerate(df.columns):
+        cols[index % len(cols)].metric(str(col), str(row[col]))
+
+
+def _render_diagnostics_tab(
+    ctrl: PreJcvpcaReviewController,
+    paths: dict[str, Path],
+    selected_link_ids: list[str],
+) -> None:
+    from pre_jvcpca_review.review_output import REVIEW_TABLE_FILES
+
+    st.caption(
+        "Review tables for the current session, frame window, QC evidence types, "
+        "and joint selection. Tables refresh automatically when that context changes."
+    )
+
+    row = ctrl.current_row
+    context_sig = diagnostics_context_signature(st.session_state)
+    cached_sig = st.session_state.get("diagnostics_cached_signature")
+    context_changed = cached_sig != context_sig
+
+    if row is not None:
+        joint_labels = _selected_joint_labels(ctrl, selected_link_ids)
+        preview = ", ".join(joint_labels[:8])
+        if len(joint_labels) > 8:
+            preview += f", … (+{len(joint_labels) - 8} more)"
+        st.markdown(
+            f"**Session** `{row['session_id']}` · "
+            f"**Frames** {st.session_state.frame_start}–{st.session_state.frame_end} · "
+            f"**Window** `{st.session_state.window_label}` · "
+            f"**Joints** {len(selected_link_ids)} selected · "
+            f"**QC** {', '.join(st.session_state.qc_types) or '(none)'}"
+        )
+        if joint_labels:
+            st.caption(preview)
+        else:
+            st.caption("No joints selected.")
+
+    st.session_state.setdefault("diagnostics_auto_refresh", True)
+    control_cols = st.columns([1, 2])
+    refresh_clicked = control_cols[0].button("Refresh diagnostics now", type="primary")
+    auto_refresh = control_cols[1].checkbox(
+        "Auto-refresh when session, window, joints, or QC types change",
+        value=st.session_state.diagnostics_auto_refresh,
+    )
+    st.session_state.diagnostics_auto_refresh = auto_refresh
+    if refresh_clicked:
+        invalidate_diagnostics(st.session_state)
+        context_changed = True
+
+    layer1 = Path(str(row["layer1_run_dir"])) if row is not None else None
+    layer2 = Path(str(row["layer2_run_dir"])) if row is not None else None
+
+    if row is None:
+        st.info("Select a participant and session on the **Window & joints** tab.")
+        return
+    if not selected_link_ids:
+        st.warning("Select at least one joint on the **Window & joints** tab.")
+        return
+    if not st.session_state.qc_types:
+        st.warning("Select at least one QC evidence type on the **Window & joints** tab.")
+        return
+    if layer1 is None or layer2 is None:
+        st.error("Matched Layer 1 / Layer 2 directories are required.")
+        return
+
+    if context_changed and (refresh_clicked or auto_refresh):
+        with st.spinner("Running full review for the current selection…"):
+            try:
+                diagnostics = ctrl.refresh_diagnostics(
+                    layer1_dir=layer1,
+                    layer2_dir=layer2,
+                    output_root=paths["output_root"],
+                    window_label=st.session_state.window_label,
+                    frame_start=st.session_state.frame_start,
+                    frame_end=st.session_state.frame_end,
+                    selected_link_ids=selected_link_ids,
+                    qc_evidence=st.session_state.qc_types,
+                    datadescriptions=paths["datadescriptions"],
+                )
+                st.session_state.diagnostics_cache = diagnostics
+                st.session_state.diagnostics_cached_signature = context_sig
+                st.session_state.pop("diagnostics_error", None)
+            except Exception as exc:
+                st.session_state.diagnostics_error = str(exc)
+                st.session_state.pop("diagnostics_cache", None)
+                st.session_state.pop("diagnostics_cached_signature", None)
+
+    error = st.session_state.get("diagnostics_error")
+    if error:
+        st.error(error)
+        return
+
+    diagnostics: DiagnosticsView | None = st.session_state.get("diagnostics_cache")
+    if cached_sig != context_sig:
+        diagnostics = None
+
+    if diagnostics is None:
+        if context_changed and not auto_refresh and not refresh_clicked:
+            st.warning(
+                "Selection changed. Click **Refresh diagnostics now** or enable auto-refresh."
+            )
+        else:
+            st.info("Diagnostics will appear here once the current selection is valid.")
+        return
+
+    st.success(diagnostics.message)
+    st.caption(f"Output folder: `{diagnostics.out_dir}`")
+
+    status_cols = st.columns(min(6, len(REVIEW_TABLE_FILES)))
+    for index, filename in enumerate(REVIEW_TABLE_FILES):
+        found = diagnostics.table_status.get(filename, False)
+        status_cols[index % len(status_cols)].metric(
+            filename.replace("_table.csv", "").replace(".csv", ""),
+            "ready" if found else "missing",
+        )
+
+    for title, df, max_rows in diagnostics.tables:
+        if df.empty:
+            st.subheader(title)
+            st.info("No rows.")
+            continue
+        if "window_decision_summary" in title:
+            _render_decision_summary(df, title)
+            with st.expander("Full window decision summary"):
+                st.dataframe(df, use_container_width=True, hide_index=True)
+            continue
+        st.subheader(title)
+        display_df = df.head(max_rows) if max_rows else df
+        st.dataframe(display_df, use_container_width=True, hide_index=True)
+        if max_rows and len(df) > max_rows:
+            st.caption(f"Showing first {max_rows} of {len(df)} rows.")
 
 
 def main() -> None:
@@ -342,13 +573,18 @@ def main() -> None:
     )
 
     participant_ids = participants(ctrl.session_index)
-    participant_id = st.session_state.participant_id or participant_ids[0]
-    sess_df = ctrl.participant_sessions(participant_id)
 
     with tab_sessions:
+        participant_id = _participant_selectbox(
+            ctrl,
+            participant_ids,
+            paths["output_root"],
+            key="participant_select_sessions",
+        )
+        sess_df = ctrl.participant_sessions(participant_id)
         st.caption(
-            "Read-only session context. Choose participant and session in the "
-            "**Window & joints** tab."
+            "Session pairing and cross-session joint comparability for the selected "
+            "participant. Choose a specific session in the **Window & joints** tab."
         )
         st.subheader("Layer 1 / Layer 2 pairing")
         pairing_cols = [
@@ -363,6 +599,12 @@ def main() -> None:
 
         st.subheader("Joint / link overlap & comparability")
         if ctrl.current_overlap is not None:
+            n_core = len(ctrl.overlap_scope_links)
+            st.caption(
+                f"All {n_core} Layer 2 core_candidate links across matched sessions "
+                f"(upper + lower body; not limited to the {len(ctrl.required_links)}-link "
+                "Group 4 upper-body pilot export manifest)."
+            )
             st.dataframe(
                 ctrl.current_overlap[
                     [
@@ -397,7 +639,7 @@ def main() -> None:
             m2.metric("L2 frames", str(row.get("n_frames_layer2", "—")))
             m3.metric("Matched", "Yes" if row.get("is_matched") else "No")
 
-        with st.expander("Full session index"):
+        with st.expander("All sessions for this participant"):
             index_cols = [
                 "session_id",
                 "is_matched",
@@ -406,7 +648,7 @@ def main() -> None:
                 "match_warning",
             ]
             st.dataframe(
-                ctrl.session_index[index_cols],
+                sess_df[index_cols],
                 use_container_width=True,
                 hide_index=True,
             )
@@ -479,6 +721,7 @@ def main() -> None:
                     st.session_state.frame_end = end
                     st.session_state.window_label = label
                     st.session_state.window_label_tag = _exercise_window_tag(exercise_choice)
+                    invalidate_diagnostics(st.session_state)
             elif st.session_state.get("exercise_choice") is None:
                 applied = ctrl.apply_exercise_selection(
                     str(st.session_state.session_id),
@@ -491,6 +734,7 @@ def main() -> None:
                     st.session_state.window_label = label
                     st.session_state.window_label_tag = _exercise_window_tag(exercise_choice)
                     st.session_state.exercise_choice = exercise_choice
+                    invalidate_diagnostics(st.session_state)
         elif ctrl.exercise_catalog:
             st.warning(
                 f"No exercise rows for session `{st.session_state.get('session_id')}` "
@@ -718,64 +962,7 @@ def main() -> None:
                         st.code(f"{name}: {path}")
 
     with tab_diagnostics:
-        st.caption("Mapping / full review write to the same window folder as Layer 3 export.")
-        d1, d2, d3 = st.columns(3)
-        run_mapping = d1.button("Run mapping table")
-        run_review = d2.button("Run full review")
-        show_tables = d3.button("Show review tables")
-
-        row = ctrl.current_row
-        layer1 = Path(str(row["layer1_run_dir"])) if row is not None else None
-        layer2 = Path(str(row["layer2_run_dir"])) if row is not None else None
-
-        if run_mapping and layer1 and layer2:
-            try:
-                mapping_path, df = ctrl.run_mapping(
-                    layer1_dir=layer1,
-                    layer2_dir=layer2,
-                    output_root=paths["output_root"],
-                    window_label=st.session_state.window_label,
-                    selected_link_ids=selected_link_ids,
-                    datadescriptions=paths["datadescriptions"],
-                )
-                st.success(f"Wrote {mapping_path}")
-                st.dataframe(df, use_container_width=True)
-            except Exception as exc:
-                st.error(str(exc))
-
-        if run_review and layer1 and layer2:
-            try:
-                review_paths = ctrl.run_full_review(
-                    layer1_dir=layer1,
-                    layer2_dir=layer2,
-                    output_root=paths["output_root"],
-                    window_label=st.session_state.window_label,
-                    frame_start=st.session_state.frame_start,
-                    frame_end=st.session_state.frame_end,
-                    selected_link_ids=selected_link_ids,
-                    qc_evidence=st.session_state.qc_types,
-                    datadescriptions=paths["datadescriptions"],
-                )
-                st.success(f"Review complete — wrote {len(review_paths)} artifacts.")
-                summary_path = review_paths.get("window_decision_summary.csv")
-                if summary_path and Path(summary_path).is_file():
-                    st.dataframe(pd.read_csv(summary_path), use_container_width=True)
-            except Exception as exc:
-                st.error(str(exc))
-
-        if show_tables:
-            try:
-                tables = ctrl.load_review_tables(
-                    paths["output_root"],
-                    st.session_state.window_label,
-                )
-                if not tables:
-                    st.warning("No review tables found for the current window folder.")
-                for title, df, max_rows in tables:
-                    st.subheader(title)
-                    st.dataframe(df.head(max_rows) if max_rows else df, use_container_width=True)
-            except Exception as exc:
-                st.error(str(exc))
+        _render_diagnostics_tab(ctrl, paths, selected_link_ids)
 
 
 if __name__ == "__main__":

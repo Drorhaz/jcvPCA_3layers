@@ -15,6 +15,7 @@ if str(L3_SRC) not in sys.path:
 
 from layer3_jcvpca.analysis_service import AnalysisIdentity, AnalysisParams  # noqa: E402
 from layer3_jcvpca.app_controller import DEFAULT_PATHS, Layer3AnalysisController  # noqa: E402
+from layer3_jcvpca.diagnostics import collect_diagnostics  # noqa: E402
 from layer3_jcvpca.matrix_stability import MatrixStabilityParams  # noqa: E402
 from layer3_jcvpca import viz  # noqa: E402
 
@@ -55,6 +56,19 @@ def main() -> None:
         "JcvPCA-style comparison using Layer 2.5 window matrices. "
         "Calibration test — not a final scientific result."
     )
+
+    # --- Phase 0: Implementation diagnostics ---
+    with st.expander("Implementation status / diagnostics", expanded=False):
+        diag = collect_diagnostics(REPO_ROOT)
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Layer 3 import", "OK" if diag["layer3_import_ok"] else "FAILED")
+        c2.metric("Layer 2.5 import", "OK" if diag["pre_jvcpca_import_ok"] else "FAILED")
+        c3.metric("L2.5 manifests", diag["layer25_manifest_count"])
+        st.caption(f"Tests: `{diag['pytest_command']}`")
+        st.caption(
+            "Stepwise Gaga workbench (inventory): open **Layer 3 Gaga JcvPCA Workbench** in the sidebar."
+        )
+        st.json(diag)
 
     # --- Section 1: Analysis identity ---
     st.header("1. Analysis identity")

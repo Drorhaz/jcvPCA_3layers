@@ -7,8 +7,12 @@ from pathlib import Path
 import pytest
 
 from pre_jvcpca_review.exercise_segments import (
+    GAGA_EXERCISE_ID_TO_LABEL,
+    GAGA_EXERCISE_LABELS,
     GROUP4_LABEL,
+    default_exercise_segments_path,
     exercise_choice_label,
+    gaga_label_for_exercise_id,
     group4_window,
     load_exercise_segments,
     make_window_label,
@@ -16,7 +20,7 @@ from pre_jvcpca_review.exercise_segments import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE_XLSX = ROOT / "671_ex_segmentatios_frames.xlsx"
+EXAMPLE_XLSX = ROOT / "segmentation" / "671_ex_segmentatios_frames.xlsx"
 
 
 def test_sheet_name_to_session_id() -> None:
@@ -63,3 +67,16 @@ def test_exercise_choice_label_includes_frames() -> None:
 
 def test_group4_label_constant() -> None:
     assert "Group 4" in GROUP4_LABEL
+
+
+def test_default_exercise_segments_path_points_to_segmentation_dir() -> None:
+    root = ROOT
+    path = default_exercise_segments_path(root)
+    assert path.parent.name == "segmentation"
+    assert path.name == "671_ex_segmentatios_frames.xlsx"
+
+
+@pytest.mark.parametrize("exercise_id,label", list(GAGA_EXERCISE_ID_TO_LABEL.items()))
+def test_gaga_label_for_exercise_id(exercise_id: int, label: str) -> None:
+    assert gaga_label_for_exercise_id(exercise_id) == label
+    assert label in GAGA_EXERCISE_LABELS

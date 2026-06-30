@@ -51,6 +51,34 @@ def test_resolve_links_by_parent_child_not_joint_id(pilot_manifest):
         resolve_session_links_from_manifest(pilot_manifest, session_links)
 
 
+def test_resolve_neck2_head_alias_for_neck_head_manifest(pilot_manifest):
+    session_links = [
+        LinkRecord("J003", "Neck2", "Head", "core_candidate", "pass", "Neck2->Head"),
+        LinkRecord("J028", "Chest", "Neck", "core_candidate", "pass", "Chest->Neck"),
+        LinkRecord("J005", "LUArm", "LFArm", "core_candidate", "pass", "LUArm->LFArm"),
+    ]
+    with pytest.raises(ManifestError, match="missing canonical link"):
+        resolve_session_links_from_manifest(pilot_manifest, session_links)
+
+    session_links = [
+        LinkRecord("J003", "Neck2", "Head", "core_candidate", "pass", "Neck2->Head"),
+        LinkRecord("J028", "Chest", "Neck", "core_candidate", "pass", "Chest->Neck"),
+        LinkRecord("J004", "Chest", "LShoulder", "core_candidate", "pass", "Chest->LShoulder"),
+        LinkRecord("J005", "Chest", "RShoulder", "core_candidate", "pass", "Chest->RShoulder"),
+        LinkRecord("J006", "LShoulder", "LUArm", "core_candidate", "pass", "LShoulder->LUArm"),
+        LinkRecord("J007", "LUArm", "LFArm", "core_candidate", "pass", "LUArm->LFArm"),
+        LinkRecord("J008", "LFArm", "LHand", "core_candidate", "pass", "LFArm->LHand"),
+        LinkRecord("J009", "RShoulder", "RUArm", "core_candidate", "pass", "RShoulder->RUArm"),
+        LinkRecord("J010", "RUArm", "RFArm", "core_candidate", "pass", "RUArm->RFArm"),
+        LinkRecord("J011", "RFArm", "RHand", "core_candidate", "pass", "RFArm->RHand"),
+    ]
+    selected_ids, resolved = resolve_session_links_from_manifest(pilot_manifest, session_links)
+    assert resolved[("Neck", "Head")].parent_canonical == "Neck2"
+    assert resolved[("Neck", "Head")].child_canonical == "Head"
+    assert expected_pilot_feature_order(pilot_manifest, resolved)[0] == "Neck_to_Head_rx"
+    assert "J003" in selected_ids
+
+
 def test_pilot_export_validation_rejects_bad_order(tmp_path, pilot_manifest):
     if not EVAL_DIR.is_dir():
         pytest.skip("reevluate_project fixtures not available")

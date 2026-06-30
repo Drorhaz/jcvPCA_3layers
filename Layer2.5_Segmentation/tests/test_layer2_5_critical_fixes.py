@@ -22,6 +22,7 @@ from pre_jvcpca_review.export_window import (
 from pre_jvcpca_review.joint_overlap import (
     DIRECT,
     classify_links,
+    core_candidate_link_order,
     non_comparable_required_features,
     overlap_dataframe,
 )
@@ -278,6 +279,31 @@ def _links(pairs: list[tuple[str, str]]) -> list[LinkRecord]:
     ]
 
 
+def test_core_candidate_link_order_includes_lower_body():
+    sess = {
+        "S1": _links(
+            [
+                ("Chest", "Neck"),
+                ("252", "LThigh"),
+                ("LThigh", "LShin"),
+                ("LShin", "LFoot"),
+            ]
+        ),
+        "S2": _links(
+            [
+                ("Chest", "Neck"),
+                ("671", "LThigh"),
+                ("LThigh", "LShin"),
+            ]
+        ),
+    }
+    order = core_candidate_link_order(sess)
+    assert ("252", "LThigh") in order
+    assert ("671", "LThigh") in order
+    assert ("LThigh", "LShin") in order
+    assert len(order) == 5
+
+
 def test_joint_overlap_direct_missing_and_composite():
     sess = {
         "T1": _links([("Neck", "Head"), ("Ab", "Chest"), ("Chest", "LShoulder")]),
@@ -325,21 +351,37 @@ def test_scoped_comparability_does_not_block_unselected_bad_link(tmp_path):
     assert warnings[warnings["warning_id"] == "joint.not_comparable_not_selected"].empty
 
 
+def test_joint_overlap_neck2_head_alias_is_directly_comparable():
+    sess = {
+        "T1": _links([("Neck", "Head")]),
+        "T3": _links([("Neck", "Neck2"), ("Neck2", "Head"), ("Chest", "Neck")]),
+    }
+    rows = classify_links(sess, candidate_links=[("Neck", "Head"), ("Chest", "Neck")])
+    by_name = {r.canonical_link_name: r for r in rows}
+    assert by_name["Neck->Head"].classification == DIRECT
+    assert non_comparable_required_features(
+        overlap_dataframe(rows, "671", list(sess)),
+        [("Neck", "Head")],
+    ) == []
+
+
 @pytest.mark.skipif(not FIXTURE_L2.is_dir(), reason="fixtures unavailable")
 def test_non_comparable_required_feature_blocks_export(tmp_path):
-    # Build an overlap table flagging a required link as composite.
+    # Ab->Chest requires composite mapping in T3 and should still block export.
     sess = {
-        "671_T1_P1_R1": _links([("Neck", "Head")]),
-        "671_T3_P1_R1": _links([("Neck", "Neck2"), ("Neck2", "Head")]),
+        "671_T1_P1_R1": _links([("Neck", "Head"), ("Ab", "Chest")]),
+        "671_T3_P1_R1": _links([("Neck2", "Head"), ("Ab", "Spine2"), ("Spine2", "Chest")]),
     }
-    rows = classify_links(sess, candidate_links=[("Neck", "Head")])
+    rows = classify_links(sess, candidate_links=[("Neck", "Head"), ("Ab", "Chest")])
     overlap = overlap_dataframe(rows, "671", list(sess))
-    assert non_comparable_required_features(overlap, [("Neck", "Head")]) == ["Neck->Head"]
+    assert non_comparable_required_features(overlap, [("Neck", "Head")]) == []
+    assert non_comparable_required_features(overlap, [("Ab", "Chest")]) == ["Ab->Chest"]
 
     res = export_layer3_window(
         FIXTURE_L1, FIXTURE_L2, tmp_path / "out", 50, 59,
         require_pairing=False, overlap_df=overlap,
         harmonization_manifest_exists=False,
+        scope_required_links=[("Ab", "Chest")],
     )
     assert res["blocked"] is True
     assert not (tmp_path / "out" / "window_jvcpca_matrix.parquet").is_file()

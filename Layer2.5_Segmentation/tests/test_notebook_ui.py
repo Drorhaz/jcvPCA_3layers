@@ -112,7 +112,7 @@ def test_emit_joint_comparability_silent_for_unselected_bad_links():
     assert not collector.has_blocking
 
 
-def test_emit_joint_comparability_blocks_when_selected_link_is_bad():
+def test_emit_joint_comparability_allows_neck2_head_alias():
     sess = {
         "T1": [_link("J001", "Neck", "Head")],
         "T3": [_link("J001", "Neck", "Neck2"), _link("J002", "Neck2", "Head")],
@@ -132,8 +132,32 @@ def test_emit_joint_comparability_blocks_when_selected_link_is_bad():
         session_id="671_T1_P1_R1",
     )
 
+    assert collector.to_dataframe().empty
+    assert not collector.has_blocking
+
+
+def test_emit_joint_comparability_blocks_when_selected_link_is_bad():
+    sess = {
+        "T1": [_link("J001", "Ab", "Chest")],
+        "T3": [_link("J001", "Ab", "Spine2"), _link("J002", "Spine2", "Chest")],
+    }
+    overlap = overlap_dataframe(
+        classify_links(sess, candidate_links=[("Ab", "Chest")]),
+        "671",
+        list(sess),
+    )
+    collector = WarningCollector()
+
+    emit_joint_comparability_warnings(
+        collector,
+        overlap,
+        [("Ab", "Chest")],
+        participant_id="671",
+        session_id="671_T1_P1_R1",
+    )
+
     df = collector.to_dataframe()
     blocking = df[df["warning_id"] == "joint.not_directly_comparable"]
     assert len(blocking) == 1
-    assert blocking.iloc[0]["canonical_link_name"] == "Neck->Head"
+    assert blocking.iloc[0]["canonical_link_name"] == "Ab->Chest"
     assert collector.has_blocking

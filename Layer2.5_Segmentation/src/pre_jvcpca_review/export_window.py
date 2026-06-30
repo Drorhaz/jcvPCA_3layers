@@ -23,7 +23,10 @@ from pre_jvcpca_review.export_constants import (
     FEATURE_AXES,
     MATRIX_IDENTITY_COLUMNS,
     MATRIX_SOURCE_COLUMNS,
+    WINDOW_MANIFEST_FILE,
+    WINDOW_MATRIX_FILE,
 )
+from pre_jvcpca_review.layer3_export_manifest import GagaExportMetadata, apply_gaga_export_metadata
 from pre_jvcpca_review.pilot_export_validation import (
     PilotExportValidationError,
     validate_before_write,
@@ -47,9 +50,9 @@ from pre_jvcpca_review.warnings import (
 )
 
 LONG_ROTVEC_FILE = "window_selected_rotvecs_long.parquet"
-MATRIX_FILE = "window_jvcpca_matrix.parquet"
+MATRIX_FILE = WINDOW_MATRIX_FILE
 FLAG_LOG_FILE = "window_joint_frame_flag_log.csv"
-MANIFEST_FILE = "window_export_manifest.json"
+MANIFEST_FILE = WINDOW_MANIFEST_FILE
 
 LONG_ROTVEC_COLUMNS = [
     "session_id",
@@ -538,13 +541,15 @@ def build_pilot_jvcpca_matrix(
         identity = frame_rows.iloc[0]
         row: dict[str, object] = {col: identity[col] for col in MATRIX_IDENTITY_COLUMNS}
         for feature in pilot_features:
+            link = links_by_canonical[(feature.parent_canonical, feature.child_canonical)]
             link_row = frame_rows[
-                (frame_rows["parent_canonical"] == feature.parent_canonical)
-                & (frame_rows["child_canonical"] == feature.child_canonical)
+                (frame_rows["parent_canonical"] == link.parent_canonical)
+                & (frame_rows["child_canonical"] == link.child_canonical)
             ]
             if link_row.empty:
                 raise WindowExportError(
-                    f"Missing link {feature.parent_canonical}->{feature.child_canonical} "
+                    f"Missing link {link.parent_canonical}->{link.child_canonical} "
+                    f"(manifest {feature.parent_canonical}->{feature.child_canonical}) "
                     f"at frame {frame}"
                 )
             row[feature.feature_name] = link_row.iloc[0][feature.source_layer2_column]
@@ -987,6 +992,7 @@ def export_layer3_window(
     harmonization_manifest_exists: bool = False,
     scope_required_links: list[tuple[str, str]] | None = None,
     require_pairing: bool = True,
+    gaga_export_metadata: GagaExportMetadata | None = None,
 ) -> dict[str, object]:
     """Layer 3-safe export orchestrator (canonical only) with a blocking warning gate.
 
@@ -1132,6 +1138,15 @@ def export_layer3_window(
     payload["warnings"] = collector.to_dataframe().to_dict(orient="records")
     payload["export_status"] = "exported"
     payload["requires_user_approval"] = collector.requires_approval
+    if gaga_export_metadata is not None:
+        matrix_path = paths.get("jvcpca_matrix", out_dir / MATRIX_FILE)
+        apply_gaga_export_metadata(
+            payload,
+            metadata=gaga_export_metadata,
+            warnings_summary=collector.summary(),
+            manifest_path=manifest_path_out,
+            matrix_path=matrix_path,
+        )
     Path(manifest_path_out).write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
 
     return {

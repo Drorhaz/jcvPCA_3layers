@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from pre_jvcpca_review.canonical_manifest import canonical_link_aliases
 from pre_jvcpca_review.load_layer2 import LinkRecord
 from pre_jvcpca_review.warnings import (
     SEVERITY_BLOCKING,
@@ -93,6 +94,29 @@ def _recommended_action(classification: str) -> str:
     }.get(classification, "review")
 
 
+def core_candidate_link_order(
+    session_links: dict[str, list[LinkRecord]],
+) -> list[tuple[str, str]]:
+    """Canonical parent->child pairs marked ``core_candidate`` in Layer 2 manifests."""
+    seen: set[tuple[str, str]] = set()
+    order: list[tuple[str, str]] = []
+
+    def _append_core(links: list[LinkRecord]) -> None:
+        for link in links:
+            if link.feature_scope != "core_candidate":
+                continue
+            key = (link.parent_canonical, link.child_canonical)
+            if key not in seen:
+                seen.add(key)
+                order.append(key)
+
+    if session_links:
+        _append_core(next(iter(session_links.values())))
+        for links in session_links.values():
+            _append_core(links)
+    return order
+
+
 def classify_links(
     session_links: dict[str, list[LinkRecord]],
     candidate_links: list[tuple[str, str]] | None = None,
@@ -124,6 +148,13 @@ def classify_links(
 
         for sid in sessions:
             ids = by_session[sid].get((parent, child), [])
+            if not ids:
+                for alias_parent, alias_child in canonical_link_aliases(parent, child):
+                    if (alias_parent, alias_child) == (parent, child):
+                        continue
+                    ids = by_session[sid].get((alias_parent, alias_child), [])
+                    if ids:
+                        break
             if ids:
                 present.append(sid)
                 native[sid] = ";".join(ids)

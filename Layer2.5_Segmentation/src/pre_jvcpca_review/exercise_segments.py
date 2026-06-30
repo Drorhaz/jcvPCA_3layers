@@ -12,6 +12,23 @@ import pandas as pd
 GROUP4_EXERCISE_IDS = (9, 10, 11, 12, 13)
 GROUP4_LABEL = "Group 4 — Curvilinear exploration (exercises 9–13)"
 
+# Gaga workbench labels (exercise_id 9–13 → P1–P5). Not the same as task part_id P1 in session keys.
+GAGA_EXERCISE_ID_TO_LABEL: dict[int, str] = {
+    9: "P1",
+    10: "P2",
+    11: "P3",
+    12: "P4",
+    13: "P5",
+}
+GAGA_EXERCISE_LABELS: tuple[str, ...] = ("P1", "P2", "P3", "P4", "P5")
+EXPORT_GRANULARITY_PER_EXERCISE = "per_exercise"
+EXPORT_GRANULARITY_COMBINED = "combined_group4"
+CENTRAL_MANIFEST_FILENAME = "layer25_export_manifest.csv"
+EXPORT_ATTEMPTS_REPORT_FILENAME = "layer25_export_attempts_report.csv"
+SESSION_COVERAGE_REPORT_FILENAME = "layer25_session_coverage_report.csv"
+SEGMENTATION_DIRNAME = "segmentation"
+EXERCISE_SEGMENTS_FILENAME_TEMPLATE = "{participant_id}_ex_segmentatios_frames.xlsx"
+
 SHEET_SESSION_RE = re.compile(
     r"(?P<subject>\d+)\s*[-–]\s*T(?P<t>\d+)P(?P<p>\d+)R(?P<r>\d+)",
     re.IGNORECASE,
@@ -251,3 +268,48 @@ def exercise_choice_label(segment: ExerciseSegment) -> str:
         f"Ex {segment.exercise_id:02d}: {segment.exercise_name} "
         f"[{segment.start_frame}–{segment.end_frame}]"
     )
+
+
+def gaga_label_for_exercise_id(exercise_id: int) -> str | None:
+    return GAGA_EXERCISE_ID_TO_LABEL.get(int(exercise_id))
+
+
+def gaga_segments_for_session(segments: list[ExerciseSegment]) -> list[ExerciseSegment]:
+    """Return Group4 Gaga segments (exercise_id 9–13) in exercise_id order."""
+    by_id = {seg.exercise_id: seg for seg in segments if seg.exercise_id in GROUP4_EXERCISE_IDS}
+    return [by_id[eid] for eid in GROUP4_EXERCISE_IDS if eid in by_id]
+
+
+def default_exercise_segments_path(project_root: Path | None = None) -> Path:
+    """Default pilot participant segmentation workbook under ``segmentation/``."""
+    root = Path(project_root) if project_root else Path(__file__).resolve().parents[2]
+    return exercise_segments_path_for_participant(root, "671")
+
+
+def exercise_segments_path_for_participant(
+    project_root: Path | str,
+    participant_id: str,
+) -> Path:
+    """Participant-specific exercise segmentation xlsx path."""
+    root = Path(project_root)
+    return root / SEGMENTATION_DIRNAME / EXERCISE_SEGMENTS_FILENAME_TEMPLATE.format(
+        participant_id=str(participant_id)
+    )
+
+
+def load_merged_exercise_catalog(
+    project_root: Path | str,
+    participant_ids: list[str],
+) -> tuple[dict[str, list[ExerciseSegment]], dict[str, Path]]:
+    """Load and merge segmentation catalogs for one or more participants."""
+    root = Path(project_root)
+    catalog: dict[str, list[ExerciseSegment]] = {}
+    paths: dict[str, Path] = {}
+    for participant_id in participant_ids:
+        path = exercise_segments_path_for_participant(root, participant_id)
+        if not path.is_file():
+            continue
+        paths[participant_id] = path
+        for session_id, segments in load_exercise_segments(path).items():
+            catalog[session_id] = segments
+    return catalog, paths

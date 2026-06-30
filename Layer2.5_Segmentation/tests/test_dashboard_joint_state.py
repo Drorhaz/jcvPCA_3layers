@@ -63,11 +63,15 @@ def test_set_selected_joints_sorts_dedupes_and_clears_widgets() -> None:
         "selected_joints": [],
         "joint_cb_J001": True,
         "warning_summary": object(),
+        "diagnostics_cache": object(),
+        "diagnostics_cached_signature": ("671", "671_T1_P1_R1", 1, 2, "w", ("J001",), ("gap_0p5",)),
     }
     set_selected_joints(state, ["J002", "J001", "J002"])
     assert state["selected_joints"] == ["J001", "J002"]
     assert "joint_cb_J001" not in state
     assert "warning_summary" not in state
+    assert "diagnostics_cache" not in state
+    assert "diagnostics_cached_signature" not in state
 
 
 def test_bulk_select_clears_stale_checkbox_widget_state() -> None:

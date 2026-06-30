@@ -18,18 +18,33 @@ from pre_jvcpca_review.canonical_manifest import (
     pilot_link_order,
     resolve_session_links_from_manifest,
 )
+from pre_jvcpca_review.datadescriptions_discovery import (
+    datadescriptions_search_roots,
+    default_datadescriptions_dir,
+    find_datadescriptions_candidate,
+    is_usable_datadescriptions,
+    resolve_datadescriptions_path,
+)
 from pre_jvcpca_review.discovery import resolve_layer2
 from pre_jvcpca_review.exercise_segments import (
     GROUP4_LABEL,
     ExerciseSegment,
+    default_exercise_segments_path,
     exercise_choice_label,
+    exercise_segments_path_for_participant,
     group4_window,
     load_exercise_segments,
     load_exercise_segments_bytes,
+    load_merged_exercise_catalog,
     make_window_label,
 )
 from pre_jvcpca_review.export_constants import MATRIX_IDENTITY_COLUMNS
 from pre_jvcpca_review.export_window import export_layer3_window
+from pre_jvcpca_review.gaga_batch_export import GagaBatchRunSummary, run_gaga_batch_export
+from pre_jvcpca_review.layer3_export_manifest import (
+    central_manifest_path,
+    load_layer25_export_manifest,
+)
 from pre_jvcpca_review.feature_scope import FeatureScopeConfig, load_feature_scope
 from pre_jvcpca_review.joint_body_sections import (
     BODY_SECTION_ALL,
@@ -40,6 +55,7 @@ from pre_jvcpca_review.joint_overlap import (
     DIRECT,
     canonical_names_to_link_tuples,
     classify_links,
+    core_candidate_link_order,
     emit_joint_comparability_warnings,
     non_comparable_required_features,
     overlap_dataframe,
@@ -108,6 +124,15 @@ class ExportResultView:
     warnings_csv: str = ""
 
 
+@dataclass
+class DiagnosticsView:
+    out_dir: Path
+    tables: list[tuple[str, pd.DataFrame, int | None]]
+    table_status: dict[str, bool]
+    review_paths: dict[str, Path]
+    message: str = ""
+
+
 class PreJcvpcaReviewController:
     """Orchestrates discovery, warnings, diagnostics, and Layer 3 export."""
 
@@ -121,6 +146,7 @@ class PreJcvpcaReviewController:
         self.session_index: pd.DataFrame | None = None
         self.current_row: pd.Series | None = None
         self.current_overlap: pd.DataFrame | None = None
+        self.overlap_scope_links: list[tuple[str, str]] = []
         self.joint_options: list[JointOption] = []
         self._links: list[LinkRecord] = []
         self._pilot_link_ids: set[str] = set()
@@ -140,7 +166,7 @@ class PreJcvpcaReviewController:
 
     @property
     def default_exercise_segments(self) -> Path:
-        return self.project_root / "671_ex_segmentatios_frames.xlsx"
+        return default_exercise_segments_path(self.project_root)
 
     def load_exercise_catalog(self, path: Path) -> dict[str, list[ExerciseSegment]]:
         self.exercise_catalog = load_exercise_segments(path)
@@ -190,12 +216,61 @@ class PreJcvpcaReviewController:
         return None
 
     @property
+    def default_datadescriptions_dir(self) -> Path:
+        return default_datadescriptions_dir(self.project_root)
+
+    @property
     def default_datadescriptions(self) -> Path:
-        return (
-            self.project_root
-            / "reevluate_project"
-            / "671_T1_P1_R1_Take 2026-01-06 03.57.12 PM_001_DataDescriptions.csv"
+        """Legacy default path; prefer :meth:`resolve_datadescriptions`."""
+        resolved = self.resolve_datadescriptions()
+        if resolved is not None:
+            return resolved
+        return self.default_datadescriptions_dir
+
+    def datadescriptions_search_roots(self) -> list[Path]:
+        return datadescriptions_search_roots(self.project_root, self.current_row)
+
+    def resolve_datadescriptions(
+        self,
+        manual_path: Path | str | None = None,
+    ) -> Path | None:
+        return resolve_datadescriptions_path(
+            self.current_row,
+            search_roots=self.datadescriptions_search_roots(),
+            manual_path=manual_path,
         )
+
+    def find_datadescriptions_candidate(self) -> Path | None:
+        return find_datadescriptions_candidate(
+            self.current_row,
+            search_roots=self.datadescriptions_search_roots(),
+        )
+
+    def datadescriptions_status(self, path: Path | str | None = None) -> str:
+        """Human-readable status for UI warnings."""
+        if path is not None and str(path).strip():
+            candidate = Path(path)
+            if is_usable_datadescriptions(candidate):
+                return f"Using {candidate.name}"
+            if candidate.is_file():
+                return f"DataDescriptions file is empty: {candidate}"
+            return f"DataDescriptions file not found: {candidate}"
+
+        resolved = self.resolve_datadescriptions()
+        if resolved is not None:
+            return f"Auto-resolved {resolved.name}"
+
+        empty = self.find_datadescriptions_candidate()
+        if empty is not None:
+            return f"Found empty DataDescriptions placeholder: {empty.name}"
+
+        if self.current_row is not None:
+            session_id = self.current_row.get("session_id", "")
+            return (
+                f"No usable DataDescriptions found for session {session_id} "
+                f"under {self.default_datadescriptions_dir}"
+            )
+        return "Select a session to auto-resolve DataDescriptions."
 
     def discover(
         self,
@@ -239,8 +314,10 @@ class PreJcvpcaReviewController:
                 continue
         if not sess_links:
             self.current_overlap = None
+            self.overlap_scope_links = []
             return None
-        rows = classify_links(sess_links, candidate_links=self.required_links)
+        self.overlap_scope_links = core_candidate_link_order(sess_links)
+        rows = classify_links(sess_links, candidate_links=self.overlap_scope_links)
         overlap = overlap_dataframe(rows, participant_id, list(sess_links))
         out_dir = participant_out_dir(output_root, participant_id)
         write_joint_overlap_table(overlap, out_dir / "joint_overlap_table.csv")
@@ -416,7 +493,8 @@ class PreJcvpcaReviewController:
     def non_comparable_features(self) -> list[str]:
         if self.current_overlap is None:
             return []
-        return non_comparable_required_features(self.current_overlap, self.required_links)
+        scope = self.overlap_scope_links or self.required_links
+        return non_comparable_required_features(self.current_overlap, scope)
 
     def run_mapping(
         self,
@@ -542,12 +620,126 @@ class PreJcvpcaReviewController:
         from pre_jvcpca_review.review_display import DEFAULT_REVIEW_TABLES
 
         out = self.review_out_dir(output_root, window_label)
+        return self._read_review_table_specs(out, DEFAULT_REVIEW_TABLES)
+
+    @staticmethod
+    def _read_review_table_specs(
+        out_dir: Path,
+        specs,
+    ) -> list[tuple[str, pd.DataFrame, int | None]]:
         loaded: list[tuple[str, pd.DataFrame, int | None]] = []
-        for spec in DEFAULT_REVIEW_TABLES:
-            path = out / spec.filename
+        for spec in specs:
+            path = out_dir / spec.filename
             if not path.is_file():
                 continue
             df = pd.read_csv(path)
             title = spec.title or spec.filename
             loaded.append((title, df, spec.max_rows))
         return loaded
+
+    def refresh_diagnostics(
+        self,
+        *,
+        layer1_dir: Path,
+        layer2_dir: Path,
+        output_root: Path,
+        window_label: str,
+        frame_start: int,
+        frame_end: int,
+        selected_link_ids: list[str],
+        qc_evidence: list[str],
+        datadescriptions: Path | None,
+    ) -> DiagnosticsView:
+        from pre_jvcpca_review.review_display import DEFAULT_REVIEW_TABLES, review_table_status
+
+        review_paths = self.run_full_review(
+            layer1_dir=layer1_dir,
+            layer2_dir=layer2_dir,
+            output_root=output_root,
+            window_label=window_label,
+            frame_start=frame_start,
+            frame_end=frame_end,
+            selected_link_ids=selected_link_ids,
+            qc_evidence=qc_evidence,
+            datadescriptions=datadescriptions,
+        )
+        out = self.review_out_dir(output_root, window_label)
+        table_status = review_table_status(out)
+        tables = self._read_review_table_specs(out, DEFAULT_REVIEW_TABLES)
+        n_ready = sum(1 for found in table_status.values() if found)
+        return DiagnosticsView(
+            out_dir=out,
+            tables=tables,
+            table_status=table_status,
+            review_paths=review_paths,
+            message=(
+                f"Diagnostics refreshed for {window_label}: "
+                f"{len(selected_link_ids)} joint(s), frames {frame_start}–{frame_end}, "
+                f"{n_ready}/{len(table_status)} tables written."
+            ),
+        )
+
+    def load_central_export_manifest(self, output_root: Path) -> pd.DataFrame:
+        return load_layer25_export_manifest(central_manifest_path(output_root))
+
+    def run_gaga_batch_export(
+        self,
+        *,
+        output_root: Path,
+        exercise_segments_path: Path | None = None,
+        participant_ids: list[str] | None = None,
+        allow_nan_matrix: bool = False,
+        export_combined: bool = True,
+        export_per_exercise: bool = True,
+        layer1_root: Path | None = None,
+        layer2_root: Path | None = None,
+        use_participant_core_manifests: bool = True,
+    ) -> GagaBatchRunSummary:
+        """Export Gaga P1–P5 per-exercise and combined Group4 windows; write central manifest."""
+        if self.session_index is None:
+            self.discover(
+                layer1_root or self.default_layer1_root,
+                layer2_root or self.default_layer2_root,
+                output_root,
+            )
+        if self.session_index is None or self.session_index.empty:
+            raise ValueError("Session index is empty; cannot run Gaga batch export.")
+
+        participants_list = participant_ids or sorted(
+            self.session_index["participant_id"].unique().tolist()
+        )
+
+        catalog = self.exercise_catalog
+        segmentation_paths: dict[str, Path] = {}
+        if exercise_segments_path is not None:
+            if not catalog:
+                self.load_exercise_catalog(exercise_segments_path)
+                catalog = self.exercise_catalog
+        else:
+            catalog, segmentation_paths = load_merged_exercise_catalog(
+                self.project_root,
+                participants_list,
+            )
+            if not catalog:
+                missing_paths = [
+                    str(exercise_segments_path_for_participant(self.project_root, pid))
+                    for pid in participants_list
+                ]
+                raise FileNotFoundError(
+                    "No exercise segmentation workbooks found for selected participants. "
+                    f"Expected paths include: {', '.join(missing_paths)}"
+                )
+            self.exercise_catalog = catalog
+
+        return run_gaga_batch_export(
+            session_index=self.session_index,
+            exercise_catalog=catalog,
+            output_root=output_root,
+            participant_ids=participants_list,
+            project_root=self.project_root,
+            segmentation_paths=segmentation_paths or None,
+            allow_nan_matrix=allow_nan_matrix,
+            export_combined=export_combined,
+            export_per_exercise=export_per_exercise,
+            use_participant_core_manifests=use_participant_core_manifests,
+        )

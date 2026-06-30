@@ -1,3 +1,5 @@
 timestamp,phase,action,source,destination,notes
 2026-06-30,P1,create,RUN.md,,runner surface
-2026-06-30,P1,create,scripts/run_health_check.py,,health wrapper
+2026-06-30,P2,create,docs/DATA_MAP.md,,data map
+2026-06-30,P2,create,.cursorignore,,IDE hide rules
+2026-06-30,P2,create,results/*/ indexes,,report catalog

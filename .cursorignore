@@ -1,0 +1,8 @@
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/.matplotlib/
+Layer2_Motive_Kinematics/outputs/*_Take_*/
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_*/plots/
+Layer3_JcvPCA/outputs/gaga_batch_jcvpca_*/**/plots/

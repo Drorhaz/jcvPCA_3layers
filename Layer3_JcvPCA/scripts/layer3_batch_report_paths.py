@@ -87,13 +87,17 @@ def run_path_preflight(
     root: Path,
     out: Path,
     required: list[str] | None = None,
+    input_root: Path | None = None,
 ) -> int | None:
     """Return an exit code when handling validate/dry-run; otherwise None."""
     if not (args.validate_paths or args.dry_run):
         return None
 
-    missing = missing_required_files(root, required or [])
+    check_root = input_root or root
+    missing = missing_required_files(check_root, required or [])
     print(f"Batch root: {root}")
+    if input_root is not None and input_root != root:
+        print(f"Input root: {input_root}")
     print(f"Output:     {out}")
     if required is not None:
         print(f"Required inputs: {len(required)}; missing: {len(missing)}")

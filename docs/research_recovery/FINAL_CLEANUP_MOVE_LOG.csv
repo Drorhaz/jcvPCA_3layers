@@ -1,0 +1,15 @@
+batch,source,destination,reason,risk,timestamp
+F2,Layer3_JcvPCA/outputs/_workbench_comparability,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_comparability,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/_workbench_dataset_preview,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_dataset_preview,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/_workbench_full,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_full,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/_workbench_inventory_preview,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_inventory_preview,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/_workbench_phase6,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_phase6,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/_workbench_phase7,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_phase7,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/_workbench_phase9,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_phase9,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/_workbench_preflight,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_workbench_scratch/_workbench_preflight,Dev scratch not in yaml,low,2026-06-30
+F2,Layer3_JcvPCA/outputs/671_g4_validation_001,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer3_early_validation/671_g4_validation_001,Superseded pilot run,low,2026-06-30
+F2,Layer2_Motive_Kinematics/Archive.zip,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer2_archive_zip/Archive.zip,Legacy zip,low,2026-06-30
+F2,Layer1_motive_qc/motive_qc/outputs,../gaga_psylo_external_archive/final_cleanup_2026-06-30/layer1_qc_outputs/outputs,Regeneratable L1 QC outputs (~68M),medium,2026-06-30
+F1,PROJECT_STATUS.md,docs/PROJECT_STATUS.md,Root slimming,low,2026-06-30
+F1,Layer3_JcvPCA/backend_readiness_report.md,docs/legacy/layer3/backend_readiness_report.md,Layer root clutter,low,2026-06-30
+F1,results/active/SMOKE_BATCH_671.md,results/smoke_tests/SMOKE_BATCH_671.md,Smoke test index organization,low,2026-06-30

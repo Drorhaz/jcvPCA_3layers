@@ -70,8 +70,9 @@ Large CSVs are **gitignored** — they stay on disk locally.
 
 ```
 ../gaga_psylo_external_archive/
+├── final_cleanup_2026-06-30/              # F2 scratch archive (workbench, L1 QC, etc.)
 ├── layer2_outputs_archive_2026-06-30/     # Historical L2 outputs (~22 GB)
-└── archive_2026-06-30_cleanup_stage_B/  # Superseded L3 batches, scratch
+└── archive_2026-06-30_cleanup_stage_B/    # Superseded L3 batches, scratch
 ```
 
 Registered in [`config/paths.yaml`](config/paths.yaml) under `external_archive.*`.  
@@ -84,7 +85,7 @@ Map: [`results/archive_index/EXTERNAL_ARCHIVE.md`](results/archive_index/EXTERNA
 | Result | Path | Notes |
 |--------|------|-------|
 | **Canonical batch** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/` | [`results/active/CANONICAL_BATCH.md`](results/active/CANONICAL_BATCH.md) |
-| **M12b smoke batch (671)** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_smoke_671_20260630_214341/` | [`results/active/SMOKE_BATCH_671.md`](results/active/SMOKE_BATCH_671.md) |
+| **M12b smoke batch (671)** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_smoke_671_20260630_214341/` | [`results/smoke_tests/SMOKE_BATCH_671.md`](results/smoke_tests/SMOKE_BATCH_671.md) |
 | **Poster evidence** | `Layer3_JcvPCA/outputs/poster_ready_evidence_package/` | |
 | **Poster figures** | `outputs/poster_final_figures/` | [`results/poster/README.md`](results/poster/README.md) |
 | **Layer 2.5 exports** | `Layer2.5_Segmentation/outputs/pre_jvcpca_review/` | Inputs for JcvPCA |
@@ -159,10 +160,11 @@ test -d Layer2.5_Segmentation/outputs/pre_jvcpca_review/671 && echo "671 exports
 |------|--------|--------|
 | M12a validation | **Done** | [`M12A_VALIDATION_LOG.md`](docs/research_recovery/M12A_VALIDATION_LOG.md) |
 | M12b 671 smoke batch | **Done** | [`M12B_671_SMOKE_BATCH_LOG.md`](docs/research_recovery/M12B_671_SMOKE_BATCH_LOG.md) |
-| **M12c** | **Next (optional)** | Read-only review of 252 QC warnings in [`M12_PRE_ANALYSIS_READINESS.md`](docs/research_recovery/M12_PRE_ANALYSIS_READINESS.md) |
-| **M12d** | **Not yet** | Full 671+252 batch to new timestamped folder — after M12c sign-off |
-| **W3a** | **Done** | Doc/clutter moves — [`W3A_SAFE_VISIBLE_CLEANUP_LOG.md`](docs/research_recovery/W3A_SAFE_VISIBLE_CLEANUP_LOG.md) |
-| **W3b** | **Not started** | External archive for L3 workbench scratch — see [`W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md`](docs/research_recovery/W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md) |
+| **W3a** | **Done** | [`W3A_SAFE_VISIBLE_CLEANUP_LOG.md`](docs/research_recovery/W3A_SAFE_VISIBLE_CLEANUP_LOG.md) |
+| **F1 / F2** | **Done** | [`F1_F2_CLEANUP_LOG.md`](docs/research_recovery/F1_F2_CLEANUP_LOG.md) |
+| **F3** | **Not started** | Deletion candidates only — explicit approval each item |
+| **M12c** | **Next (optional)** | Read-only 252 QC — [`M12_PRE_ANALYSIS_READINESS.md`](docs/research_recovery/M12_PRE_ANALYSIS_READINESS.md) |
+| **M12d** | **Not yet** | Full cohort batch after M12c |
 
 **Suggested next command (read-only):**
 
@@ -183,9 +185,10 @@ Operational commands for 671/252, L2.5 export, batch promotion rules:
 Also see:
 
 - [`docs/research_recovery/MASTER_CONTINUATION_PLAN.md`](docs/research_recovery/MASTER_CONTINUATION_PLAN.md)
-- [`PROJECT_STATUS.md`](PROJECT_STATUS.md)
+- [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md)
+- [`FINAL_CLEANUP_PLAN.md`](docs/research_recovery/FINAL_CLEANUP_PLAN.md)
 - Legacy master plan: [`docs/legacy/master_plan/MASTER_PLAN.md`](docs/legacy/master_plan/MASTER_PLAN.md)
-- Workspace simplification: [`W1`](docs/research_recovery/W1_WORKSPACE_SURFACE_AUDIT.md) · [`W2`](docs/research_recovery/W2_TARGET_VISIBLE_STRUCTURE.md) · [`W3`](docs/research_recovery/W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md) · [`W3a log`](docs/research_recovery/W3A_SAFE_VISIBLE_CLEANUP_LOG.md)
+- Workspace simplification: [`W1`](docs/research_recovery/W1_WORKSPACE_SURFACE_AUDIT.md) · [`FINAL_CLEANUP_PLAN`](docs/research_recovery/FINAL_CLEANUP_PLAN.md) · [`F1/F2 log`](docs/research_recovery/F1_F2_CLEANUP_LOG.md)
 
 ---
 
@@ -196,9 +199,9 @@ These are **normal** — gitignored and/or large generated data:
 - `Layer2_Motive_Kinematics/outputs/*_Take_*` (~32 GB)
 - `Layer2_Motive_Kinematics/data/` (~21 GB)
 - `Layer2.5_Segmentation/outputs/pre_jvcpca_review/{671,252}/`
-- `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_*/`
-- `Layer3_JcvPCA/outputs/_workbench_*` (scratch — candidate for external archive)
+- `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_*/` (canonical + smoke on disk)
+- Workbench scratch archived to `../gaga_psylo_external_archive/final_cleanup_2026-06-30/` (F2)
 
 ---
 
-*Daily working guide — updated 2026-06-30 after W3a doc moves.*
+*Daily working guide — updated 2026-06-30 after F1/F2 cleanup.*

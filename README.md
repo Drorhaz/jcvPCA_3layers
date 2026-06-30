@@ -12,7 +12,7 @@ Adaptation of the JcvPCA computational framework to OptiTrack/Motive-derived Gag
 Layer 1 — Raw marker QC          (Layer1_motive_qc/motive_qc/)
 Layer 2 — Solved skeleton kinematics (Layer2_Motive_Kinematics/)
 Layer 2.5 — Segmentation + pre-JcvPCA review (Layer2.5_Segmentation/)
-Layer 3 — JcvPCA coordination analysis (planned; see 3_layers_Matser_plan_Full/)
+Layer 3 — JcvPCA coordination analysis (see [`docs/legacy/master_plan/MASTER_PLAN.md`](docs/legacy/master_plan/MASTER_PLAN.md))
 ```
 
 Data flow:
@@ -34,7 +34,10 @@ Primary analytical focus (from master plan): **Group 4 — Curvilinear explorati
 
 | Path | Role |
 |------|------|
-| `3_layers_Matser_plan_Full/` | Master plan, pseudocode, scope addendum |
+| [`docs/legacy/master_plan/`](docs/legacy/master_plan/) | Master plan, pseudocode, scope addendum |
+| [`docs/legacy/layer2_5/`](docs/legacy/layer2_5/) | Layer 2.5 planning docs |
+| [`docs/legacy/layer3/`](docs/legacy/layer3/) | Layer 3 planning docs |
+| [`README_WORKING.md`](README_WORKING.md) | Daily working guide |
 | `Layer1_motive_qc/motive_qc/` | Layer 1 — raw Motive marker QC pipeline |
 | `Layer2_Motive_Kinematics/` | Layer 2 — quaternion → filtered rotvec features |
 | `Layer2.5_Segmentation/` | Post-Layer 2 segmentation review + pre-JcvPCA export |
@@ -132,7 +135,7 @@ See [`Layer2.5_Segmentation/README.md`](Layer2.5_Segmentation/README.md).
 | **Layer 1** | Implemented (v0.6.0) | Full L1–L5 QC pipeline, batch mode, notebooks, `qc_mask.csv` deliverable |
 | **Layer 2** | Implemented (stages 00–08) | Parser through filtered rotvecs; validated on subject 671 sessions |
 | **Layer 2.5** | In progress | Segmentation validation, interactive notebooks, pre-JcvPCA window export |
-| **Layer 3** | Planned | Pseudocode and master plan complete; JcvPCA execution not yet implemented |
+| **Layer 3** | Implemented | JcvPCA batch pipeline; canonical batch `gaga_batch_jcvpca_20260626_193319` |
 
 Reference session for development: **`671_T1_P1_R1`**.
 
@@ -140,12 +143,13 @@ Reference session for development: **`671_T1_P1_R1`**.
 
 ## Where to start (reviewer guide)
 
-1. **[`3_layers_Matser_plan_Full/MASTER_PLAN.md`](3_layers_Matser_plan_Full/MASTER_PLAN.md)** — overall architecture and scientific scope
+1. **[`docs/legacy/master_plan/MASTER_PLAN.md`](docs/legacy/master_plan/MASTER_PLAN.md)** — overall architecture and scientific scope
 2. **[`Layer1_motive_qc/motive_qc/README.md`](Layer1_motive_qc/motive_qc/README.md)** — Layer 1 QC pipeline and deliverables
 3. **[`Layer2_Motive_Kinematics/00_README_LAYER2_OVERVIEW.md`](Layer2_Motive_Kinematics/00_README_LAYER2_OVERVIEW.md)** — Layer 2 stage overview
-4. **[`Layer2.5_Segmentation/POST_LAYER2_SEGMENTATION_NOTEBOOK_PLAN_DECISION_SCOPE_REVISED.md`](Layer2.5_Segmentation/POST_LAYER2_SEGMENTATION_NOTEBOOK_PLAN_DECISION_SCOPE_REVISED.md)** — Layer 2.5 design decisions
-5. **[`3_layers_Matser_plan_Full/layer3 psuedocode.txt`](3_layers_Matser_plan_Full/layer3%20psuedocode.txt)** — Layer 3 planned logic
-6. **Example outputs:** Layer 1 run at `Layer1_motive_qc/motive_qc/outputs/runs/671_T1_P1_R1_*`; Layer 2 reports at `Layer2_Motive_Kinematics/outputs/671_T1_P1_R1_*`; Layer 2.5 at `Layer2.5_Segmentation/outputs/pre_jvcpca_review/session_window/`
+4. **[`docs/legacy/layer2_5/POST_LAYER2_SEGMENTATION_NOTEBOOK_PLAN_DECISION_SCOPE_REVISED.md`](docs/legacy/layer2_5/POST_LAYER2_SEGMENTATION_NOTEBOOK_PLAN_DECISION_SCOPE_REVISED.md)** — Layer 2.5 design decisions
+5. **[`docs/legacy/master_plan/layer3 psuedocode.txt`](docs/legacy/master_plan/layer3%20psuedocode.txt)** — Layer 3 planned logic
+6. **[`README_WORKING.md`](README_WORKING.md)** — daily commands and path registry
+7. **Example outputs:** Layer 2.5 at `Layer2.5_Segmentation/outputs/pre_jvcpca_review/`; canonical L3 batch at `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/`
 
 ---
 

@@ -3,7 +3,7 @@
 Master index for the 3Layers project directory cleanup (Stages A → B.5 → planned C).
 
 **Project root:** `3Layers_project/`  
-**Status checkpoint:** [PROJECT_STATUS.md](../PROJECT_STATUS.md)  
+**Status checkpoint:** [PROJECT_STATUS.md](PROJECT_STATUS.md)  
 **Last updated:** 2026-06-30
 
 ---
@@ -48,7 +48,7 @@ archive/2026-06-30_cleanup_stage_B/
 | [docs/cleanup_stage_B/STAGE_B_GIT_STATUS.md](cleanup_stage_B/STAGE_B_GIT_STATUS.md) | Branch, modified/untracked counts, commit guidance |
 | [docs/cleanup_stage_B/GITIGNORE_REVIEW.md](cleanup_stage_B/GITIGNORE_REVIEW.md) | Recommended `.gitignore` rules (pre-B.6) |
 | [docs/cleanup_stage_B/POSTER_REPRO_PATH_CHECK.md](cleanup_stage_B/POSTER_REPRO_PATH_CHECK.md) | Poster script path existence check |
-| [PROJECT_STATUS.md](../PROJECT_STATUS.md) | Project-wide status checkpoint |
+| [PROJECT_STATUS.md](PROJECT_STATUS.md) | Project-wide status checkpoint |
 
 ---
 

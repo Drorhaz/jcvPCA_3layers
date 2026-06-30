@@ -15,7 +15,9 @@
 | **B.5** | Complete | Git status, `.gitignore` review, poster path check |
 | **B.6** | Complete | `.gitignore` applied; git status after ignore; commit plan prepared |
 | **B.7** | Complete | Missing export CSV review; accept deletions; final commit plan prepared |
-| **Commit** | Pending | Manual execution per `STAGE_B7_COMMIT_PLAN_FINAL.md` |
+| **B.8** | Complete | Checkpoint commit `393fb68` — cleanup docs, gitignore, accepted deletions |
+| **Commit 2** | Pending | Layer 2.5/3 code, indices, notebooks (explicit staging only) |
+| **Stage C** | Not started | Layer 2 `outputs/archive/` physical move (~22 GB) |
 | **C** | Planned | Layer 2 archive physical move; optional batch slimming |
 
 ---

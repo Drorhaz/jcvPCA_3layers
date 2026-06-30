@@ -72,6 +72,15 @@ archive/2026-06-30_cleanup_stage_B/
 
 ---
 
+## Stage B.8 — Checkpoint commit
+
+| Document | Description |
+|----------|-------------|
+| [docs/cleanup_stage_B/STAGE_B8_PRE_COMMIT_VERIFICATION.md](cleanup_stage_B/STAGE_B8_PRE_COMMIT_VERIFICATION.md) | Pre-commit staging verification (included in commit) |
+| [docs/cleanup_stage_B/STAGE_B8_COMMIT_SUMMARY.md](cleanup_stage_B/STAGE_B8_COMMIT_SUMMARY.md) | Post-commit summary — hash `393fb68` |
+
+---
+
 ## Recommended Stage C (not started)
 
 1. **Layer 2 archive** — Review and optionally move `Layer2_Motive_Kinematics/outputs/archive/` (~22 GB) after poster submission or session-level hash review.

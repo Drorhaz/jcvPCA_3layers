@@ -10,3 +10,5 @@ timestamp,phase,action,source,destination,notes
 2026-06-30,P3,symlink,results/reports/nullspace_link_stability,Layer3_JcvPCA/outputs/nullspace_link_stability_review,
 2026-06-30,P3,mv,Layer3_JcvPCA/outputs/gaga_batch_jcvpca_smoke_671_20260630_214341,../gaga_psylo_external_archive/final_cleanup_2026-06-30/smoke_batch_671_20260630,smoke archive
 2026-06-30,P3,symlink,results/smoke_tests/smoke_batch_671,external smoke_batch_671_20260630,
+2026-06-30,F3,rm,Layer3_JcvPCA/outputs/layer3_jcvpca,,stub
+2026-06-30,F3,rm,Layer2.5_Segmentation/outputs/pre_jvpca_review,,typo duplicate

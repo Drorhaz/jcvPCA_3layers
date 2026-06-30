@@ -455,12 +455,14 @@ Execution mode: proceed batch-by-batch automatically when validation passes and 
 | Batch | Commit | Summary doc | Status |
 |-------|--------|-------------|--------|
 | M1 | `35e8222` | _(session report)_ | **Complete** |
-| M2 | `0b8a15c` | [M2_BATCH_SUMMARY.md](M2_BATCH_SUMMARY.md) | **Complete** |
-| M3 | `f322744` | [M3_BATCH_SUMMARY.md](M3_BATCH_SUMMARY.md) | **Complete** |
-| M4 | `740ee1d` | [M4_BATCH_SUMMARY.md](M4_BATCH_SUMMARY.md) | **Complete** |
-| M5–M11 | — | — | **Pending** — requires agent mode for code/doc execution |
-
-**Execution note (2026-06-30):** M2–M4 completed. M5+ stopped because plan mode blocks non-markdown file edits; switch to agent mode to continue M5–M11.
+| M5 | `5f11062` | [M5_BATCH_SUMMARY.md](M5_BATCH_SUMMARY.md) | **Complete** |
+| M6 | `9945eaa` | [M6_BATCH_SUMMARY.md](M6_BATCH_SUMMARY.md) | **Complete** |
+| M7 | `5b804cc`, `c95441c` | [M7_BATCH_SUMMARY.md](M7_BATCH_SUMMARY.md) | **Complete** |
+| M8 | `3150005` | [M8_BATCH_SUMMARY.md](M8_BATCH_SUMMARY.md) | **Complete** |
+| M9 | `fbe76b2` | [M9_BATCH_SUMMARY.md](M9_BATCH_SUMMARY.md) | **Complete** |
+| M10 | `3165125` | [M10_BATCH_SUMMARY.md](M10_BATCH_SUMMARY.md) | **Complete** |
+| M11 | `80f4117` | [M11_BATCH_SUMMARY.md](M11_BATCH_SUMMARY.md) | **Complete** |
+| M12 | — | — | **Not executed** (gated) |
 
 ---
 

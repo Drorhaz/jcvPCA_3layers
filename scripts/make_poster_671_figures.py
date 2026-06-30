@@ -22,7 +22,8 @@ from matplotlib.patches import Patch
 
 # Shared infrastructure from the A-D poster script (same project conventions).
 from make_poster_final_figures import (
-    PROJECT_ROOT, OUT_DIR, FAMILY_COLORS, FAMILY_LABEL, PARTICIPANT_COLORS,
+    PROJECT_ROOT, OUT_DIR, CANONICAL_BATCH_DIR, FAMILY_COLORS, FAMILY_LABEL,
+    PARTICIPANT_COLORS, configure_poster_paths, parse_poster_path_args,
     set_style, wrap_link, load_csv, find_csv, Validator, DataError,
 )
 
@@ -118,8 +119,7 @@ def _save(fig, stem: str) -> list[str]:
 # --------------------------------------------------------------------------- #
 def _assess_pp_conversion(v: Validator) -> dict:
     """Check whether link JRW contributions sum to 1 within each condition."""
-    batch = (PROJECT_ROOT / "Layer3_JcvPCA" / "outputs"
-             / "gaga_batch_jcvpca_20260626_193319")
+    batch = CANONICAL_BATCH_DIR
     jrw_path = batch / "comparisons" / "671_B_L1_T1_vs_T2" / "run" / "link_level_jrw_rss.csv"
     rel = jrw_path.relative_to(PROJECT_ROOT)
     v.register_file(str(rel))
@@ -1054,7 +1054,19 @@ trajectory across sessions.
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    args = parse_poster_path_args(argv)
+    try:
+        configure_poster_paths(
+            config_path=args.config,
+            batch_dir=args.batch_dir,
+            evidence_dir=args.evidence_dir,
+            out_dir=args.out_dir,
+        )
+    except FileNotFoundError as exc:
+        print(f"[FAIL] {exc}", file=sys.stderr)
+        return 1
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     _poster_style()
     v = Validator()

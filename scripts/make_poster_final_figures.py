@@ -7,7 +7,9 @@ All plotted values are read/derived from validated CSVs in the Layer3 outputs.
 from __future__ import annotations
 
 import os
+import sys
 import tempfile
+import argparse
 
 os.environ.setdefault("MPLCONFIGDIR", tempfile.mkdtemp(prefix="mplconfig_"))
 
@@ -37,17 +39,113 @@ except Exception:
     HAS_SNS = False
 
 # --------------------------------------------------------------------------- #
-# Paths
+# Paths (loaded from config/paths.yaml; override via configure_poster_paths)
 # --------------------------------------------------------------------------- #
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+_SCRIPT_ROOT = Path(__file__).resolve().parents[1]
+_SRC = _SCRIPT_ROOT / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
+
+from project_paths import load_project_paths  # noqa: E402
+
+PROJECT_ROOT = _SCRIPT_ROOT
 OUT_DIR = PROJECT_ROOT / "outputs" / "poster_final_figures"
-SEARCH_DIRS = [
-    PROJECT_ROOT / "Layer3_JcvPCA" / "outputs" / "poster_ready_evidence_package",
-    PROJECT_ROOT / "Layer3_JcvPCA" / "outputs" / "gaga_batch_jcvpca_20260626_193319",
-    PROJECT_ROOT / "Layer3_JcvPCA" / "outputs",
-    PROJECT_ROOT / "outputs",
-    PROJECT_ROOT,
-]
+CANONICAL_BATCH_DIR = (
+    PROJECT_ROOT / "Layer3_JcvPCA" / "outputs" / "gaga_batch_jcvpca_20260626_193319"
+)
+SEARCH_DIRS: list[Path] = []
+
+
+def _default_search_dirs(
+    *,
+    project_root: Path,
+    evidence_dir: Path,
+    batch_dir: Path,
+    out_dir: Path,
+    layer3_outputs_root: Path,
+) -> list[Path]:
+    return [
+        evidence_dir,
+        batch_dir,
+        layer3_outputs_root,
+        out_dir.parent,
+        project_root,
+    ]
+
+
+def configure_poster_paths(
+    *,
+    config_path: Path | None = None,
+    batch_dir: Path | None = None,
+    out_dir: Path | None = None,
+    evidence_dir: Path | None = None,
+) -> None:
+    """Resolve poster input/output paths from config with optional CLI overrides."""
+    global PROJECT_ROOT, OUT_DIR, CANONICAL_BATCH_DIR, SEARCH_DIRS
+
+    paths = load_project_paths(config_path=config_path)
+    PROJECT_ROOT = paths.project_root
+
+    resolved_batch = (batch_dir or paths.layer3_canonical_batch).resolve()
+    resolved_evidence = (evidence_dir or paths.poster_evidence_package).resolve()
+    resolved_out = (out_dir or paths.poster_final_figures).resolve()
+    layer3_outputs = paths.get("layer3.outputs_root").resolve()
+
+    missing: list[str] = []
+    if not resolved_evidence.is_dir():
+        missing.append(f"poster evidence package ({resolved_evidence})")
+    if not resolved_batch.is_dir():
+        missing.append(f"canonical Layer 3 batch ({resolved_batch})")
+    if missing:
+        raise FileNotFoundError(
+            "Required poster input path(s) missing:\n  - "
+            + "\n  - ".join(missing)
+            + f"\nConfig: {paths.config_path}"
+        )
+
+    CANONICAL_BATCH_DIR = resolved_batch
+    OUT_DIR = resolved_out
+    SEARCH_DIRS = _default_search_dirs(
+        project_root=PROJECT_ROOT,
+        evidence_dir=resolved_evidence,
+        batch_dir=resolved_batch,
+        out_dir=resolved_out,
+        layer3_outputs_root=layer3_outputs,
+    )
+
+
+def parse_poster_path_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Generate poster-ready JcvPCA figures from validated CSV inputs.",
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=None,
+        help="Path to config/paths.yaml (default: auto-detect project root).",
+    )
+    parser.add_argument(
+        "--batch-dir",
+        type=Path,
+        default=None,
+        help="Override Layer 3 batch directory (default: layer3.canonical_batch).",
+    )
+    parser.add_argument(
+        "--evidence-dir",
+        type=Path,
+        default=None,
+        help="Override poster evidence package (default: layer3.poster_evidence_package).",
+    )
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        default=None,
+        help="Override poster figure output directory (default: poster.final_figures).",
+    )
+    return parser.parse_args(argv)
+
+
+configure_poster_paths()
 
 PARTICIPANTS = ["671", "252"]
 FIG_A_PARTICIPANTS = ["671"]  # Figure A standalone: flagship participant only
@@ -1174,7 +1272,19 @@ modeling or unvalidated data is involved.
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    args = parse_poster_path_args(argv)
+    try:
+        configure_poster_paths(
+            config_path=args.config,
+            batch_dir=args.batch_dir,
+            evidence_dir=args.evidence_dir,
+            out_dir=args.out_dir,
+        )
+    except FileNotFoundError as exc:
+        print(f"[FAIL] {exc}", file=sys.stderr)
+        return 1
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     set_style()
     v = Validator()

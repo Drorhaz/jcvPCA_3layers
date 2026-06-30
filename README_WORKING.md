@@ -22,6 +22,7 @@ A three-layer pipeline from Motive marker QC → kinematic features → segmenta
 | **Path loader** | [`src/project_paths.py`](src/project_paths.py) |
 | **Health check** | [`scripts/check_project_paths.py`](scripts/check_project_paths.py) |
 | **Operational docs** | [`docs/research_recovery/`](docs/research_recovery/) |
+| **Legacy plans & audits** | [`docs/legacy/`](docs/legacy/) · [`docs/audits/`](docs/audits/) |
 | **Results index** | [`results/`](results/) |
 | **Layer 3 commands** | [`Layer3_JcvPCA/scripts/`](Layer3_JcvPCA/scripts/) |
 | **Layer 3 Python env** | `Layer3_JcvPCA/.venv/bin/python` |
@@ -73,7 +74,8 @@ Large CSVs are **gitignored** — they stay on disk locally.
 └── archive_2026-06-30_cleanup_stage_B/  # Superseded L3 batches, scratch
 ```
 
-Registered in [`config/paths.yaml`](config/paths.yaml) under `external_archive.*`.
+Registered in [`config/paths.yaml`](config/paths.yaml) under `external_archive.*`.  
+Map: [`results/archive_index/EXTERNAL_ARCHIVE.md`](results/archive_index/EXTERNAL_ARCHIVE.md)
 
 ---
 
@@ -81,10 +83,10 @@ Registered in [`config/paths.yaml`](config/paths.yaml) under `external_archive.*
 
 | Result | Path | Notes |
 |--------|------|-------|
-| **Canonical batch** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/` | Pointer: [`results/active/CANONICAL_BATCH.md`](results/active/CANONICAL_BATCH.md) |
-| **M12b smoke batch (671)** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_smoke_671_20260630_214341/` | Non-canonical; 10/10 comparisons passed |
+| **Canonical batch** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/` | [`results/active/CANONICAL_BATCH.md`](results/active/CANONICAL_BATCH.md) |
+| **M12b smoke batch (671)** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_smoke_671_20260630_214341/` | [`results/active/SMOKE_BATCH_671.md`](results/active/SMOKE_BATCH_671.md) |
 | **Poster evidence** | `Layer3_JcvPCA/outputs/poster_ready_evidence_package/` | |
-| **Poster figures** | `outputs/poster_final_figures/` | |
+| **Poster figures** | `outputs/poster_final_figures/` | [`results/poster/README.md`](results/poster/README.md) |
 | **Layer 2.5 exports** | `Layer2.5_Segmentation/outputs/pre_jvcpca_review/` | Inputs for JcvPCA |
 | **Layer 2 sessions** | `Layer2_Motive_Kinematics/outputs/*_Take_*` | Heavy; gitignored |
 
@@ -159,7 +161,8 @@ test -d Layer2.5_Segmentation/outputs/pre_jvcpca_review/671 && echo "671 exports
 | M12b 671 smoke batch | **Done** | [`M12B_671_SMOKE_BATCH_LOG.md`](docs/research_recovery/M12B_671_SMOKE_BATCH_LOG.md) |
 | **M12c** | **Next (optional)** | Read-only review of 252 QC warnings in [`M12_PRE_ANALYSIS_READINESS.md`](docs/research_recovery/M12_PRE_ANALYSIS_READINESS.md) |
 | **M12d** | **Not yet** | Full 671+252 batch to new timestamped folder — after M12c sign-off |
-| **W3a** | **Planned** | Doc/clutter moves only — see [`W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md`](docs/research_recovery/W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md) |
+| **W3a** | **Done** | Doc/clutter moves — [`W3A_SAFE_VISIBLE_CLEANUP_LOG.md`](docs/research_recovery/W3A_SAFE_VISIBLE_CLEANUP_LOG.md) |
+| **W3b** | **Not started** | External archive for L3 workbench scratch — see [`W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md`](docs/research_recovery/W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md) |
 
 **Suggested next command (read-only):**
 
@@ -181,7 +184,8 @@ Also see:
 
 - [`docs/research_recovery/MASTER_CONTINUATION_PLAN.md`](docs/research_recovery/MASTER_CONTINUATION_PLAN.md)
 - [`PROJECT_STATUS.md`](PROJECT_STATUS.md)
-- Workspace simplification: [`W1`](docs/research_recovery/W1_WORKSPACE_SURFACE_AUDIT.md) · [`W2`](docs/research_recovery/W2_TARGET_VISIBLE_STRUCTURE.md) · [`W3`](docs/research_recovery/W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md)
+- Legacy master plan: [`docs/legacy/master_plan/MASTER_PLAN.md`](docs/legacy/master_plan/MASTER_PLAN.md)
+- Workspace simplification: [`W1`](docs/research_recovery/W1_WORKSPACE_SURFACE_AUDIT.md) · [`W2`](docs/research_recovery/W2_TARGET_VISIBLE_STRUCTURE.md) · [`W3`](docs/research_recovery/W3_WORKSPACE_SIMPLIFICATION_MOVE_PLAN.md) · [`W3a log`](docs/research_recovery/W3A_SAFE_VISIBLE_CLEANUP_LOG.md)
 
 ---
 
@@ -197,4 +201,4 @@ These are **normal** — gitignored and/or large generated data:
 
 ---
 
-*Daily working guide — created 2026-06-30 (Stage W4). No moves executed.*
+*Daily working guide — updated 2026-06-30 after W3a doc moves.*

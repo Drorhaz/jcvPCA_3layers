@@ -418,30 +418,49 @@ Cursor must **halt and ask** before proceeding when any of the following apply:
 
 ## 6. Immediate next recommendation
 
-**After M1 completes:** execute **M2** — Git index cleanup for the 389 Layer 2 archive deletions.
+**M1 complete** (`35e8222`). Bulk execution of **M2–M11** approved (M12 excluded).
 
-Before M2:
-
-- Verify `../gaga_psylo_external_archive/layer2_outputs_archive_2026-06-30/` exists and matches [R1_LAYER2_ARCHIVE_EXTERNAL_MOVE.md](R1_LAYER2_ARCHIVE_EXTERNAL_MOVE.md).
-- Obtain explicit user approval for `git rm --cached` (index only).
-
-Do **not** start M2 in the same session as M1 unless explicitly requested.
+Execution mode: proceed batch-by-batch automatically when validation passes and stop conditions are not triggered. Do **not** execute M12 without separate approval.
 
 ---
 
-## Appendix A — M1 batch summary (filled after execution)
+## 7. Bulk execution approval (M2–M11)
 
-_To be updated when M1 commit completes._
+**Approved:** 2026-06-30 — user authorized automatic progression through M2–M11.
 
-| Field | Value |
-|-------|-------|
-| Files changed | _(pending)_ |
-| Files staged | _(pending)_ |
-| Commit hash | _(pending)_ |
-| Validation | `git diff --cached --name-only` |
-| Analysis run? | No |
-| Raw/generated data touched? | No |
-| Next batch | **M2** |
+**Hard limits (all batches):**
+
+- Do **not** execute M12 (new analysis).
+- Do **not** run analysis, recompute JcvPCA, or regenerate reports (except `--dry-run` / `--validate-paths`).
+- Do **not** move, rename, or delete raw data.
+- Do **not** delete generated outputs from disk.
+- Do **not** overwrite canonical batch `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/`.
+- Do **not** use `git add .`.
+- Do **not** change scientific logic (thresholds, PCA/JcvPCA parameters, filtering, ranking, pooling, interpretation).
+
+**Per-batch deliverables:**
+
+1. Execute batch per Section 3.
+2. Explicit `git add` / `git rm --cached` only.
+3. Run batch validation commands.
+4. Commit with planned message.
+5. Write summary: `docs/research_recovery/M{N}_BATCH_SUMMARY.md`
+
+**Batch summary format (required):** batch name, files changed, files staged, commit hash, validation commands, analysis run?, raw data touched?, generated data moved/deleted from disk?, scientific logic changed?, dirty status summary, next batch or stop reason.
+
+---
+
+## Appendix — Completed batch summaries
+
+| Batch | Commit | Summary doc | Status |
+|-------|--------|-------------|--------|
+| M1 | `35e8222` | _(session report)_ | **Complete** |
+| M2 | `0b8a15c` | [M2_BATCH_SUMMARY.md](M2_BATCH_SUMMARY.md) | **Complete** |
+| M3 | `f322744` | [M3_BATCH_SUMMARY.md](M3_BATCH_SUMMARY.md) | **Complete** |
+| M4 | `740ee1d` | [M4_BATCH_SUMMARY.md](M4_BATCH_SUMMARY.md) | **Complete** |
+| M5–M11 | — | — | **Pending** — requires agent mode for code/doc execution |
+
+**Execution note (2026-06-30):** M2–M4 completed. M5+ stopped because plan mode blocks non-markdown file edits; switch to agent mode to continue M5–M11.
 
 ---
 

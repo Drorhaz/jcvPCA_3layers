@@ -59,10 +59,19 @@ def plot_scree(evr: np.ndarray, title: str = "Scree plot (A/reference)") -> Figu
 
 
 def plot_cumulative_variance(evr: np.ndarray, title: str = "Cumulative variance (A/reference)") -> Figure:
+    return plot_cumulative_variance_with_threshold(evr, title=title)
+
+
+def plot_cumulative_variance_with_threshold(
+    evr: np.ndarray,
+    *,
+    threshold: float = 0.80,
+    title: str = "Cumulative variance (Dataset A)",
+) -> Figure:
     fig, ax = plt.subplots(figsize=(6, 4))
     cum = np.cumsum(evr)
     ax.plot(range(1, len(cum) + 1), cum, "o-", color="darkgreen")
-    ax.axhline(0.9, color="gray", linestyle="--", label="90%")
+    ax.axhline(threshold, color="gray", linestyle="--", label=f"{threshold:.0%}")
     ax.set_title(title)
     ax.set_xlabel("PC")
     ax.set_ylabel("Cumulative explained variance")
@@ -70,17 +79,268 @@ def plot_cumulative_variance(evr: np.ndarray, title: str = "Cumulative variance 
     return fig
 
 
-def plot_pc_trajectories(A_df, B_df, feature_names, selected_m: int) -> Figure:
+def plot_pca_a_loadings_heatmap(
+    loadings: np.ndarray,
+    feature_names: list[str],
+    *,
+    title: str = "PCA A loadings heatmap",
+    max_features_display: int = 40,
+) -> Figure:
+    fig, ax = plt.subplots(figsize=(10, max(4, loadings.shape[0] * 0.5)))
+    display = loadings
+    labels = feature_names
+    if len(feature_names) > max_features_display:
+        idx = np.argsort(-np.abs(loadings).max(axis=0))[:max_features_display]
+        display = loadings[:, idx]
+        labels = [feature_names[i] for i in idx]
+    im = ax.imshow(display, aspect="auto", cmap="RdBu_r")
+    ax.set_yticks(range(display.shape[0]))
+    ax.set_yticklabels([f"PC{i + 1}" for i in range(display.shape[0])])
+    ax.set_xticks(range(len(labels)))
+    ax.set_xticklabels(labels, rotation=90, fontsize=7)
+    ax.set_title(title)
+    fig.colorbar(im, ax=ax, shrink=0.85)
+    return fig
+
+
+def _pc_trajectory_scores(A_df, B_df, feature_names, selected_m: int):
     A_c = A_df[feature_names] - A_df[feature_names].mean()
     B_c = B_df[feature_names] - B_df[feature_names].mean()
     pca = PCA(n_components=selected_m).fit(A_c)
     A_scores = np.matmul(A_c.to_numpy(), pca.components_.T)
     B_scores = np.matmul(B_c.to_numpy(), pca.components_.T)
+    return A_scores, B_scores, pca.explained_variance_ratio_
+
+
+def _pc_axis_label(pc_index: int, evr: np.ndarray) -> str:
+    ev_pct = evr[pc_index] * 100
+    cum_pct = float(np.cumsum(evr)[pc_index]) * 100
+    return f"PC{pc_index + 1} ({ev_pct:.1f}% var, cum. {cum_pct:.1f}%)"
+
+
+def _pc_trajectory_title(evr: np.ndarray, n_axes: int) -> str:
+    cum_pct = float(np.cumsum(evr)[n_axes - 1]) * 100
+    axes_label = ", ".join(f"PC{i + 1}" for i in range(n_axes))
+    return (
+        f"PC trajectory ({axes_label}) — "
+        f"first {n_axes} PCs explain {cum_pct:.1f}% of A/reference variance"
+    )
+
+
+def plot_pc_trajectories(A_df, B_df, feature_names, selected_m: int) -> Figure:
+    A_scores, B_scores, evr = _pc_trajectory_scores(A_df, B_df, feature_names, selected_m)
     fig, ax = plt.subplots(figsize=(7, 5))
-    ax.plot(A_scores[:, 0], A_scores[:, 1] if selected_m > 1 else A_scores[:, 0], alpha=0.5, label="A")
-    ax.plot(B_scores[:, 0], B_scores[:, 1] if selected_m > 1 else B_scores[:, 0], alpha=0.5, label="B projected")
-    ax.set_title("PC trajectory preview (PC1 vs PC2)")
-    ax.legend()
+    y_idx = 1 if selected_m > 1 else 0
+    ax.plot(A_scores[:, 0], A_scores[:, y_idx], alpha=0.35, linewidth=0.6, label="A (reference)")
+    ax.plot(B_scores[:, 0], B_scores[:, y_idx], alpha=0.35, linewidth=0.6, label="B (comparison)")
+    ax.set_xlabel(_pc_axis_label(0, evr))
+    ax.set_ylabel(_pc_axis_label(y_idx, evr))
+    ax.set_title(_pc_trajectory_title(evr, 2 if selected_m > 1 else 1))
+    ax.legend(loc="upper right")
+    return fig
+
+
+def plot_pc_trajectories_3d(A_df, B_df, feature_names, selected_m: int) -> Figure | None:
+    if selected_m < 3:
+        return None
+    A_scores, B_scores, evr = _pc_trajectory_scores(A_df, B_df, feature_names, selected_m)
+    fig = plt.figure(figsize=(8, 6))
+    ax = fig.add_subplot(111, projection="3d")
+    ax.plot(
+        A_scores[:, 0],
+        A_scores[:, 1],
+        A_scores[:, 2],
+        alpha=0.25,
+        linewidth=0.5,
+        color="tab:blue",
+        label="A (reference)",
+    )
+    ax.plot(
+        B_scores[:, 0],
+        B_scores[:, 1],
+        B_scores[:, 2],
+        alpha=0.25,
+        linewidth=0.5,
+        color="tab:orange",
+        label="B (comparison)",
+    )
+    ax.set_xlabel(_pc_axis_label(0, evr), labelpad=8)
+    ax.set_ylabel(_pc_axis_label(1, evr), labelpad=8)
+    ax.set_zlabel(_pc_axis_label(2, evr), labelpad=8)
+    ax.set_title(_pc_trajectory_title(evr, 3), pad=12)
+    ax.view_init(elev=22, azim=-58)
+    ax.legend(loc="upper left")
+    return fig
+
+
+def _n_pcs_for_cumulative_variance(evr: np.ndarray, threshold: float = 0.80) -> int:
+    cum = np.cumsum(evr)
+    idx = int(np.searchsorted(cum, threshold))
+    return min(idx + 1, len(evr))
+
+
+def plot_pc_trajectories_multidim(
+    A_df,
+    B_df,
+    feature_names,
+    variance_threshold: float = 0.80,
+) -> Figure | None:
+    """Successive 2D trajectory panels (PC1–PC2, PC3–PC4, …) up to *variance_threshold*."""
+    A_c = A_df[feature_names] - A_df[feature_names].mean()
+    B_c = B_df[feature_names] - B_df[feature_names].mean()
+    n_fit = min(len(feature_names), len(A_c))
+    if n_fit < 2:
+        return None
+    pca = PCA(n_components=n_fit).fit(A_c)
+    evr = pca.explained_variance_ratio_
+    n_show = _n_pcs_for_cumulative_variance(evr, variance_threshold)
+    if n_show % 2 == 1:
+        n_show = min(n_show + 1, n_fit)
+    if n_show < 2:
+        return None
+
+    A_scores = np.matmul(A_c.to_numpy(), pca.components_[:n_show].T)
+    B_scores = np.matmul(B_c.to_numpy(), pca.components_[:n_show].T)
+    pairs = [(i, i + 1) for i in range(0, n_show, 2)]
+    cum_pct = float(np.cumsum(evr)[n_show - 1]) * 100
+
+    fig, axes = plt.subplots(
+        len(pairs),
+        1,
+        figsize=(7, 3.8 * len(pairs)),
+        squeeze=False,
+    )
+    for row, (x_idx, y_idx) in enumerate(pairs):
+        ax = axes[row, 0]
+        ax.plot(
+            A_scores[:, x_idx],
+            A_scores[:, y_idx],
+            alpha=0.3,
+            linewidth=0.5,
+            color="tab:blue",
+            label="A (reference)" if row == 0 else None,
+        )
+        ax.plot(
+            B_scores[:, x_idx],
+            B_scores[:, y_idx],
+            alpha=0.3,
+            linewidth=0.5,
+            color="tab:orange",
+            label="B (comparison)" if row == 0 else None,
+        )
+        ax.set_xlabel(_pc_axis_label(x_idx, evr))
+        ax.set_ylabel(_pc_axis_label(y_idx, evr))
+        pair_cum = float(np.cumsum(evr)[y_idx]) * 100
+        ax.set_title(f"PC{x_idx + 1} vs PC{y_idx + 1} (cumulative through PC{y_idx + 1}: {pair_cum:.1f}%)")
+    fig.suptitle(
+        f"PC trajectories in successive 2D subspaces — "
+        f"PCs 1–{n_show} explain {cum_pct:.1f}% of A/reference variance",
+        y=1.01,
+        fontsize=11,
+    )
+    if len(pairs):
+        axes[0, 0].legend(loc="upper right")
+    return fig
+
+
+def plot_pc_score_heatmap(
+    A_df,
+    B_df,
+    feature_names,
+    variance_threshold: float = 0.80,
+    max_frames: int = 500,
+) -> Figure | None:
+    """Frame × PC heatmaps for A and B, covering PCs up to *variance_threshold*."""
+    A_c = A_df[feature_names] - A_df[feature_names].mean()
+    B_c = B_df[feature_names] - B_df[feature_names].mean()
+    n_fit = min(len(feature_names), len(A_c))
+    if n_fit < 2:
+        return None
+    pca = PCA(n_components=n_fit).fit(A_c)
+    evr = pca.explained_variance_ratio_
+    n_show = _n_pcs_for_cumulative_variance(evr, variance_threshold)
+    cum_pct = float(np.cumsum(evr)[n_show - 1]) * 100
+
+    A_scores = np.matmul(A_c.to_numpy(), pca.components_[:n_show].T)
+    B_scores = np.matmul(B_c.to_numpy(), pca.components_[:n_show].T)
+
+    def _downsample(scores: np.ndarray) -> np.ndarray:
+        n = len(scores)
+        if n <= max_frames:
+            return scores[:, :n_show].T
+        idx = np.linspace(0, n - 1, max_frames, dtype=int)
+        return scores[idx, :n_show].T
+
+    A_grid = _downsample(A_scores)
+    B_grid = _downsample(B_scores)
+    vmax = max(np.abs(A_grid).max(), np.abs(B_grid).max(), 1e-9)
+
+    pc_labels = [f"PC{i + 1}\n({evr[i] * 100:.1f}%)" for i in range(n_show)]
+    fig, axes = plt.subplots(2, 1, figsize=(10, 4.5), sharex=True)
+    for ax, grid, label in zip(axes, (A_grid, B_grid), ("A (reference)", "B (comparison)")):
+        im = ax.imshow(
+            grid,
+            aspect="auto",
+            cmap="RdBu_r",
+            vmin=-vmax,
+            vmax=vmax,
+            interpolation="nearest",
+        )
+        ax.set_yticks(range(n_show))
+        ax.set_yticklabels(pc_labels, fontsize=8)
+        ax.set_ylabel(label)
+
+    # Annotate the clearest A-vs-B contrast: early-window PC3 activation in A.
+    if n_show >= 3:
+        pc3_row = 2
+        early_end = min(80, A_grid.shape[1] - 1)
+        axes[0].annotate(
+            "",
+            xy=(early_end * 0.5, pc3_row),
+            xytext=(early_end + 45, pc3_row + 1.35),
+            fontsize=8,
+            color="0.15",
+            arrowprops=dict(arrowstyle="->", color="0.15", lw=1.2),
+        )
+        axes[0].text(
+            early_end + 46,
+            pc3_row + 1.35,
+            "Strong early PC3\nin A (reference)",
+            fontsize=8,
+            va="center",
+            color="0.15",
+        )
+        axes[0].plot(
+            [0, early_end, early_end, 0, 0],
+            [pc3_row - 0.45, pc3_row - 0.45, pc3_row + 0.45, pc3_row + 0.45, pc3_row - 0.45],
+            color="0.15",
+            lw=1.2,
+            ls="--",
+        )
+        axes[1].annotate(
+            "",
+            xy=(early_end * 0.5, pc3_row),
+            xytext=(early_end + 45, pc3_row - 1.1),
+            fontsize=8,
+            color="0.15",
+            arrowprops=dict(arrowstyle="->", color="0.15", lw=1.2),
+        )
+        axes[1].text(
+            early_end + 46,
+            pc3_row - 1.1,
+            "Weaker / absent\nin B (comparison)",
+            fontsize=8,
+            va="center",
+            color="0.15",
+        )
+
+    axes[-1].set_xlabel("Frame index (downsampled)")
+    fig.suptitle(
+        f"PC score heatmaps — PCs 1–{n_show} explain {cum_pct:.1f}% of A/reference variance",
+        y=1.02,
+        fontsize=11,
+    )
+    fig.colorbar(im, ax=axes, label="PC score", shrink=0.85, pad=0.02)
     return fig
 
 
@@ -179,6 +439,61 @@ def plot_qc_timeline(manifest: dict | None) -> Figure:
     return fig
 
 
+def plot_pc_scores_a_vs_b(
+    A_scores: np.ndarray,
+    B_projected: np.ndarray,
+    *,
+    max_points: int = 500,
+    title: str = "PC scores: A vs projected B",
+) -> Figure:
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    n_a = min(len(A_scores), max_points)
+    n_b = min(len(B_projected), max_points)
+    if A_scores.shape[1] >= 1:
+        axes[0].scatter(A_scores[:n_a, 0], A_scores[:n_a, 1] if A_scores.shape[1] > 1 else A_scores[:n_a, 0], s=8, alpha=0.5)
+        axes[0].set_title("Dataset A scores")
+        axes[0].set_xlabel("PC1")
+        axes[0].set_ylabel("PC2" if A_scores.shape[1] > 1 else "PC1")
+    if B_projected.shape[1] >= 1:
+        axes[1].scatter(
+            B_projected[:n_b, 0],
+            B_projected[:n_b, 1] if B_projected.shape[1] > 1 else B_projected[:n_b, 0],
+            s=8,
+            alpha=0.5,
+            color="darkorange",
+        )
+        axes[1].set_title("Projected B scores")
+        axes[1].set_xlabel("PC1")
+        axes[1].set_ylabel("PC2" if B_projected.shape[1] > 1 else "PC1")
+    fig.suptitle(title)
+    return fig
+
+
+def plot_workbench_pc_score_summary_heatmap(
+    A_scores: np.ndarray,
+    B_projected: np.ndarray,
+    *,
+    max_pcs: int = 10,
+    title: str = "PC score heatmap (mean abs)",
+) -> Figure:
+    k = min(max_pcs, A_scores.shape[1], B_projected.shape[1])
+    data = np.vstack(
+        [
+            np.mean(np.abs(A_scores[:, :k]), axis=0),
+            np.mean(np.abs(B_projected[:, :k]), axis=0),
+        ]
+    )
+    fig, ax = plt.subplots(figsize=(8, 3))
+    im = ax.imshow(data, aspect="auto", cmap="viridis")
+    ax.set_yticks([0, 1])
+    ax.set_yticklabels(["A", "B projected"])
+    ax.set_xticks(range(k))
+    ax.set_xticklabels([f"PC{i + 1}" for i in range(k)])
+    ax.set_title(title)
+    fig.colorbar(im, ax=ax, shrink=0.8)
+    return fig
+
+
 def plot_split_half(stab) -> Figure | None:
     if stab is None or stab.split_half_table is None or stab.split_half_table.empty:
         return None
@@ -226,10 +541,20 @@ def save_analysis_plots(
 
     loaded = {w.role: w for w in preflight.windows}
     if "A" in loaded and "B" in loaded:
+        selected_m = main_result["selected_m"]
         _save(
-            plot_pc_trajectories(loaded["A"].df, loaded["B"].df, feature_names, main_result["selected_m"]),
+            plot_pc_trajectories(loaded["A"].df, loaded["B"].df, feature_names, selected_m),
             plots_dir / "pc_trajectory_A_B.png",
         )
+        traj_3d = plot_pc_trajectories_3d(loaded["A"].df, loaded["B"].df, feature_names, selected_m)
+        if traj_3d is not None:
+            _save(traj_3d, plots_dir / "pc_trajectory_A_B_3d.png")
+        traj_multi = plot_pc_trajectories_multidim(loaded["A"].df, loaded["B"].df, feature_names)
+        if traj_multi is not None:
+            _save(traj_multi, plots_dir / "pc_trajectory_A_B_multipc.png")
+        score_hm = plot_pc_score_heatmap(loaded["A"].df, loaded["B"].df, feature_names)
+        if score_hm is not None:
+            _save(score_hm, plots_dir / "pc_score_heatmap_A_B.png")
 
     link_df = tables.get("jrw_joint_table.csv")
     if link_df is None:

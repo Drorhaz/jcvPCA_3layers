@@ -5,13 +5,19 @@ from __future__ import annotations
 
 import json
 import shutil
+import sys
 from pathlib import Path
 
 import pandas as pd
 
 from analyze_link_contribution_distribution import run_analysis
 
-BATCH = Path(__file__).resolve().parents[1] / "outputs" / "gaga_batch_jcvpca_20260626_193319"
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from layer3_batch_report_paths import resolve_default_batch_dir  # noqa: E402
+
+BATCH = resolve_default_batch_dir()
 
 MAIN_FOCUS = ("functional_p50", "null_space_after_p50")
 OPTIONAL_FOCUS = ("functional_p60", "null_space_after_p60")
@@ -433,7 +439,7 @@ def write_poster_shortlist(batch_root: Path, plot_index: pd.DataFrame) -> None:
     lines = [
         "# Poster / report plot shortlist",
         "",
-        "Batch: `gaga_batch_jcvpca_20260626_193319`",
+        f"Batch: `{BATCH.name}`",
         "",
         "## Interpretation hierarchy",
         "",

@@ -14,6 +14,15 @@ import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 
+
+def _default_batch_root() -> Path:
+    scripts = Path(__file__).resolve().parent
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    from layer3_batch_report_paths import resolve_default_batch_dir  # noqa: PLC0415
+
+    return resolve_default_batch_dir()
+
 BLOCK_ID_TO_LABEL = {
     "A": "all_P1_P2_P3_P4_P5",
     "B": "P3_P4_P5",
@@ -437,9 +446,7 @@ def main() -> None:
     parser.add_argument(
         "--batch-root",
         type=Path,
-        default=Path(__file__).resolve().parents[1]
-        / "outputs"
-        / "gaga_batch_jcvpca_20260626_193319",
+        default=_default_batch_root(),
     )
     args = parser.parse_args()
     paths = run_analysis(args.batch_root)

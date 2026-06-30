@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import sys
 import traceback
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -145,7 +146,12 @@ def _repo_root() -> Path:
 
 
 def default_layer25_root() -> Path:
-    return _repo_root() / "Layer2.5_Segmentation" / "outputs" / "pre_jvcpca_review"
+    src = _repo_root() / "src"
+    if str(src) not in sys.path:
+        sys.path.insert(0, str(src))
+    from project_paths import load_project_paths  # noqa: PLC0415
+
+    return load_project_paths().layer2_5_pre_jvcpca_review.resolve()
 
 
 def block_label_for_id(block_id: str) -> str:

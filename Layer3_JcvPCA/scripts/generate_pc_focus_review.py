@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -11,6 +12,11 @@ import pandas as pd
 from scipy.stats import spearmanr
 
 from analyze_link_contribution_distribution import entropy_from_probs, gini_coefficient, top_k_share
+
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from layer3_batch_report_paths import resolve_batch_report_paths  # noqa: E402
 
 
 def md_table(headers: list[str], rows: list[list]) -> str:
@@ -65,7 +71,8 @@ def top1_pos(df: pd.DataFrame) -> str | None:
 
 
 def main() -> None:
-    root = Path(__file__).resolve().parents[1] / "outputs" / "gaga_batch_jcvpca_20260626_193319"
+    paths = resolve_batch_report_paths()
+    root = paths.root
     out = root / "PC_focus_p50_p60_interpretation_review.md"
 
     focus = pd.read_csv(root / "pc_focus_p50_p60_by_comparison.csv")
@@ -220,7 +227,7 @@ def main() -> None:
     lines: list[str] = [
         "# PC-focus p50/p60 interpretation review",
         "",
-        "Batch folder: `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/`",
+        f"Batch folder: `{paths.batch_display}/`",
         "",
         "## Interpretation hierarchy",
         "",

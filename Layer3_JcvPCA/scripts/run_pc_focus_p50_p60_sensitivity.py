@@ -32,6 +32,15 @@ FOCUS_SPECS = (
 P2_LABELS = ("functional_p2", "null_space_p2")
 
 
+def _default_batch_root() -> Path:
+    scripts = Path(__file__).resolve().parent
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    from layer3_batch_report_paths import resolve_default_batch_dir  # noqa: PLC0415
+
+    return resolve_default_batch_dir()
+
+
 def _load_distribution_helpers():
     script_dir = Path(__file__).resolve().parent
     path = script_dir / "analyze_link_contribution_distribution.py"
@@ -561,9 +570,7 @@ def main() -> None:
     parser.add_argument(
         "--batch-root",
         type=Path,
-        default=Path(__file__).resolve().parents[1]
-        / "outputs"
-        / "gaga_batch_jcvpca_20260626_193319",
+        default=_default_batch_root(),
     )
     parser.add_argument(
         "--only-comparison",

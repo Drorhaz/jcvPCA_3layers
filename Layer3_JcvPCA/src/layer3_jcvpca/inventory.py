@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -93,7 +94,12 @@ class DataInventory:
 
 
 def default_layer25_root(repo_root: Path) -> Path:
-    return repo_root / "Layer2.5_Segmentation" / "outputs" / "pre_jvcpca_review"
+    src = repo_root / "src"
+    if str(src) not in sys.path:
+        sys.path.insert(0, str(src))
+    from project_paths import load_project_paths  # noqa: PLC0415
+
+    return load_project_paths(config_path=repo_root / "config" / "paths.yaml").layer2_5_pre_jvcpca_review.resolve()
 
 
 def scan_layer25_exports(

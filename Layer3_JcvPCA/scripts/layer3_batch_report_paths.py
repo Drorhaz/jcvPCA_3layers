@@ -50,6 +50,22 @@ def resolve_batch_report_paths(
     )
 
 
+def resolve_layer25_root(*, config_path: Path | None = None) -> Path:
+    paths = load_project_paths(config_path=config_path)
+    root = paths.layer2_5_pre_jvcpca_review.resolve()
+    if not root.is_dir():
+        raise FileNotFoundError(
+            f"Required Layer 2.5 pre_jvcpca_review root missing: {root}\n"
+            f"Config: {paths.config_path}"
+        )
+    return root
+
+
+def resolve_default_batch_dir(*, config_path: Path | None = None) -> Path:
+    """Return canonical batch directory for analysis scripts."""
+    return resolve_batch_report_paths(config_path=config_path).root
+
+
 def parse_batch_report_cli(description: str, argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(

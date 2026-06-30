@@ -41,7 +41,12 @@ from layer3_jcvpca.workbench_preflight import (  # noqa: E402
 )
 from layer3_jcvpca.pc_focus import PC_FOCUS_FUNCTIONAL, PC_FOCUS_NULL_SPACE, PcFocusParameters  # noqa: E402
 
-BATCH = ROOT / "outputs" / "gaga_batch_jcvpca_20260626_193319"
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from layer3_batch_report_paths import resolve_default_batch_dir  # noqa: E402
+
+BATCH = resolve_default_batch_dir()
 ANALYSIS_MODE = "longitudinal"
 
 FOCUS_MODES = [

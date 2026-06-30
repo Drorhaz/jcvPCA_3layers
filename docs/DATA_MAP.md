@@ -23,7 +23,7 @@ flowchart LR
 | Stage | Physical path | Approx size | yaml key | Regeneratable |
 |-------|---------------|-------------|----------|---------------|
 | Layer 1 markers | `Layer1_motive_qc/motive_qc/data/` | part of ~1.4 GB L1 | `raw_data.layer1` | No |
-| Layer 2 inputs | `Layer2_Motive_Kinematics/data/` | ~21 GB | `raw_data.layer2` | Partial |
+| Layer 2 inputs | `data/raw_layer2/` | ~21 GB | `raw_data.layer2` | Partial |
 | L2.5 descriptions | `Layer2.5_Segmentation/data_description/` | small | `raw_data.layer2_5_descriptions` | No |
 | Test export | `671_test_data_des/` | ~232 MB | `raw_data.root_test_exports` | No |
 
@@ -33,10 +33,10 @@ flowchart LR
 
 | Stage | Physical path | Approx size | yaml key | Regeneratable |
 |-------|---------------|-------------|----------|---------------|
-| L2 session outputs | `Layer2_Motive_Kinematics/outputs/*_Take_*/` | ~32 GB | `layer2.active_session_glob` | Yes |
-| L2 exports | `Layer2_Motive_Kinematics/outputs/layer2_exports/` | small | `layer2.layer2_exports` | Yes |
-| L2 stage indices | `Layer2_Motive_Kinematics/outputs/stage*_index.*` | small | `layer2.stage_indices` | Yes |
-| L2.5 JcvPCA exports | `Layer2.5_Segmentation/outputs/pre_jvcpca_review/` | ~1.2 GB | `layer2_5.pre_jvcpca_review` | Yes |
+| L2 session outputs | `processed/layer2/*_Take_*/` | ~32 GB | `layer2.active_session_glob` | Yes |
+| L2 exports | `processed/layer2/layer2_exports/` | small | `layer2.layer2_exports` | Yes |
+| L2 stage indices | `processed/layer2/stage*_index.*` | small | `layer2.stage_indices` | Yes |
+| L2.5 JcvPCA exports | `processed/pre_jvcpca_review/` | ~1.2 GB | `layer2_5.pre_jvcpca_review` | Yes |
 | L2.5 segmentation xlsx | `Layer2.5_Segmentation/segmentation/` | small | `layer2_5.segmentation_xlsx` | Manual |
 
 **Index:** [`results/active/LAYER25_EXPORTS.md`](../results/active/LAYER25_EXPORTS.md)
@@ -48,7 +48,7 @@ flowchart LR
 | Artifact | Physical path | Approx size | yaml key | Regeneratable |
 |----------|---------------|-------------|----------|---------------|
 | **Canonical batch** | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/` | ~3.6 GB | `layer3.canonical_batch` | Yes (new timestamp) |
-| Smoke batch | `Layer3_JcvPCA/outputs/gaga_batch_jcvpca_smoke_671_20260630_214341/` | ~370 MB | *(P3: external archive)* | Yes |
+| Smoke batch | *(archived)* `../gaga_psylo_external_archive/final_cleanup_2026-06-30/smoke_batch_671_20260630/` | ~370 MB | `layer3.smoke_batch_external` | Yes |
 | Movement org report | `Layer3_JcvPCA/outputs/movement_organization_question_report/` | ~20 KB | *(P3)* | Yes |
 | Nullspace review | `Layer3_JcvPCA/outputs/nullspace_link_stability_review/` | ~872 KB | *(P3)* | Yes |
 | Poster evidence | `Layer3_JcvPCA/outputs/poster_ready_evidence_package/` | ~908 KB | `layer3.poster_evidence_package` | Yes |

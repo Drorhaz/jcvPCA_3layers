@@ -18,11 +18,11 @@ from project_paths import load_project_paths  # noqa: E402
 
 PRIMARY_BLOCK = "P3_P4_P5"
 
-BATCH_DIR = _REPO_ROOT / "Layer3_JcvPCA" / "outputs" / "gaga_batch_jcvpca_20260626_193319"
-EVIDENCE_DIR = _REPO_ROOT / "Layer3_JcvPCA" / "outputs" / "poster_ready_evidence_package"
-BATCH_ID = "gaga_batch_jcvpca_20260626_193319"
-BATCH_DISPLAY = "Layer3_JcvPCA/outputs/gaga_batch_jcvpca_20260626_193319/"
-EVIDENCE_DISPLAY = "Layer3_JcvPCA/outputs/poster_ready_evidence_package/"
+BATCH_DIR = Path()
+EVIDENCE_DIR = Path()
+BATCH_ID = ""
+BATCH_DISPLAY = ""
+EVIDENCE_DISPLAY = ""
 
 
 def _display_path(path: Path, project_root: Path) -> str:
@@ -95,7 +95,11 @@ def parse_evidence_report_args(argv: list[str] | None = None) -> argparse.Namesp
     return parser.parse_args(argv)
 
 
-configure_evidence_report_paths()
+try:
+    configure_evidence_report_paths()
+except FileNotFoundError as exc:
+    print(f"[FAIL] {exc}", file=sys.stderr)
+    raise SystemExit(1) from exc
 
 
 def md_table(df: pd.DataFrame, cols: list[str] | None = None, float_fmt: str = ".4f") -> str:

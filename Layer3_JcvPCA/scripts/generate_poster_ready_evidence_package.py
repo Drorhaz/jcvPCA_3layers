@@ -21,8 +21,8 @@ if str(_SRC) not in sys.path:
 
 from project_paths import load_project_paths  # noqa: E402
 
-BATCH = _LAYER3_ROOT / "outputs" / "gaga_batch_jcvpca_20260626_193319"
-OUT = _LAYER3_ROOT / "outputs" / "poster_ready_evidence_package"
+BATCH = Path()
+OUT = Path()
 
 
 def configure_evidence_package_paths(
@@ -78,7 +78,11 @@ def parse_evidence_package_args(argv: list[str] | None = None) -> argparse.Names
     return parser.parse_args(argv)
 
 
-configure_evidence_package_paths()
+try:
+    configure_evidence_package_paths()
+except FileNotFoundError as exc:
+    print(f"[FAIL] {exc}", file=sys.stderr)
+    raise SystemExit(1) from exc
 
 PARTICIPANTS = ["671", "252"]
 BLOCKS = [("A", "all_P1_P2_P3_P4_P5"), ("B", "P3_P4_P5")]

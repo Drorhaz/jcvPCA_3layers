@@ -455,6 +455,9 @@ Execution mode: proceed batch-by-batch automatically when validation passes and 
 | Batch | Commit | Summary doc | Status |
 |-------|--------|-------------|--------|
 | M1 | `35e8222` | _(session report)_ | **Complete** |
+| M2 | `0b8a15c` | [M2_BATCH_SUMMARY.md](M2_BATCH_SUMMARY.md) | **Complete** |
+| M3 | `f322744` | [M3_BATCH_SUMMARY.md](M3_BATCH_SUMMARY.md) | **Complete** |
+| M4 | `740ee1d` | [M4_BATCH_SUMMARY.md](M4_BATCH_SUMMARY.md) | **Complete** |
 | M5 | `5f11062` | [M5_BATCH_SUMMARY.md](M5_BATCH_SUMMARY.md) | **Complete** |
 | M6 | `9945eaa` | [M6_BATCH_SUMMARY.md](M6_BATCH_SUMMARY.md) | **Complete** |
 | M7 | `5b804cc`, `c95441c` | [M7_BATCH_SUMMARY.md](M7_BATCH_SUMMARY.md) | **Complete** |

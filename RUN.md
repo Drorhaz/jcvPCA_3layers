@@ -16,14 +16,28 @@
 ```bash
 cd /path/to/3Layers_project
 python scripts/run_health_check.py
-# or: python scripts/check_project_paths.py
 ```
 
 Exit code **0** = all required registry paths exist.
 
 ---
 
-## 2. Python environments
+## 2. Root runners (preferred)
+
+| Task | Command |
+|------|---------|
+| Health check | `python scripts/run_health_check.py` |
+| Layer 1 QC | `python scripts/run_layer1_qc.py --config config.yaml --discover` |
+| Layer 2 session | `python scripts/run_layer2_session.py --help` |
+| Layer 2.5 export | `python scripts/run_layer2_5_export.py --help` |
+| Layer 3 batch | `python scripts/run_layer3_batch.py --help` |
+| Layer 3 validate | `python scripts/run_layer3_validate.py` |
+
+Details: [`scripts/README.md`](scripts/README.md)
+
+---
+
+## 3. Python environments (advanced / direct)
 
 | Layer | venv |
 |-------|------|
@@ -32,11 +46,11 @@ Exit code **0** = all required registry paths exist.
 | Layer 2.5 segmentation | `Layer2.5_Segmentation/.venv/bin/python` |
 | Layer 3 JcvPCA | `Layer3_JcvPCA/.venv/bin/python` |
 
-Root wrappers (preferred after P4): `python scripts/run_layer*.py`
+Root wrappers (preferred): `python scripts/run_layer*.py`
 
 ---
 
-## 3. Canonical batch (do not overwrite)
+## 4. Canonical batch (do not overwrite)
 
 | Item | Value |
 |------|-------|
@@ -62,19 +76,22 @@ print('exists:', p.layer3_canonical_batch.is_dir())
 
 ---
 
-## 4. Layer 1 — Motive QC
+## 5. Layer 1 — Motive QC (direct)
+
+**Preferred:** `python scripts/run_layer1_qc.py --config config.yaml --subject 671 --verbose`
 
 ```bash
 cd Layer1_motive_qc/motive_qc
 .venv/bin/python motive_batch_qc.py --config config.yaml --discover
-.venv/bin/python motive_batch_qc.py --config config.yaml --subject 671 --verbose
 ```
 
 Raw data: `Layer1_motive_qc/motive_qc/data/` (yaml: `raw_data.layer1`).
 
 ---
 
-## 5. Layer 2 — Kinematics sessions
+## 6. Layer 2 — Kinematics sessions
+
+**Preferred:** `python scripts/run_layer2_session.py --help`
 
 ```bash
 cd Layer2_Motive_Kinematics
@@ -86,12 +103,12 @@ Raw inputs: `Layer2_Motive_Kinematics/data/{671,252}/`
 
 ---
 
-## 6. Layer 2.5 — Gaga exports
+## 7. Layer 2.5 — Gaga exports
+
+**Preferred:** `python scripts/run_layer2_5_export.py --help`
 
 ```bash
-cd Layer2.5_Segmentation
-.venv/bin/python scripts/build_gaga_exports.py --help
-ls outputs/pre_jvcpca_review/671/
+ls Layer2.5_Segmentation/outputs/pre_jvcpca_review/671/
 ```
 
 Export root: `Layer2.5_Segmentation/outputs/pre_jvcpca_review/` (yaml: `layer2_5.pre_jvcpca_review`).
@@ -100,34 +117,41 @@ Export root: `Layer2.5_Segmentation/outputs/pre_jvcpca_review/` (yaml: `layer2_5
 
 ---
 
-## 7. Layer 3 — Batch run (new timestamped output)
+## 8. Layer 3 — Batch run (new timestamped output)
+
+**Preferred:**
+
+```bash
+python scripts/run_layer3_batch.py \
+  --layer25-root Layer2.5_Segmentation/outputs/pre_jvcpca_review \
+  --output-dir Layer3_JcvPCA/outputs/gaga_batch_jcvpca_$(date -u +%Y%m%d_%H%M%S)
+```
+
+Direct:
 
 ```bash
 cd Layer3_JcvPCA/scripts
 ../.venv/bin/python run_gaga_batch_jcvpca.py --help
-../.venv/bin/python run_gaga_batch_jcvpca.py \
-  --layer25-root ../../Layer2.5_Segmentation/outputs/pre_jvcpca_review \
-  --output-dir ../outputs/gaga_batch_jcvpca_$(date -u +%Y%m%d_%H%M%S)
 ```
 
 Paths resolve from `config/paths.yaml` when `--layer25-root` is omitted.
 
 ---
 
-## 8. Layer 3 — Validate (read-only, no regeneration)
+## 9. Layer 3 — Validate (read-only)
+
+**Preferred:** `python scripts/run_layer3_validate.py`
+
+Direct:
 
 ```bash
 cd Layer3_JcvPCA/scripts
 ../.venv/bin/python generate_final_integrated_review.py --validate-paths
-../.venv/bin/python generate_master_full_numeric_report.py --dry-run
-../.venv/bin/python generate_directional_robustness_full_numeric_report.py --validate-paths
-../.venv/bin/python generate_nullspace_full_numeric_report.py --dry-run
-../.venv/bin/python generate_movement_organization_question_report.py --validate-paths
 ```
 
 ---
 
-## 9. Promote a new canonical batch
+## 10. Promote a new canonical batch
 
 Only after reviewing a new batch folder:
 
@@ -140,7 +164,7 @@ Only after reviewing a new batch folder:
 
 ---
 
-## 10. Poster figures
+## 11. Poster figures
 
 ```bash
 python scripts/make_poster_final_figures.py --help
@@ -151,7 +175,7 @@ Output: `outputs/poster_final_figures/` (index: [`results/poster/`](results/post
 
 ---
 
-## 11. Results map
+## 12. Results map
 
 | What | Where |
 |------|-------|
@@ -163,7 +187,7 @@ Output: `outputs/poster_final_figures/` (index: [`results/poster/`](results/post
 
 ---
 
-## 12. Do not touch
+## 13. Do not touch
 
 | Path | Why |
 |------|-----|
@@ -176,7 +200,7 @@ Output: `outputs/poster_final_figures/` (index: [`results/poster/`](results/post
 
 ---
 
-## 13. External archive restore
+## 14. External archive restore
 
 Scratch and L1 QC outputs archived under:
 
@@ -191,4 +215,4 @@ See [`results/archive_index/EXTERNAL_ARCHIVE.md`](results/archive_index/EXTERNAL
 
 ---
 
-*Updated Phase 2 P1 — primary runner surface.*
+*Updated Phase 2 P4 — root script runners.*

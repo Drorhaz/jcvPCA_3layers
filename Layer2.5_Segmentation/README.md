@@ -1,3 +1,5 @@
+> **Navigation:** prefer [`RUN.md`](../RUN.md) and [`docs/DATA_MAP.md`](../docs/DATA_MAP.md). Runnable code stays in this folder.
+
 # Layer 2.5 — Post-Layer 2 Segmentation Review
 
 Interactive per-session segmentation review bridging Layer 1 marker QC and Layer 2 kinematic exports.

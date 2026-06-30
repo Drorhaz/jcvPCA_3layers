@@ -1,3 +1,5 @@
+> **Navigation:** prefer [`RUN.md`](../RUN.md) and [`docs/DATA_MAP.md`](../docs/DATA_MAP.md). Runnable code stays in this folder.
+
 # Layer 2 Motive Kinematics
 
 Independent **Layer 2** pipeline: Motive-solved **global bone quaternions** → filtered **parent-child relative rotation-vector features** (`joint_rx`, `joint_ry`, `joint_rz`) for later Layer 3 JcvPCA analysis.

@@ -1,3 +1,5 @@
+> **Navigation:** prefer [`RUN.md`](../RUN.md) and [`docs/DATA_MAP.md`](../docs/DATA_MAP.md). Runnable code stays in this folder.
+
 # Layer 3 — JcvPCA (V1)
 
 Layer 3 is a **computational, auditable** Python package that implements a conservative adaptation of the **JcvPCA** framework (Dubois et al.) for Gaga / OptiTrack / Motive movement data.

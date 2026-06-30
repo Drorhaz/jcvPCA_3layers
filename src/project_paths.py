@@ -84,6 +84,12 @@ _PATH_REGISTRY: dict[tuple[str, ...], tuple[PathRequirement, bool]] = {
     ("raw_data", "layer2"): (PathRequirement.REQUIRED, False),
     ("raw_data", "layer2_5_descriptions"): (PathRequirement.REQUIRED, False),
     ("raw_data", "root_test_exports"): (PathRequirement.OPTIONAL, False),
+    ("data", "raw_layer1"): (PathRequirement.OPTIONAL, False),
+    ("data", "raw_layer2"): (PathRequirement.OPTIONAL, False),
+    ("data", "raw_layer2_5_descriptions"): (PathRequirement.OPTIONAL, False),
+    ("data", "test_exports"): (PathRequirement.OPTIONAL, False),
+    ("processed", "layer2_outputs_root"): (PathRequirement.OPTIONAL, False),
+    ("processed", "pre_jvcpca_review"): (PathRequirement.OPTIONAL, False),
     ("layer2", "active_outputs"): (PathRequirement.REQUIRED, False),
     ("layer2", "active_session_glob"): (PathRequirement.OPTIONAL, True),
     ("layer2", "layer2_exports"): (PathRequirement.OPTIONAL, False),
@@ -405,6 +411,14 @@ class ProjectPaths:
     @property
     def layer2_5_pre_jvcpca_review(self) -> Path:
         return self.get("layer2_5.pre_jvcpca_review")
+
+    @property
+    def processed_pre_jvcpca_review(self) -> Path:
+        return self.get("processed.pre_jvcpca_review")
+
+    @property
+    def data_raw_layer2(self) -> Path:
+        return self.get("data.raw_layer2")
 
     @property
     def poster_final_figures(self) -> Path:

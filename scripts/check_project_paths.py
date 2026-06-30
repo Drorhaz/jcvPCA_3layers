@@ -41,6 +41,8 @@ def main() -> int:
 
     section_order = [
         "raw_data",
+        "data",
+        "processed",
         "layer2",
         "layer2_5",
         "layer3",

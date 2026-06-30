@@ -79,20 +79,22 @@ flowchart LR
 
 ---
 
-## Navigation hubs (P5+)
+## Navigation hubs (P5 — active)
 
-After Phase P5, unified browse paths:
+Unified browse paths at repo root (symlinks to legacy layer paths until P6):
 
-| Hub | Points to |
-|-----|-----------|
+| Hub | Resolves to |
+|-----|-------------|
 | `data/raw_layer1` | L1 raw markers |
 | `data/raw_layer2` | L2 raw CSVs |
 | `data/raw_layer2_5_descriptions` | L2.5 descriptions |
 | `data/test_exports` | `671_test_data_des/` |
 | `processed/layer2_outputs_root` | L2 outputs root |
-| `processed/pre_jvcpca_review` | L2.5 exports |
+| `processed/pre_jvcpca_review` | L2.5 JcvPCA exports |
 
-After Phase P6, these become **physical** paths with compat symlinks at legacy layer locations.
+yaml keys: `data.*`, `processed.*` (legacy `raw_data.*` / `layer2_5.pre_jvcpca_review` unchanged).
+
+After Phase P6, hubs become **physical** paths with compat symlinks at legacy layer locations.
 
 ---
 

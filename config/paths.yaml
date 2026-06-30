@@ -11,6 +11,17 @@ raw_data:
   layer2_5_descriptions: "Layer2.5_Segmentation/data_description"
   root_test_exports: "671_test_data_des"  # manual review — export type TBD
 
+# Navigation hubs (P5) — symlinks to legacy layer paths until P6 physical migration
+data:
+  raw_layer1: "data/raw_layer1"
+  raw_layer2: "data/raw_layer2"
+  raw_layer2_5_descriptions: "data/raw_layer2_5_descriptions"
+  test_exports: "data/test_exports"
+
+processed:
+  layer2_outputs_root: "processed/layer2_outputs_root"
+  pre_jvcpca_review: "processed/pre_jvcpca_review"
+
 layer2:
   active_outputs: "Layer2_Motive_Kinematics/outputs"
   active_session_glob: "Layer2_Motive_Kinematics/outputs/*_Take_*"

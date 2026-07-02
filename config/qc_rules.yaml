@@ -1,0 +1,405 @@
+# All-layers QC thresholds — governed initial registry (curated L1/L2/L2.5 subset).
+#
+# G1.1 (high-impact QC): expanded L1 gap tiers + L2 stage07/08 warn thresholds for
+# defensible G2 Data Readiness traffic lights. Still NOT complete all-layer coverage.
+# Live values remain in layer YAML (Option A). See G1_REVIEW_ADDENDUM.md.
+
+version: 1
+
+# Shared invalidation chains (G1.1)
+# L1 QC change → exports → batches → decision → audit → poster → figures
+_L1_DOWNSTREAM_INVALIDATES: &l1_downstream
+  - layer1_qc
+  - layer2_5_exports
+  - layer3_batches
+  - decision_summaries
+  - audit_reports
+  - poster_packages
+  - exported_figures
+_L1_DOWNSTREAM_REGENERATE: &l1_regenerate
+  - layer1_qc
+  - layer2_5_exports
+  - layer3_batches
+_L2_DOWNSTREAM_INVALIDATES: &l2_downstream
+  - layer2
+  - layer2_5_exports
+  - layer3_batches
+  - decision_summaries
+  - audit_reports
+  - poster_packages
+  - exported_figures
+_L2_DOWNSTREAM_REGENERATE: &l2_regenerate
+  - layer2
+  - layer2_5_exports
+  - layer3_batches
+
+layer1:
+  source_config: "Layer1_motive_qc/motive_qc/config.yaml"
+  min_marker_coverage_pct:
+    value: 90.0
+    default: 90.0
+    allowed_range: [0.0, 100.0]
+    description: "Minimum marker coverage percentage (readiness gate)."
+    scientific_meaning: "Below this a capture is too sparse to trust for downstream kinematics."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "readiness.min_marker_coverage_pct"
+  max_missing_percent_pass:
+    value: 1.0
+    default: 1.0
+    allowed_range: [0.0, 100.0]
+    description: "Marker missing % at or below clean/pass tier (quality_labels.marker.clean)."
+    scientific_meaning: "Defines the upper bound of 'clean' missingness before minor issues."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.marker.clean.max_missing_percent"
+  max_missing_percent_warn:
+    value: 5.0
+    default: 5.0
+    allowed_range: [0.0, 100.0]
+    description: "Marker missing % minor-issue tier (quality_labels.marker.minor_issue)."
+    scientific_meaning: "Warn-level missingness; may still proceed with caution."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.marker.minor_issue.max_missing_percent"
+  max_missing_percent_caution:
+    value: 10.0
+    default: 10.0
+    allowed_range: [0.0, 100.0]
+    description: "Marker missing % caution tier ceiling (quality_labels.marker.caution)."
+    scientific_meaning: "Above this, missingness is poor for reliable coordination analysis."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.marker.caution.max_missing_percent"
+  max_large_gaps_pass:
+    value: 0
+    default: 0
+    allowed_range: [0, 50]
+    description: "Max large gaps allowed at clean/minor tiers (quality_labels.marker.clean/minor_issue)."
+    scientific_meaning: "Any large gap at pass tier indicates tracking discontinuity."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.marker.clean.max_large_gaps"
+  max_large_gaps_caution:
+    value: 1
+    default: 1
+    allowed_range: [0, 50]
+    description: "Max large gaps at caution tier (quality_labels.marker.caution)."
+    scientific_meaning: "More large gaps → poorer session for segmentation windows."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.marker.caution.max_large_gaps"
+  session_acceptable_max_labeled_missing_percent:
+    value: 5.0
+    default: 5.0
+    allowed_range: [0.0, 100.0]
+    description: "Session acceptable for preprocessing — max labeled missing %."
+    scientific_meaning: "Session-level pass gate before Layer 2 processing."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.session.acceptable_for_preprocessing.max_labeled_missing_percent"
+  session_caution_max_labeled_missing_percent:
+    value: 10.0
+    default: 10.0
+    allowed_range: [0.0, 100.0]
+    description: "Session caution for preprocessing — max labeled missing %."
+    scientific_meaning: "Session-level warn before Layer 2; review before export."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.session.caution_for_preprocessing.max_labeled_missing_percent"
+  session_acceptable_max_large_gaps_labeled:
+    value: 0
+    default: 0
+    allowed_range: [0, 50]
+    description: "Session acceptable — max large gaps (labeled markers)."
+    scientific_meaning: "Large gaps at session pass tier block confident preprocessing."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.session.acceptable_for_preprocessing.max_large_gaps_labeled"
+  session_caution_max_large_gaps_labeled:
+    value: 2
+    default: 2
+    allowed_range: [0, 50]
+    description: "Session caution — max large gaps (labeled markers)."
+    scientific_meaning: "Elevated large-gap count → caution for Layer 2.5 export."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "quality_labels.session.caution_for_preprocessing.max_large_gaps_labeled"
+  frame_caution_missing_labeled_percent:
+    value: 10.0
+    default: 10.0
+    allowed_range: [0.0, 100.0]
+    description: "Per-frame caution missing labeled % (frame_qc_mask)."
+    scientific_meaning: "Frames above this contribute to window-level warnings."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "frame_qc_mask.caution_missing_labeled_percent"
+  frame_exclude_missing_labeled_percent:
+    value: 20.0
+    default: 20.0
+    allowed_range: [0.0, 100.0]
+    description: "Per-frame exclude missing labeled % (frame_qc_mask)."
+    scientific_meaning: "Frames above this are excluded from analysis eligibility."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness, joint_link_recommendations]
+    regenerate_after_change: *l1_regenerate
+    source_config_key: "frame_qc_mask.exclude_missing_labeled_percent"
+  velocity_percentile_threshold:
+    value: 99.97
+    default: 99.97
+    allowed_range: [90.0, 100.0]
+    description: "Velocity artifact detection percentile."
+    scientific_meaning: "Flags implausible marker velocity spikes overlapping export windows."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: [layer1_qc, layer2_5_exports, layer3_batches]
+    source_config_key: "artifacts.velocity_percentile_threshold"
+  acceleration_percentile_threshold:
+    value: 99.97
+    default: 99.97
+    allowed_range: [90.0, 100.0]
+    description: "Acceleration artifact detection percentile."
+    scientific_meaning: "Flags implausible marker acceleration spikes."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l1_downstream
+    affects: [layer1, qc_status, export_readiness]
+    regenerate_after_change: [layer1_qc, layer2_5_exports, layer3_batches]
+    source_config_key: "artifacts.acceleration_percentile_threshold"
+  chosen_sigma:
+    value: 8.0
+    default: 8.0
+    allowed_range: [1.0, 20.0]
+    description: "Artifact-detection sigma (artifacts.sigma_sensitivity.chosen_sigma)."
+    scientific_meaning: "Outlier sensitivity for artifact flagging in L1 evidence."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer1_qc, layer2_5_exports, layer3_batches]
+    affects: [layer1, qc_status]
+    regenerate_after_change: [layer1_qc]
+    source_config_key: "artifacts.sigma_sensitivity.chosen_sigma"
+
+layer2:
+  source_config: "Layer2_Motive_Kinematics/configs/default_layer2_config.yaml"
+  quaternion_pass_max_abs_norm_error:
+    value: 0.001
+    default: 0.001
+    allowed_range: [0.0, 0.1]
+    description: "Quaternion norm error pass threshold."
+    scientific_meaning: "Quaternions must be near unit norm to be valid rotations."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l2_downstream
+    affects: [layer2, qc_status]
+    regenerate_after_change: *l2_regenerate
+    source_config_key: "quaternion_qc.pass_max_abs_norm_error"
+  quaternion_warning_max_abs_norm_error:
+    value: 0.01
+    default: 0.01
+    allowed_range: [0.0, 0.1]
+    description: "Quaternion norm error warning threshold."
+    scientific_meaning: "Soft QC before hard quaternion failure."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l2_downstream
+    affects: [layer2, qc_status, export_readiness]
+    regenerate_after_change: *l2_regenerate
+    source_config_key: "quaternion_qc.warning_max_abs_norm_error"
+  rotvec_jump_warning_rad:
+    value: 0.5
+    default: 0.5
+    allowed_range: [0.0, 3.141592653589793]
+    description: "Frame-to-frame rotvec jump warning threshold (Stage 07)."
+    scientific_meaning: "Early flag before jump_fail; contributes to window QC."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l2_downstream
+    affects: [layer2, qc_status, export_readiness]
+    regenerate_after_change: *l2_regenerate
+    source_config_key: "rotvec.jump_warning_rad"
+  rotvec_jump_fail_rad:
+    value: 1.0
+    default: 1.0
+    allowed_range: [0.0, 3.141592653589793]
+    description: "Frame-to-frame rotvec jump fail threshold (Stage 07)."
+    scientific_meaning: "Large jumps indicate branch-cut / tracking failure."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l2_downstream
+    affects: [layer2, qc_status, joint_link_recommendations, export_readiness]
+    regenerate_after_change: *l2_regenerate
+    source_config_key: "rotvec.jump_fail_rad"
+  rotvec_near_pi_warning_fraction:
+    value: 0.95
+    default: 0.95
+    allowed_range: [0.0, 1.0]
+    description: "Branch-cut warning when rotvec norm exceeds fraction of pi."
+    scientific_meaning: "Near-pi rotvec magnitudes suggest branch-cut instability."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l2_downstream
+    affects: [layer2, qc_status, export_readiness]
+    regenerate_after_change: *l2_regenerate
+    source_config_key: "rotvec.near_pi_warning_fraction"
+  filtering_cutoff_hz:
+    value: 10.0
+    default: 10.0
+    allowed_range: [1.0, 60.0]
+    description: "Butterworth low-pass cutoff (Stage 08)."
+    scientific_meaning: "Smooths kinematics; must satisfy Nyquist safety factor."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l2_downstream
+    affects: [layer2]
+    regenerate_after_change: *l2_regenerate
+    source_config_key: "filtering.cutoff_hz"
+  jump_context_window_frames:
+    value: 30
+    default: 30
+    allowed_range: [0, 500]
+    description: "Stage 08 mask window (+/- frames) around jump/branch-cut events."
+    scientific_meaning: "Drives stage08_masked strong warnings in Layer 2.5 export windows."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: *l2_downstream
+    affects: [layer2, qc_status, export_readiness, joint_link_recommendations]
+    regenerate_after_change: *l2_regenerate
+    source_config_key: "filtering.jump_context_window_frames"
+
+layer2_5:
+  source_config: "Layer2.5_Segmentation/config/default_feature_scope.yaml"
+  allowed_feature_scope:
+    value: core_candidate
+    default: core_candidate
+    allowed_values: [core_candidate, upper_body_core, all]
+    description: "Feature-scope tag a link must carry to be included in a matrix."
+    scientific_meaning: "Restricts analysis to curated, comparable links."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer2_5_exports, layer3_batches]
+    affects: [layer2_5, joint_link_recommendations, comparable_links]
+    regenerate_after_change: [layer2_5_exports, layer3_batches]
+    source_config_key: "allowed_feature_scope"
+  exclude_fingers:
+    value: true
+    default: true
+    allowed_values: [true, false]
+    description: "Exclude finger links from Layer 3 matrices."
+    scientific_meaning: "Distal finger links are noisy and out of scope."
+    gui_editable: false
+    locked_by_scope: true
+    requires_approval: true
+    invalidates: [layer2_5_exports, layer3_batches]
+    affects: [layer2_5, joint_link_recommendations]
+    regenerate_after_change: [layer2_5_exports, layer3_batches]
+    source_config_key: "exclude_fingers"
+  exclude_toes:
+    value: true
+    default: true
+    allowed_values: [true, false]
+    description: "Exclude toe links from Layer 3 matrices."
+    scientific_meaning: "Distal toe links are noisy and out of scope."
+    gui_editable: false
+    locked_by_scope: true
+    requires_approval: true
+    invalidates: [layer2_5_exports, layer3_batches]
+    affects: [layer2_5, joint_link_recommendations]
+    regenerate_after_change: [layer2_5_exports, layer3_batches]
+    source_config_key: "exclude_toes"
+
+# Warn-vs-fail severity policy (Layer 2.5 warnings.py). block_if is scope-locked.
+warn_vs_fail:
+  source_config: "Layer2.5_Segmentation/src/pre_jvcpca_review/warnings.py"
+  warn_if:
+    value: [layer1_evidence_overlap]
+    default: [layer1_evidence_overlap]
+    description: "Warning-category events (non-blocking)."
+    scientific_meaning: "Noted but do not stop export."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer2_5_exports]
+    affects: [qc_status]
+    regenerate_after_change: [layer2_5_exports]
+  strong_warn_if:
+    value: [stage08_masked]
+    default: [stage08_masked]
+    description: "Strong-warning events (flagged, non-blocking)."
+    scientific_meaning: "Analysis-ineligible frames present in window."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer2_5_exports]
+    affects: [qc_status]
+    regenerate_after_change: [layer2_5_exports]
+  block_if:
+    value: [missing_matrix, feature_schema_mismatch, constant_feature_column]
+    default: [missing_matrix, feature_schema_mismatch, constant_feature_column]
+    description: "Events that hard-block export."
+    scientific_meaning: "Data unusable for PCA per LAYER3_SCOPE.md input contract."
+    gui_editable: false
+    locked_by_scope: true
+    requires_approval: true
+    invalidates: [layer2_5_exports, layer3_batches]
+    affects: [qc_status, export_readiness]
+    regenerate_after_change: [layer2_5_exports, layer3_batches]

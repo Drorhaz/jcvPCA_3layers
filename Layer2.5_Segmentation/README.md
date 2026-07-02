@@ -16,27 +16,18 @@ python -m pip install -e .
 
 ## Pre-JcvPCA review dashboard (recommended)
 
-Web UI replacing the Jupyter notebook for window selection, warnings, and Layer 3 export.
-
-Run all commands from **`Layer2.5_Segmentation/`** (not the repo root):
+Web UI for window selection, warnings, and Layer 3 export. **Canonical location:** [`Dashboard/`](../Dashboard/) at repo root (thin client over `pre_jvcpca_review`).
 
 ```bash
-cd Layer2.5_Segmentation
-source .venv/bin/activate   # after Setup above
-python -m pip install -r requirements-dashboard.txt
-python -m pip install -e .
-
-# Launch (opens http://localhost:8501)
-./scripts/run_pre_jvcpca_dashboard.sh
+# From repo root (preferred)
+./Dashboard/run_dashboard.sh
 # or:
-streamlit run dashboard/pre_jvcpca_dashboard.py
+python scripts/run_dashboard.py
 ```
 
-From the **repo root**, use the full path instead:
+Opens http://localhost:8501. See [`Dashboard/README.md`](../Dashboard/README.md) for setup and pages.
 
-```bash
-pip install -r Layer2.5_Segmentation/requirements-dashboard.txt
-```
+Legacy redirect: `Layer2.5_Segmentation/scripts/run_pre_jvcpca_dashboard.sh` forwards to the same launcher.
 
 **Workflow:** set Layer 1 / Layer 2 roots in the sidebar → **Discover** → pick participant & session → load segmentation xlsx (auto-detects per-session exercise windows) → configure joints via checkbox filters → **Preview warnings** → **Export Layer 3 window**.
 
@@ -57,6 +48,7 @@ python scripts/validate_segmentation_inputs.py \
 
 ```bash
 pytest
+pytest ../Dashboard/tests/   # dashboard session-state helpers
 ruff check src tests scripts
 ```
 

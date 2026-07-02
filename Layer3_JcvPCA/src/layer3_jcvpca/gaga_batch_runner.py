@@ -13,7 +13,9 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import yaml
 
+from layer3_jcvpca.batch_settings import GagaBatchSettings
 from layer3_jcvpca.comparable_links import (
     COMPARABILITY_BLOCKING,
     REASON_FEATURE_ORDER_MISMATCH,
@@ -30,7 +32,13 @@ from layer3_jcvpca.dataset_builder import (
     build_dataset_construction_preview,
     write_dataset_construction_artifacts,
 )
-from layer3_jcvpca.jcvpca_trace import PcaAParameters
+from layer3_jcvpca.link_focus import (
+    FILTER_STAGE_PCA_INPUT,
+    LinkFocusSpec,
+    apply_link_focus,
+    validate_analysis_feature_schema,
+    write_link_focus_artifacts,
+)
 from layer3_jcvpca.pc_focus import (
     PC_FOCUS_ALL,
     PC_FOCUS_FUNCTIONAL,
@@ -73,6 +81,11 @@ BLOCK_LABELS: dict[str, str] = {
     "B": "P3_P4_P5",
 }
 SENSITIVITY_P = 2
+SMOKE_PLAN_FILTER = {
+    "participant_id": "671",
+    "block_id": "B",
+    "comparison_id": "L1_T1_vs_T2",
+}
 FOCUS_LABEL_ALL = "all"
 FOCUS_LABEL_FUNCTIONAL = "functional_p2"
 FOCUS_LABEL_NULL_SPACE = "null_space_p2"
@@ -126,9 +139,14 @@ class ComparisonRunResult:
     status: str
     reason: str = ""
     comparable_links: list[str] = field(default_factory=list)
+    analysis_link_stems: list[str] = field(default_factory=list)
     excluded_links: pd.DataFrame = field(default_factory=pd.DataFrame)
     n_pca_features: int = 0
     feature_schema_id: str = ""
+    link_focus_mode: str = ""
+    link_focus_filter_stage: str = FILTER_STAGE_PCA_INPUT
+    link_focus_changes_pca_basis: bool = False
+    link_focus_manifest_path: str = ""
     selected_m: int | None = None
     selected_m_reason: str = ""
     pc_focus_mode: str = PC_FOCUS_ALL
@@ -178,6 +196,35 @@ def refresh_central_manifest_from_scan(layer25_root: Path | str) -> pd.DataFrame
         return load_central_manifest(layer25_root)
     except Exception:
         return load_central_manifest(layer25_root)
+
+
+def _apply_smoke_plan_filter(plan: pd.DataFrame) -> pd.DataFrame:
+    filtered = plan[
+        (plan["participant_id"].astype(str) == SMOKE_PLAN_FILTER["participant_id"])
+        & (plan["block_id"].astype(str) == SMOKE_PLAN_FILTER["block_id"])
+        & (plan["comparison_id"].astype(str) == SMOKE_PLAN_FILTER["comparison_id"])
+    ]
+    if filtered.empty:
+        raise ValueError(
+            "Smoke plan filter matched no rows: "
+            f"{SMOKE_PLAN_FILTER} in plan columns {list(plan.columns)}"
+        )
+    return filtered.head(1).copy()
+
+
+def _write_request_provenance(
+    batch_root: Path,
+    *,
+    request_path: Path | None,
+    request: dict[str, Any] | None,
+) -> None:
+    if request_path and request_path.is_file():
+        shutil.copy2(request_path, batch_root / "analysis_request.yaml")
+    elif request:
+        (batch_root / "analysis_request.yaml").write_text(
+            yaml.safe_dump(request, sort_keys=False, allow_unicode=True),
+            encoding="utf-8",
+        )
 
 
 def build_comparison_specs() -> list[ComparisonSpec]:
@@ -451,7 +498,13 @@ def _expected_source_count(
     return expected, missing
 
 
-def _run_workbench_pipeline(run_dir: Path, construction_dir: Path, preflight_dir: Path) -> None:
+def _run_workbench_pipeline(
+    run_dir: Path,
+    construction_dir: Path,
+    preflight_dir: Path,
+    settings: GagaBatchSettings | None = None,
+) -> None:
+    settings = settings or GagaBatchSettings.defaults()
     fingerprint = hashlib.sha256(
         json.dumps(
             {
@@ -476,7 +529,7 @@ def _run_workbench_pipeline(run_dir: Path, construction_dir: Path, preflight_dir
                 step_id,
                 ctx,
                 state,
-                pca_a_params=PcaAParameters(variance_threshold=0.80),
+                pca_a_params=settings.pca_a_parameters(),
             )
         elif step_id.endswith("pc_focus_selection"):
             state = run_step(
@@ -505,7 +558,7 @@ def _run_workbench_pipeline(run_dir: Path, construction_dir: Path, preflight_dir
                 step_id,
                 ctx,
                 state,
-                weighting_params=WeightingParameters(explained_variance_weighting=False),
+                weighting_params=settings.weighting_parameters(),
             )
         else:
             state = run_step(step_id, ctx, state)
@@ -519,7 +572,9 @@ def _run_focus_sensitivity_pipeline(
     preflight_dir: Path,
     focus_label: str,
     pc_focus_params: PcFocusParameters,
+    settings: GagaBatchSettings | None = None,
 ) -> FocusRunResult:
+    settings = settings or GagaBatchSettings.defaults()
     focus_dir = main_run_dir.parent / f"run_{focus_label}"
     if focus_dir.exists():
         shutil.rmtree(focus_dir)
@@ -556,7 +611,7 @@ def _run_focus_sensitivity_pipeline(
                 step_id,
                 ctx,
                 state,
-                weighting_params=WeightingParameters(explained_variance_weighting=False),
+                weighting_params=settings.weighting_parameters(),
             )
         else:
             state = run_step(step_id, ctx, state)
@@ -583,41 +638,49 @@ def _run_pc_focus_sensitivity(
     construction_dir: Path,
     preflight_dir: Path,
     selected_m: int | None,
+    settings: GagaBatchSettings | None = None,
 ) -> list[FocusRunResult]:
+    settings = settings or GagaBatchSettings.defaults()
+    sensitivity_p = settings.sensitivity_p
     results: list[FocusRunResult] = []
 
-    try:
-        results.append(
-            _run_focus_sensitivity_pipeline(
-                main_run_dir,
-                construction_dir=construction_dir,
-                preflight_dir=preflight_dir,
-                focus_label=FOCUS_LABEL_FUNCTIONAL,
-                pc_focus_params=PcFocusParameters(
-                    pc_focus_mode=PC_FOCUS_FUNCTIONAL,
-                    p=SENSITIVITY_P,
-                ),
+    if settings.wants_functional_focus():
+        try:
+            results.append(
+                _run_focus_sensitivity_pipeline(
+                    main_run_dir,
+                    construction_dir=construction_dir,
+                    preflight_dir=preflight_dir,
+                    focus_label=FOCUS_LABEL_FUNCTIONAL,
+                    pc_focus_params=PcFocusParameters(
+                        pc_focus_mode=PC_FOCUS_FUNCTIONAL,
+                        p=sensitivity_p,
+                    ),
+                    settings=settings,
+                )
             )
-        )
-    except (StepRunError, ValueError, OSError) as exc:
-        results.append(
-            FocusRunResult(
-                focus_mode=PC_FOCUS_FUNCTIONAL,
-                focus_label=FOCUS_LABEL_FUNCTIONAL,
-                status=STATUS_FAILED,
-                reason=str(exc),
-                p=SENSITIVITY_P,
+        except (StepRunError, ValueError, OSError) as exc:
+            results.append(
+                FocusRunResult(
+                    focus_mode=PC_FOCUS_FUNCTIONAL,
+                    focus_label=FOCUS_LABEL_FUNCTIONAL,
+                    status=STATUS_FAILED,
+                    reason=str(exc),
+                    p=sensitivity_p,
+                )
             )
-        )
 
-    if selected_m is None or selected_m <= SENSITIVITY_P:
+    if not settings.wants_null_space_focus():
+        return results
+
+    if selected_m is None or selected_m <= sensitivity_p:
         results.append(
             FocusRunResult(
                 focus_mode=PC_FOCUS_NULL_SPACE,
                 focus_label=FOCUS_LABEL_NULL_SPACE,
                 status="skipped",
                 reason="null_space_skipped_selected_m_leq_p",
-                p=SENSITIVITY_P,
+                p=sensitivity_p,
             )
         )
         return results
@@ -629,11 +692,12 @@ def _run_pc_focus_sensitivity(
                 construction_dir=construction_dir,
                 preflight_dir=preflight_dir,
                 focus_label=FOCUS_LABEL_NULL_SPACE,
-                pc_focus_params=PcFocusParameters(
-                    pc_focus_mode=PC_FOCUS_NULL_SPACE,
-                    p=SENSITIVITY_P,
-                ),
-            )
+                    pc_focus_params=PcFocusParameters(
+                        pc_focus_mode=PC_FOCUS_NULL_SPACE,
+                        p=sensitivity_p,
+                    ),
+                    settings=settings,
+                )
         )
     except (StepRunError, ValueError, OSError) as exc:
         results.append(
@@ -642,7 +706,7 @@ def _run_pc_focus_sensitivity(
                 focus_label=FOCUS_LABEL_NULL_SPACE,
                 status=STATUS_FAILED,
                 reason=str(exc),
-                p=SENSITIVITY_P,
+                p=sensitivity_p,
             )
         )
     return results
@@ -770,7 +834,11 @@ def run_single_comparison(
     exercises: list[str],
     spec: ComparisonSpec,
     batch_root: Path,
+    settings: GagaBatchSettings | None = None,
+    link_focus: LinkFocusSpec | None = None,
 ) -> ComparisonRunResult:
+    settings = settings or GagaBatchSettings.defaults()
+    link_focus = link_focus or LinkFocusSpec.default()
     result = ComparisonRunResult(
         participant_id=participant_id,
         block_id=block_id,
@@ -792,12 +860,35 @@ def run_single_comparison(
     link_report = detect_comparable_links(selected_rows)
     result.excluded_links = link_report.excluded_links.copy()
     result.comparable_links = list(link_report.comparable_link_stems)
-    result.n_pca_features = len(result.comparable_links) * 3
     if not link_report.selected_matrices.empty:
         schemas = link_report.selected_matrices["feature_schema_id"].astype(str).unique()
         result.feature_schema_id = schemas[0] if len(schemas) == 1 else "|".join(schemas)
 
-    if link_report.summary.get("comparability_status") == COMPARABILITY_BLOCKING:
+    comp_key = f"{participant_id}_{block_id}_{spec.comparison_id}"
+    comp_root = batch_root / "comparisons" / comp_key
+    comp_root.mkdir(parents=True, exist_ok=True)
+
+    lf_result = apply_link_focus(
+        link_report,
+        link_focus,
+        feature_schema_id=result.feature_schema_id,
+    )
+    result.link_focus_mode = lf_result.mode.value
+    result.link_focus_filter_stage = lf_result.filter_stage
+    result.link_focus_changes_pca_basis = lf_result.changes_pca_basis
+    result.analysis_link_stems = list(lf_result.analysis_link_stems)
+    result.n_pca_features = len(result.analysis_link_stems) * 3
+
+    lf_paths = write_link_focus_artifacts(
+        comp_root,
+        lf_result,
+        participant_id=participant_id,
+        block_id=block_id,
+        comparison_id=spec.comparison_id,
+    )
+    result.link_focus_manifest_path = lf_paths["link_focus_manifest"]
+
+    if link_report.summary.get("comparability_status") == COMPARABILITY_BLOCKING and link_focus.use_comparable_links_only:
         result.status = STATUS_BLOCKED_NO_LINKS
         result.reason = "No comparable links across selected matrices."
         return result
@@ -808,10 +899,30 @@ def run_single_comparison(
         result.reason = harm_reason
         return result
 
-    if not result.comparable_links:
+    if not lf_result.ok:
         result.status = STATUS_BLOCKED_NO_LINKS
-        result.reason = "Comparable link set is empty after detection."
+        result.reason = lf_result.blocking_reason or "link_focus removed all PCA input links."
         return result
+
+    if lf_result.changes_pca_basis:
+        schema_ok, schema_id, schema_msg = validate_analysis_feature_schema(
+            link_report,
+            lf_result.analysis_link_stems,
+            base_schema_id=result.feature_schema_id,
+        )
+        if not schema_ok:
+            result.status = STATUS_BLOCKED_NO_LINKS
+            result.reason = schema_msg
+            return result
+        result.feature_schema_id = schema_id
+        lf_result.feature_schema_id = schema_id
+        manifest_path = Path(lf_paths["link_focus_manifest"])
+        manifest_path.write_text(
+            json.dumps(lf_result.to_manifest_dict(), indent=2),
+            encoding="utf-8",
+        )
+
+    pca_link_stems = result.analysis_link_stems
 
     config = DatasetConstructionConfig(
         analysis_mode=spec.analysis_mode,
@@ -829,12 +940,10 @@ def run_single_comparison(
         exploratory_timepoint=spec.exploratory_timepoint,
         exploratory_repetition_a=spec.exploratory_repetition_a,
         exploratory_repetition_b=spec.exploratory_repetition_b,
-        selected_link_stems=result.comparable_links,
+        selected_link_stems=pca_link_stems,
         acknowledge_missing_repetitions=False,
     )
     preview = build_dataset_construction_preview(manifest, config)
-    comp_key = f"{participant_id}_{block_id}_{spec.comparison_id}"
-    comp_root = batch_root / "comparisons" / comp_key
     construction_dir = comp_root / "construction"
     preflight_dir = comp_root / "preflight"
     run_dir = comp_root / "run"
@@ -867,7 +976,7 @@ def run_single_comparison(
 
     try:
         run_dir.mkdir(parents=True, exist_ok=True)
-        _run_workbench_pipeline(run_dir, construction_dir, preflight_dir)
+        _run_workbench_pipeline(run_dir, construction_dir, preflight_dir, settings)
         result.status = STATUS_COMPLETED
         result.run_dir = str(run_dir)
         result.reason = ""
@@ -884,18 +993,20 @@ def run_single_comparison(
             construction_dir=construction_dir,
             preflight_dir=preflight_dir,
             selected_m=result.selected_m,
+            settings=settings,
         )
 
-        plot_dir = batch_root / "plots" / participant_id / block_id / spec.comparison_id
-        _write_comparison_plots(run_dir, plot_dir, batch_root)
-        _write_focus_sensitivity_plots(
-            batch_root=batch_root,
-            participant_id=participant_id,
-            block_id=block_id,
-            comparison_id=spec.comparison_id,
-            main_run_dir=run_dir,
-            focus_runs=result.focus_runs,
-        )
+        if settings.generate_comparison_plots:
+            plot_dir = batch_root / "plots" / participant_id / block_id / spec.comparison_id
+            _write_comparison_plots(run_dir, plot_dir, batch_root)
+            _write_focus_sensitivity_plots(
+                batch_root=batch_root,
+                participant_id=participant_id,
+                block_id=block_id,
+                comparison_id=spec.comparison_id,
+                main_run_dir=run_dir,
+                focus_runs=result.focus_runs,
+            )
     except (StepRunError, ValueError, OSError) as exc:
         result.status = STATUS_FAILED
         result.reason = str(exc)
@@ -912,11 +1023,74 @@ def run_gaga_batch_jcvpca(
     layer25_root: Path | str | None = None,
     output_dir: Path | str | None = None,
     participants: list[str] | None = None,
+    blocks: dict[str, list[str]] | None = None,
+    comparison_ids: list[str] | None = None,
+    settings: GagaBatchSettings | None = None,
+    analysis_request_path: Path | str | None = None,
+    project_root: Path | str | None = None,
+    smoke: bool = False,
 ) -> Path:
+    repo_root = Path(project_root).resolve() if project_root else _repo_root()
+    settings = settings or GagaBatchSettings.from_analysis_config(repo_root)
+
+    request: dict[str, Any] | None = None
+    request_path = Path(analysis_request_path).resolve() if analysis_request_path else None
+    link_focus = LinkFocusSpec.default()
+    if request_path:
+        from layer3_jcvpca.request_plan import plan_from_analysis_request_path
+
+        req_plan = plan_from_analysis_request_path(request_path, project_root=repo_root)
+        participants = list(req_plan.participants)
+        blocks = req_plan.blocks
+        comparison_ids = list(req_plan.comparison_ids)
+        settings = req_plan.settings
+        request = req_plan.request
+        link_focus = req_plan.link_focus
+
     layer25_root = Path(layer25_root or default_layer25_root())
     participants = participants or list(TARGET_PARTICIPANTS)
-    batch_root = Path(output_dir or (_repo_root() / "Layer3_JcvPCA" / "outputs" / f"gaga_batch_jcvpca_{utc_timestamp()}"))
+    batch_root = Path(
+        output_dir or (repo_root / "Layer3_JcvPCA" / "outputs" / f"gaga_batch_jcvpca_{utc_timestamp()}")
+    )
     batch_root.mkdir(parents=True, exist_ok=True)
+
+    _write_request_provenance(batch_root, request_path=request_path, request=request)
+    settings_snap = batch_root / "_config_snapshot"
+    settings_snap.mkdir(parents=True, exist_ok=True)
+    (settings_snap / "runner_settings.json").write_text(
+        json.dumps(
+            {
+                "variance_threshold": settings.variance_threshold,
+                "min_pcs": settings.min_pcs,
+                "max_pcs": settings.max_pcs,
+                "sensitivity_p": settings.sensitivity_p,
+                "explained_variance_weighting": settings.explained_variance_weighting,
+                "pc_focus_spaces": list(settings.pc_focus_spaces),
+                "generate_comparison_plots": settings.generate_comparison_plots,
+                "generate_full_numeric_reports": settings.generate_full_numeric_reports,
+                "generate_poster_package": settings.generate_poster_package,
+                "analysis_request_path": str(request_path) if request_path else "",
+                "link_focus": {
+                    "mode": link_focus.resolved_mode().value,
+                    "filter_stage": FILTER_STAGE_PCA_INPUT,
+                    "changes_pca_basis": link_focus.resolved_mode().value != "full_body_comparable",
+                    "body_regions": list(link_focus.body_regions),
+                    "link_stems": list(link_focus.link_stems),
+                    "use_comparable_links_only": link_focus.use_comparable_links_only,
+                    "note": (
+                        "link_focus filters apply before PCA input construction when active; "
+                        "they are analysis feature filters, not display-only filters."
+                    ),
+                },
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    try:
+        _ensure_repo_config_snapshot(repo_root, settings_snap)
+    except OSError:
+        pass
 
     manifest = refresh_central_manifest_from_scan(layer25_root)
     availability = scan_data_availability(manifest, participants=participants, layer25_root=layer25_root)
@@ -925,14 +1099,27 @@ def run_gaga_batch_jcvpca(
     if attempts_src.is_file():
         pd.read_csv(attempts_src).to_csv(batch_root / "export_attempts_report.csv", index=False)
 
-    plan = build_comparison_plan(participants=participants)
+    all_specs = build_comparison_specs()
+    selected_specs = all_specs
+    if comparison_ids:
+        spec_map = {spec.comparison_id: spec for spec in all_specs}
+        selected_specs = [spec_map[cid] for cid in comparison_ids if cid in spec_map]
+
+    plan = build_comparison_plan(
+        participants=participants,
+        blocks=blocks,
+        specs=selected_specs,
+    )
+    if smoke:
+        plan = _apply_smoke_plan_filter(plan)
     plan.to_csv(batch_root / "comparison_plan.csv", index=False)
 
-    specs = {s.comparison_id: s for s in build_comparison_specs()}
+    specs = {s.comparison_id: s for s in selected_specs}
+    block_map = blocks or BLOCK_EXERCISES
     results: list[ComparisonRunResult] = []
     for _, row in plan.iterrows():
         spec = specs[str(row["comparison_id"])]
-        exercises = BLOCK_EXERCISES[str(row["block_id"])]
+        exercises = block_map[str(row["block_id"])]
         results.append(
             run_single_comparison(
                 manifest,
@@ -941,11 +1128,36 @@ def run_gaga_batch_jcvpca(
                 exercises=exercises,
                 spec=spec,
                 batch_root=batch_root,
+                settings=settings,
+                link_focus=link_focus,
             )
         )
 
     _write_batch_tables(batch_root, results, manifest, layer25_root)
+    from layer3_jcvpca.on_demand_reports import generate_on_demand_reports
+
+    generate_on_demand_reports(
+        batch_root,
+        generate_full_numeric_reports=settings.generate_full_numeric_reports,
+        generate_poster_package=settings.generate_poster_package,
+        project_root=repo_root,
+    )
     return batch_root
+
+
+def _ensure_repo_src_on_path(project_root: Path) -> None:
+    src = project_root / "src"
+    entry = str(src)
+    if src.is_dir() and entry not in sys.path:
+        sys.path.insert(0, entry)
+
+
+def _ensure_repo_config_snapshot(repo_root: Path, dest: Path) -> None:
+    _ensure_repo_src_on_path(repo_root)
+    from analysis_config import load_analysis_config
+
+    cfg = load_analysis_config(project_root=repo_root)
+    cfg.write_snapshot(dest.parent)
 
 
 def _write_batch_tables(
@@ -964,7 +1176,9 @@ def _write_batch_tables(
     pc_focus_rows = []
     link_rows = []
     axis_rows = []
-    link_focus_rows = []
+    link_focus_summary_rows = []
+    link_focus_ledger_rows = []
+    request_link_focus_rows = []
     axis_focus_rows = []
     sensitivity_rows = []
     null_space_rows = []
@@ -989,7 +1203,7 @@ def _write_batch_tables(
             if focus_label == FOCUS_LABEL_ALL:
                 link_rows.append(ldf)
             else:
-                link_focus_rows.append(ldf)
+                request_link_focus_rows.append(ldf)
         ap = run_dir / "axis_level_jcvpca_unweighted.csv"
         if ap.is_file():
             adf = pd.read_csv(ap)
@@ -1021,8 +1235,13 @@ def _write_batch_tables(
                 "status": res.status,
                 "reason": res.reason,
                 "n_comparable_links": len(res.comparable_links),
+                "n_analysis_links": len(res.analysis_link_stems or res.comparable_links),
                 "n_pca_features": res.n_pca_features,
                 "feature_schema_id": res.feature_schema_id,
+                "link_focus_mode": res.link_focus_mode,
+                "link_focus_filter_stage": res.link_focus_filter_stage,
+                "link_focus_changes_pca_basis": res.link_focus_changes_pca_basis,
+                "link_focus_manifest": res.link_focus_manifest_path,
                 "selected_m": res.selected_m,
                 "pc_focus_mode": res.pc_focus_mode,
                 "run_dir": res.run_dir,
@@ -1069,15 +1288,37 @@ def _write_batch_tables(
                         "reason": fr.reason,
                     }
                 )
-        for stem in res.comparable_links:
+        for stem in res.analysis_link_stems or res.comparable_links:
             comparable_rows.append(
                 {
                     "participant_id": res.participant_id,
                     "block_id": res.block_id,
                     "comparison_id": res.comparison_id,
                     "link_stem": stem,
+                    "used_for_pca_input": True,
                 }
             )
+        if res.link_focus_manifest_path:
+            link_focus_summary_rows.append(
+                {
+                    "participant_id": res.participant_id,
+                    "block_id": res.block_id,
+                    "comparison_id": res.comparison_id,
+                    "link_focus_mode": res.link_focus_mode,
+                    "link_focus_filter_stage": res.link_focus_filter_stage,
+                    "link_focus_changes_pca_basis": res.link_focus_changes_pca_basis,
+                    "n_comparable_links": len(res.comparable_links),
+                    "n_analysis_links": len(res.analysis_link_stems),
+                    "link_focus_manifest": res.link_focus_manifest_path,
+                }
+            )
+        ledger_path = Path(res.link_focus_manifest_path).parent / "link_focus_ledger.csv" if res.link_focus_manifest_path else None
+        if ledger_path and ledger_path.is_file():
+            ldf = pd.read_csv(ledger_path)
+            ldf.insert(0, "comparison_id", res.comparison_id)
+            ldf.insert(0, "block_id", res.block_id)
+            ldf.insert(0, "participant_id", res.participant_id)
+            link_focus_ledger_rows.append(ldf)
         if not res.excluded_links.empty:
             ex = res.excluded_links.copy()
             ex["participant_id"] = res.participant_id
@@ -1224,8 +1465,14 @@ def _write_batch_tables(
         pd.concat(axis_rows, ignore_index=True).to_csv(batch_root / "jcvpca_axis_results.csv", index=False)
     else:
         pd.DataFrame().to_csv(batch_root / "jcvpca_axis_results.csv", index=False)
-    if link_focus_rows:
-        pd.concat(link_focus_rows, ignore_index=True).to_csv(
+    if link_focus_summary_rows:
+        pd.DataFrame(link_focus_summary_rows).to_csv(batch_root / "link_focus_by_comparison.csv", index=False)
+    if link_focus_ledger_rows:
+        pd.concat(link_focus_ledger_rows, ignore_index=True).to_csv(
+            batch_root / "link_focus_ledger_by_comparison.csv", index=False
+        )
+    if request_link_focus_rows:
+        pd.concat(request_link_focus_rows, ignore_index=True).to_csv(
             batch_root / "jcvpca_link_results_by_pc_focus.csv", index=False
         )
     else:

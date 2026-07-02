@@ -1,0 +1,61 @@
+# Modular segment / P-phase selection presets + comparability thresholds.
+#
+# G1 + Section 12 (PROGRAM_GUI_OPTIMIZATION_PLAN.md). Presets resolve to FILTERS
+# over the Layer 2.5 central manifest (layer25_export_manifest.csv) — no combined
+# CSV/parquet files are ever materialized. A resolved selection is snapshotted
+# with each analysis for reproducibility.
+
+version: 1
+
+# Named presets resolve to manifest rows by label/quality filters.
+presets:
+  full_sequence:
+    include_labels: [combined_group4]
+  only_P1:
+    include_labels: [P1]
+  only_P1_P3:
+    include_labels: [P1, P3]
+  high_quality_only:
+    max_severity: warn          # drop strong_warn / block
+    include_labels: [P1, P2, P3, P4, P5]
+  manual:
+    segment_ids: []             # explicit IDs chosen in GUI
+
+# Matching / comparability rules applied when building an A/B comparison.
+matching:
+  require_same_participant:
+    value: true
+    default: true
+    allowed_values: [true, false]
+    description: "Warn (not block) when a selection mixes participants."
+    scientific_meaning: "N-of-1: participants are analyzed separately."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer3_batches]
+    affects: [segment_selection]
+    regenerate_after_change: [layer3_batches]
+  require_same_feature_schema_id:
+    value: true
+    default: true
+    allowed_values: [true, false]
+    description: "Block when selected segments have differing feature schemas."
+    scientific_meaning: "PCA requires identical feature names/order (LAYER3_SCOPE.md)."
+    gui_editable: false
+    locked_by_scope: true
+    requires_approval: true
+    invalidates: [layer3_batches]
+    affects: [segment_selection, comparable_links]
+    regenerate_after_change: [layer3_batches]
+  warn_on_cross_timepoint_mix:
+    value: true
+    default: true
+    allowed_values: [true, false]
+    description: "Warn when a single side mixes timepoints unexpectedly."
+    scientific_meaning: "Guards against confounded A/B construction."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: []
+    affects: [segment_selection]
+    regenerate_after_change: []

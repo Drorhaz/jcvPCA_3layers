@@ -1,0 +1,220 @@
+# Layer 3 JcvPCA analysis parameters — governed initial registry (L3 full coverage).
+#
+# G1 (PROGRAM_GUI_OPTIMIZATION_PLAN.md Section 4). NOT a complete all-layer
+# registry — L1/L2/L2.5 thresholds live in config/qc_rules.yaml (curated
+# subset). These values MIRROR the Gaga-batch Python constants and are verified
+# bit-for-bit by tests/test_analysis_config.py. Editing a value here does NOT yet
+# change runtime behavior (Option A: runners rewired in a later validated step).
+#
+# Rich schema per threshold:
+#   value / default / allowed_range|allowed_values / description /
+#   scientific_meaning / gui_editable / locked_by_scope / requires_approval /
+#   invalidates / affects / regenerate_after_change
+#
+# Locked-by-scope items reflect Layer3_JcvPCA/docs/LAYER3_SCOPE.md and must not
+# be edited without a scope amendment.
+
+version: 1
+
+pca:
+  variance_threshold:
+    value: 0.80
+    default: 0.80
+    # Badge metadata (G2) — see docs/research_recovery/G1_REVIEW_ADDENDUM.md §4
+    scope_approved_value: 0.90      # LAYER3_SCOPE.md V1 narrative; V1 manifest runner
+    canonical_batch_value: 0.80       # frozen batch gaga_batch_jcvpca_20260626_193319
+    runtime_authoritative_note: "Gaga batch + workbench use 0.80; scope doc 0.90 applies to V1 manifest path only"
+    allowed_range: [0.50, 0.99]
+    description: "Cumulative explained-variance target selecting number of PCs from A."
+    scientific_meaning: "Defines how much of reference A's structure the JcvPCA comparison spans."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer3_batches, decision_summaries, audit_reports, poster_packages, exported_figures]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches, decision_summaries, audit_reports, poster_packages, exported_figures]
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/jcvpca_trace.py:DEFAULT_VARIANCE_THRESHOLD"
+  min_pcs:
+    value: 2
+    default: 2
+    allowed_range: [1, 20]
+    description: "Minimum number of principal components retained from A."
+    scientific_meaning: "Floor guarding against degenerate single-PC comparisons."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: [layer3_batches]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches]
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/jcvpca_trace.py:DEFAULT_MIN_PCS"
+  max_pcs:
+    value: 10
+    default: 10
+    allowed_range: [1, 50]
+    description: "Maximum number of principal components retained from A."
+    scientific_meaning: "Ceiling bounding comparison dimensionality for stability."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: [layer3_batches]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches]
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/jcvpca_trace.py:DEFAULT_MAX_PCS"
+  centering:
+    value: independent_per_dataset
+    default: independent_per_dataset
+    allowed_values: [independent_per_dataset]
+    description: "How A and B are centered before PCA / projection."
+    scientific_meaning: "Manual B projection; B centered by its own mean, never A's."
+    gui_editable: false
+    locked_by_scope: true
+    requires_approval: true
+    invalidates: [layer3_batches]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches]
+  normalization:
+    value: none
+    default: none
+    allowed_values: [none]
+    description: "Feature normalization policy."
+    scientific_meaning: "No z-scoring / no variance scaling; preserve natural amplitudes."
+    gui_editable: false
+    locked_by_scope: true
+    requires_approval: true
+    invalidates: [layer3_batches]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches]
+
+pc_focus:
+  cumulative_thresholds:
+    value: [0.50, 0.60]
+    default: [0.50, 0.60]
+    allowed_range: [0.10, 0.95]
+    description: "Cumulative-variance cutoffs (p50/p60) splitting functional vs null-space PC focus."
+    scientific_meaning: "Low-order (functional) vs high-order (null-space) structure boundary."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer3_batches, decision_summaries, audit_reports, poster_packages, exported_figures]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches, decision_summaries, audit_reports, poster_packages, exported_figures]
+    source_python: "Layer3_JcvPCA/scripts/run_pc_focus_p50_p60_sensitivity.py"
+  diagnostic_threshold:
+    value: 0.70
+    default: 0.70
+    allowed_range: [0.10, 0.95]
+    description: "p70 diagnostic cutoff (read-time only, not a batch gate)."
+    scientific_meaning: "Supplementary null-space sensitivity check."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: []
+    affects: [layer3]
+    regenerate_after_change: []
+  sensitivity_p_archived:
+    value: 2
+    default: 2
+    allowed_range: [1, 10]
+    description: "Archived p2 sensitivity PC count (superseded by p50/p60)."
+    scientific_meaning: "Legacy fixed-PC sensitivity retained for audit."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: []
+    affects: [layer3]
+    regenerate_after_change: []
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/gaga_batch_runner.py:SENSITIVITY_P"
+
+weighting:
+  explained_variance_weighting:
+    value: false
+    default: false
+    allowed_values: [true, false]
+    description: "Weight link contributions by A explained-variance ratio."
+    scientific_meaning: "Off preserves paper-faithful equal-loading comparison."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer3_batches, decision_summaries, audit_reports, poster_packages, exported_figures]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches, decision_summaries, audit_reports, poster_packages, exported_figures]
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/gaga_batch_runner.py:WeightingParameters"
+
+distribution:
+  low_contribution_flag:
+    value: 0.02
+    default: 0.02
+    allowed_range: [0.0, 0.2]
+    description: "Per-link contribution below this fraction is flagged low."
+    scientific_meaning: "Marks links contributing negligibly to a PC."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: []
+    affects: [layer3]
+    regenerate_after_change: []
+    source_python: "Layer3_JcvPCA/scripts/analyze_link_contribution_distribution.py:P_LINK_FLOOR_FLAG"
+
+cohort:
+  participants:
+    value: ["671", "252"]
+    default: ["671", "252"]
+    description: "Registered default batch cohort (informational; GUI uses discovered participants)."
+    scientific_meaning: "N-of-1 replicated; participants analyzed separately. New IDs appear automatically after discovery."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: [layer3_batches]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches]
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/gaga_batch_runner.py:TARGET_PARTICIPANTS"
+  block_a:
+    value: ["P1", "P2", "P3", "P4", "P5"]
+    default: ["P1", "P2", "P3", "P4", "P5"]
+    description: "Block A exercise set."
+    scientific_meaning: "Full Group4 sequence."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer3_batches]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches]
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/gaga_batch_runner.py:BLOCK_EXERCISES[A]"
+  block_b:
+    value: ["P3", "P4", "P5"]
+    default: ["P3", "P4", "P5"]
+    description: "Block B exercise set."
+    scientific_meaning: "Later-phase subset."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: true
+    invalidates: [layer3_batches]
+    affects: [layer3]
+    regenerate_after_change: [layer3_batches]
+    source_python: "Layer3_JcvPCA/src/layer3_jcvpca/gaga_batch_runner.py:BLOCK_EXERCISES[B]"
+
+outputs:
+  generate_full_numeric_reports:
+    value: on_demand
+    default: on_demand
+    allowed_values: [always, on_demand, never]
+    description: "When to generate full-numeric audit reports."
+    scientific_meaning: "Audit artifacts, not daily reads."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: [audit_reports]
+    affects: [reports]
+    regenerate_after_change: [audit_reports]
+  generate_poster_package:
+    value: on_demand
+    default: on_demand
+    allowed_values: [always, on_demand, never]
+    description: "When to generate the poster/publication package."
+    scientific_meaning: "Publication artifacts, generated on demand."
+    gui_editable: true
+    locked_by_scope: false
+    requires_approval: false
+    invalidates: [poster_packages, exported_figures]
+    affects: [poster_packages, exported_figures]
+    regenerate_after_change: [poster_packages, exported_figures]

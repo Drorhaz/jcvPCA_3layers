@@ -214,6 +214,13 @@ def test_default_exercise_segments_path_uses_segmentation_dir() -> None:
     assert exercise_segments_path_for_participant(root, "252").name == "252_ex_segmentatios_frames.xlsx"
 
 
+def test_exercise_segments_path_from_repo_root() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    path = exercise_segments_path_for_participant(repo, "671")
+    assert "Layer2.5_Segmentation" in str(path)
+    assert path.name == "671_ex_segmentatios_frames.xlsx"
+
+
 def test_build_session_coverage_diff_includes_missing_manifest_sessions() -> None:
     session_index = pd.DataFrame(
         [

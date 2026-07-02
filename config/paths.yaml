@@ -73,6 +73,7 @@ external_archive:
 
 participants:
   flagship: "671"
+  # Informational registry; operational cohort comes from discovery (session index, raw data, xlsx, manifest).
   batch_cohort:
     - "671"
     - "252"

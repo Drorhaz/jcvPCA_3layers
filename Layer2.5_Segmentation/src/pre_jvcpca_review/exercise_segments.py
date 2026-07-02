@@ -22,7 +22,12 @@ GAGA_EXERCISE_ID_TO_LABEL: dict[int, str] = {
 }
 GAGA_EXERCISE_LABELS: tuple[str, ...] = ("P1", "P2", "P3", "P4", "P5")
 EXPORT_GRANULARITY_PER_EXERCISE = "per_exercise"
+EXPORT_GRANULARITY_SHEET_EXERCISE = "per_sheet_exercise"
 EXPORT_GRANULARITY_COMBINED = "combined_group4"
+
+EXERCISE_SELECTION_GAGA_P_PHASES = "gaga_p_phases"
+EXERCISE_SELECTION_EXPLICIT_IDS = "explicit_ids"
+EXERCISE_SELECTION_ALL_IN_SHEET = "all_in_sheet"
 CENTRAL_MANIFEST_FILENAME = "layer25_export_manifest.csv"
 EXPORT_ATTEMPTS_REPORT_FILENAME = "layer25_export_attempts_report.csv"
 SESSION_COVERAGE_REPORT_FILENAME = "layer25_session_coverage_report.csv"
@@ -280,8 +285,69 @@ def gaga_segments_for_session(segments: list[ExerciseSegment]) -> list[ExerciseS
     return [by_id[eid] for eid in GROUP4_EXERCISE_IDS if eid in by_id]
 
 
+def export_label_for_exercise_id(exercise_id: int) -> str:
+    """Manifest/export label: Gaga P1–P5 or ``ex01`` style for other sheet exercises."""
+    gaga = gaga_label_for_exercise_id(exercise_id)
+    if gaga:
+        return gaga
+    return f"ex{int(exercise_id):02d}"
+
+
+def export_label_for_segment(segment: ExerciseSegment) -> str:
+    return export_label_for_exercise_id(segment.exercise_id)
+
+
+def window_tag_for_segment(segment: ExerciseSegment) -> str:
+    return export_label_for_segment(segment)
+
+
+def resolve_target_exercise_ids(
+    mode: str,
+    *,
+    p_phases: tuple[str, ...] = GAGA_EXERCISE_LABELS,
+    selected_exercise_ids: tuple[int, ...] = (),
+    sheet_segments: list[ExerciseSegment] | None = None,
+) -> set[int]:
+    """Resolve which exercise_id values a user request selects for export/analysis."""
+    if mode == EXERCISE_SELECTION_ALL_IN_SHEET:
+        return {seg.exercise_id for seg in (sheet_segments or [])}
+    if mode == EXERCISE_SELECTION_EXPLICIT_IDS:
+        return {int(x) for x in selected_exercise_ids}
+    label_to_id = {label: eid for eid, label in GAGA_EXERCISE_ID_TO_LABEL.items()}
+    return {label_to_id[p] for p in p_phases if p in label_to_id}
+
+
+def segments_for_exercise_ids(
+    segments: list[ExerciseSegment],
+    exercise_ids: set[int],
+) -> list[ExerciseSegment]:
+    """Return sheet segments matching ``exercise_ids``, sorted by exercise_id."""
+    by_id = {seg.exercise_id: seg for seg in segments}
+    return [by_id[eid] for eid in sorted(exercise_ids) if eid in by_id]
+
+
+def resolve_segmentation_dir(project_root: Path | str) -> Path:
+    """Resolve segmentation xlsx directory (``config/paths.yaml`` or Layer2.5 standalone)."""
+    root = Path(project_root).resolve()
+    paths_yaml = root / "config" / "paths.yaml"
+    if paths_yaml.is_file():
+        try:
+            if str(root / "src") not in __import__("sys").path:
+                __import__("sys").path.insert(0, str(root / "src"))
+            from project_paths import load_project_paths
+
+            return load_project_paths(project_root=root).get("layer2_5.segmentation_xlsx")
+        except Exception:
+            pass
+    nested = root / "Layer2.5_Segmentation" / SEGMENTATION_DIRNAME
+    if nested.is_dir():
+        return nested
+    standalone = root / SEGMENTATION_DIRNAME
+    return standalone
+
+
 def default_exercise_segments_path(project_root: Path | None = None) -> Path:
-    """Default pilot participant segmentation workbook under ``segmentation/``."""
+    """Default pilot participant segmentation workbook."""
     root = Path(project_root) if project_root else Path(__file__).resolve().parents[2]
     return exercise_segments_path_for_participant(root, "671")
 
@@ -289,12 +355,12 @@ def default_exercise_segments_path(project_root: Path | None = None) -> Path:
 def exercise_segments_path_for_participant(
     project_root: Path | str,
     participant_id: str,
+    *,
+    segmentation_dir: Path | str | None = None,
 ) -> Path:
     """Participant-specific exercise segmentation xlsx path."""
-    root = Path(project_root)
-    return root / SEGMENTATION_DIRNAME / EXERCISE_SEGMENTS_FILENAME_TEMPLATE.format(
-        participant_id=str(participant_id)
-    )
+    seg_dir = Path(segmentation_dir) if segmentation_dir else resolve_segmentation_dir(project_root)
+    return seg_dir / EXERCISE_SEGMENTS_FILENAME_TEMPLATE.format(participant_id=str(participant_id))
 
 
 def load_merged_exercise_catalog(

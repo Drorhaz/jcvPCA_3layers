@@ -648,4 +648,6 @@ DONE ── acceptance criteria Section 10
 
 ---
 
-*Planning document only. No moves, deletions, source edits, or analysis executed. Execute F1/F2/F3 only with explicit approval per batch.*
+**Follow-on:** Full implementation plan for remaining work — [`PHASE2_FULL_IMPLEMENTATION_PLAN.md`](PHASE2_FULL_IMPLEMENTATION_PLAN.md) (P1–P6).
+
+*F1/F2 executed (`e0ed01b`). F3 and W3c deferred — see Phase 2 plan.*

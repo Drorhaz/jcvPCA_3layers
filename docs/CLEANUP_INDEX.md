@@ -81,7 +81,19 @@ archive/2026-06-30_cleanup_stage_B/
 
 ---
 
-## Recommended Stage C (not started)
+## Phase 2 — Full workspace implementation (planned, not started)
+
+| Document | Description |
+|----------|-------------|
+| [**PHASE2_FULL_IMPLEMENTATION_PLAN.md**](research_recovery/PHASE2_FULL_IMPLEMENTATION_PLAN.md) | **Master execution plan:** P1 runner → P2 catalog → P3 symlinks → F3 deletions → P4 script wrappers → P5 data hub → optional P6 physical migration |
+| [FINAL_CLEANUP_PLAN.md](research_recovery/FINAL_CLEANUP_PLAN.md) | F1/F2 completed; F3 deferred |
+| [F1_F2_CLEANUP_LOG.md](research_recovery/F1_F2_CLEANUP_LOG.md) | What F1/F2 actually moved |
+
+**Status:** F1/F2 done (`e0ed01b`). Execute P1–P5 per Phase 2 plan after Section 16 approval checklist.
+
+---
+
+## Recommended Stage C (superseded by Phase 2 plan)
 
 1. **Layer 2 archive** — Review and optionally move `Layer2_Motive_Kinematics/outputs/archive/` (~22 GB) after poster submission or session-level hash review.
 2. **Apply `.gitignore`** — Add `archive/`, Layer 3 batch output folders, poster binaries (see GITIGNORE_REVIEW.md).

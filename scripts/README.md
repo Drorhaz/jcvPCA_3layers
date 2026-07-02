@@ -10,6 +10,7 @@ Run pipeline entry points from repository root. Each wrapper forwards CLI args t
 | [`run_layer2_5_export.py`](run_layer2_5_export.py) | `Layer2.5_Segmentation/scripts/build_gaga_exports.py` | L2.5 | `Layer2.5_Segmentation/` |
 | [`run_layer3_batch.py`](run_layer3_batch.py) | `Layer3_JcvPCA/scripts/run_gaga_batch_jcvpca.py` | L3 | repo root |
 | [`run_layer3_validate.py`](run_layer3_validate.py) | L3 report validators (read-only) | L3 | `Layer3_JcvPCA/scripts/` |
+| [`run_dashboard.py`](run_dashboard.py) | Streamlit multipage UI | L2.5 | repo root |
 
 ## Examples
 
@@ -20,6 +21,7 @@ python scripts/run_layer2_session.py --help
 python scripts/run_layer2_5_export.py --help
 python scripts/run_layer3_batch.py --help
 python scripts/run_layer3_validate.py
+./Dashboard/run_dashboard.sh
 ```
 
 Poster scripts remain at repo root: `make_poster_final_figures.py`, `make_poster_671_figures.py`.

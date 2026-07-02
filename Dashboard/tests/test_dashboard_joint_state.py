@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
-DASHBOARD_ROOT = ROOT / "dashboard"
-if str(ROOT / "src") not in sys.path:
-    sys.path.insert(0, str(ROOT / "src"))
-if str(DASHBOARD_ROOT) not in sys.path:
-    sys.path.insert(0, str(DASHBOARD_ROOT))
+from ui_bootstrap import LAYER25_ROOT, configure_python_paths
+
+configure_python_paths()
+
+L25_ROOT = LAYER25_ROOT
 
 from dashboard_state import (  # noqa: E402
     clear_joint_checkbox_widget_keys,
@@ -96,7 +94,7 @@ def test_bulk_select_clears_stale_checkbox_widget_state() -> None:
 
 @pytest.fixture
 def controller_with_joints() -> PreJcvpcaReviewController:
-    ctrl = PreJcvpcaReviewController(ROOT)
+    ctrl = PreJcvpcaReviewController(L25_ROOT)
     links = [
         _link("J001", "Chest", "Neck", "core_candidate"),
         _link("J002", "LUArm", "LFArm", "core_candidate"),

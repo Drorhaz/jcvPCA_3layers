@@ -1,0 +1,112 @@
+# Analysis request template — G4 agent-runnable YAML schema
+#
+# This file documents the structure; the GUI/builder generates instance files under
+# requests/analysis_requests/. Saving a request does NOT run Layer 3 analysis.
+
+version: 1
+
+# --- Identity & lifecycle ---
+request_id: "example_671_L1_T1_vs_T2"
+status: draft  # draft | validated | blocked | ready_for_execution
+created_at: "2026-07-01T12:00:00+00:00"
+updated_at: "2026-07-01T12:00:00+00:00"
+advisory_label: "Advisory — validation guides review; not automatic exclusion or execution."
+
+# --- Reproducibility / provenance (frozen at save time) ---
+provenance:
+  science_hash: "<sha256 from analysis_config.science_hash>"
+  display_hash: "<sha256 from analysis_config.display_hash>"
+  registry_coverage:
+    layer3: full
+    layer1: "curated high-impact (15)"
+    layer2: "curated high-impact (7)"
+    layer2_5: "curated (6)"
+  canonical_batch_id: gaga_batch_jcvpca_20260626_193319
+  canonical_comparability: pre_registry_canonical  # comparable | not_directly_comparable | unknown | pre_registry_canonical
+  canonical_science_hash: null
+  request_builder_version: "G4"
+
+# --- What to analyze ---
+selection:
+  participant_id: "671"
+  repetitions: [R1, R2]
+  p_phases: [P1, P2, P3]
+  segment_preset: only_P1_P3  # optional; maps to config/segment_selection.yaml presets
+  exercise_selection_mode: gaga_p_phases  # gaga_p_phases | explicit_ids | all_in_sheet
+  selected_exercise_ids: []  # used when exercise_selection_mode=explicit_ids
+  blocks:
+    A: [P1, P2, P3, P4, P5]
+    B: [P3, P4, P5]
+
+comparisons:
+  - comparison_id: L1_T1_vs_T2
+    comparison_label: T1_vs_T2
+    comparison_type: longitudinal  # longitudinal | within_timepoint_repetition
+    timepoint_a: T1
+    timepoint_b: T2
+    repetitions: [R1, R2]
+
+outputs:
+  pc_focus_spaces: [all, functional, null_space]
+  generate_comparison_plots: true
+  generate_full_numeric_reports: on_demand
+  generate_poster_package: on_demand
+
+link_focus:
+  body_regions: []  # e.g. [upper_body, left_arm]; empty = all comparable links
+  link_stems: []  # optional explicit link stems
+  use_comparable_links_only: true
+
+# --- Resolved segments (manifest rows, not duplicated data) ---
+resolved_segments:
+  - segment_id: "671_T1_P1_R1::P1"
+    session_id: "671_T1_P1_R1"
+    timepoint: T1
+    repetition: R1
+    exercise_id: 9
+    exercise_export_label: P1
+    p_phase: P1
+    start_frame: 14280
+    end_frame: 15240
+    expected_window_label: "671_T1_P1_R1_P1_s14280_e15240"
+    sheet_name: "671 - T1P1R1"
+    segmentation_source: "Layer2.5_Segmentation/segmentation/671_ex_segmentatios_frames.xlsx"
+    export_status: exported
+    matrix_path: "<path from layer25_export_manifest.csv>"
+    feature_schema_id: "<hash>"
+    qc_status: pass
+    layer3_safe: true
+
+segmentation_coverage: []  # full xlsx vs manifest rows at save time
+
+# --- Validation snapshot (for agents — do not strip) ---
+validation:
+  errors: []
+  warnings: []
+  advisory_notes: []
+  inclusion_summary:
+    ready: 0
+    caution: 0
+    not_recommended: 0
+    blocked: 0
+    missing: 0
+  comparison_results:
+    - comparison_id: L1_T1_vs_T2
+      verdict: caution
+      summary: "..."
+  comparable_link_count: null
+  link_focus_caution_count: 0
+  link_focus_not_recommended_count: 0
+  segmentation_coverage:
+    exported: 0
+    requested_not_exported: 0
+    available_not_requested: 0
+    missing_from_sheet: 0
+    requested: 0
+    sheet_rows: 0
+
+execution:
+  allowed: false  # G4: always false until a future guarded runner (G6+)
+  blocker_count: 0
+  caution_count: 0
+  note: "G4 saves intent only — no analysis executed."

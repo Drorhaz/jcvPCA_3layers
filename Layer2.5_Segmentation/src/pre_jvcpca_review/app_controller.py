@@ -691,6 +691,8 @@ class PreJcvpcaReviewController:
         allow_nan_matrix: bool = False,
         export_combined: bool = True,
         export_per_exercise: bool = True,
+        export_exercise_ids: set[int] | None = None,
+        export_all_sheet_exercises: bool = False,
         layer1_root: Path | None = None,
         layer2_root: Path | None = None,
         use_participant_core_manifests: bool = True,
@@ -741,5 +743,7 @@ class PreJcvpcaReviewController:
             allow_nan_matrix=allow_nan_matrix,
             export_combined=export_combined,
             export_per_exercise=export_per_exercise,
+            export_exercise_ids=export_exercise_ids,
+            export_all_sheet_exercises=export_all_sheet_exercises,
             use_participant_core_manifests=use_participant_core_manifests,
         )

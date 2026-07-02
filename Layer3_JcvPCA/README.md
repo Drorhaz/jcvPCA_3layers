@@ -107,7 +107,7 @@ NV_T1 = A_T1_R1 vs A_T1_R2  (same compute_jcvpca, not a statistical test)
 
 ### Path B — Direct single-window analysis (UI + `analysis_service`)
 
-**Entry:** Streamlit page `Layer2.5_Segmentation/dashboard/pages/1_Layer3_JcvPCA_Analysis.py`  
+**Entry:** Streamlit page `Dashboard/pages/1_Layer3_JcvPCA_Analysis.py` (launch: `./Dashboard/run_dashboard.sh`)  
 **Backend:** `analysis_service.run_direct_analysis()` via `app_controller.Layer3AnalysisController`
 
 **Design:** Four **single windows** (not concatenated):
@@ -359,13 +359,11 @@ Edit `config/layer3_config.yaml`:
 ### Streamlit UI (single-window analysis — current primary workflow)
 
 ```bash
-cd Layer2.5_Segmentation
-pip install -r requirements-dashboard.txt
-pip install -e ../Layer3_JcvPCA
-streamlit run dashboard/pre_jvcpca_dashboard.py
+./Dashboard/run_dashboard.sh
+# or: python scripts/run_dashboard.py
 ```
 
-Open sidebar → **Layer 3 JcvPCA Analysis**.
+See [`Dashboard/README.md`](../Dashboard/README.md). Open sidebar → **Layer 3 JcvPCA Analysis**.
 
 **UI flow:**
 

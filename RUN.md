@@ -32,6 +32,7 @@ Exit code **0** = all required registry paths exist.
 | Layer 2.5 export | `python scripts/run_layer2_5_export.py --help` |
 | Layer 3 batch | `python scripts/run_layer3_batch.py --help` |
 | Layer 3 validate | `python scripts/run_layer3_validate.py` |
+| **Streamlit dashboard** | `./Dashboard/run_dashboard.sh` or `python scripts/run_dashboard.py` |
 
 Details: [`scripts/README.md`](scripts/README.md)
 
@@ -112,6 +113,14 @@ ls Layer2.5_Segmentation/outputs/pre_jvcpca_review/671/
 ```
 
 Export root: `Layer2.5_Segmentation/outputs/pre_jvcpca_review/` (yaml: `layer2_5.pre_jvcpca_review`).
+
+**Interactive export UI:** use the repo-root dashboard — [`Dashboard/README.md`](Dashboard/README.md):
+
+```bash
+./Dashboard/run_dashboard.sh
+```
+
+Opens http://localhost:8501 (Pre-JcvPCA review, Layer 3 analysis, Gaga workbench).
 
 252 manifest: `Layer2.5_Segmentation/config/group4_core_16link_within_252_feature_manifest.csv`
 

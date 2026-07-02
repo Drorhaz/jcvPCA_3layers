@@ -1,0 +1,71 @@
+# GUI display thresholds / defaults.
+#
+# G1 (PROGRAM_GUI_OPTIMIZATION_PLAN.md Section 4). Display-only settings — these
+# are excluded from the science config hash (Section 4.3), so changing them does
+# NOT invalidate analysis results. Same rich schema as the other config files.
+
+version: 1
+
+show_debug_expanders_default:
+  value: false
+  default: false
+  allowed_values: [true, false]
+  description: "Whether technical/debug expanders start open."
+  scientific_meaning: "Display preference only."
+  gui_editable: true
+  locked_by_scope: false
+  requires_approval: false
+  invalidates: []
+  affects: [gui]
+  regenerate_after_change: []
+
+default_participant:
+  value: "671"
+  default: "671"
+  description: "Participant selected on GUI load (must appear in discovered cohort)."
+  scientific_meaning: "Display preference only; validated against discovered participants at runtime."
+  gui_editable: true
+  locked_by_scope: false
+  requires_approval: false
+  invalidates: []
+  affects: [gui]
+  regenerate_after_change: []
+
+results_rank_by:
+  value: jcvpca_link_effect
+  default: jcvpca_link_effect
+  allowed_values: [jcvpca_link_effect, link_name, nv_ratio]
+  description: "Default sort key on the results dashboard."
+  scientific_meaning: "Display ordering only."
+  gui_editable: true
+  locked_by_scope: false
+  requires_approval: false
+  invalidates: []
+  affects: [gui]
+  regenerate_after_change: []
+
+results_show_nv_band:
+  value: true
+  default: true
+  allowed_values: [true, false]
+  description: "Show the natural-variability band next to effects."
+  scientific_meaning: "Uncertainty must be visible by default (safeguard)."
+  gui_editable: true
+  locked_by_scope: false
+  requires_approval: false
+  invalidates: []
+  affects: [gui]
+  regenerate_after_change: []
+
+results_effect_display_floor:
+  value: 0.0
+  default: 0.0
+  allowed_range: [0.0, 1.0]
+  description: "Hide effects below this magnitude in the GUI only."
+  scientific_meaning: "Display filter, NEVER a science gate; does not affect stored results."
+  gui_editable: true
+  locked_by_scope: false
+  requires_approval: false
+  invalidates: []
+  affects: [gui]
+  regenerate_after_change: []

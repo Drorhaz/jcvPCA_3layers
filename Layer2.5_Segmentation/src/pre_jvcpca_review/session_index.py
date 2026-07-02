@@ -231,12 +231,19 @@ def _time_range(n_frames: object, fps: object) -> tuple[object, object]:
 def build_session_index(
     layer1_root: Path | None = None,
     layer2_root: Path | None = None,
+    layer1_roots: list[Path] | None = None,
 ) -> pd.DataFrame:
     """Build one row per discovered session, pairing Layer 1 and Layer 2 runs."""
-    l1_root = Path(layer1_root) if layer1_root else DEFAULT_LAYER1_ROOT
     l2_root = Path(layer2_root) if layer2_root else DEFAULT_LAYER2_ROOT
 
-    l1_runs = scan_layer1_runs(l1_root)
+    if layer1_roots:
+        l1_runs: dict[str, list[Path]] = {}
+        for root in layer1_roots:
+            for session_id, candidates in scan_layer1_runs(root).items():
+                l1_runs.setdefault(session_id, []).extend(candidates)
+    else:
+        l1_root = Path(layer1_root) if layer1_root else DEFAULT_LAYER1_ROOT
+        l1_runs = scan_layer1_runs(l1_root)
     l2_sessions = scan_layer2_sessions(l2_root)
     all_keys = sorted(set(l1_runs) | set(l2_sessions))
 

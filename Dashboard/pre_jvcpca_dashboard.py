@@ -2,18 +2,14 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DASHBOARD_ROOT = Path(__file__).resolve().parent
-if str(PROJECT_ROOT / "src") not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT / "src"))
-if str(DASHBOARD_ROOT) not in sys.path:
-    sys.path.insert(0, str(DASHBOARD_ROOT))
+from ui_bootstrap import LAYER25_ROOT, configure_python_paths
+
+configure_python_paths()
 
 from dashboard_state import (  # noqa: E402
     diagnostics_context_signature,
@@ -68,7 +64,7 @@ def _inject_css() -> None:
 
 def _init_state() -> PreJcvpcaReviewController:
     if "controller" not in st.session_state:
-        st.session_state.controller = PreJcvpcaReviewController(PROJECT_ROOT)
+        st.session_state.controller = PreJcvpcaReviewController(LAYER25_ROOT)
     defaults = {
         "participant_id": None,
         "session_id": None,

@@ -13,14 +13,18 @@ from pre_jvcpca_review.canonical_manifest import core_manifest_path_for_particip
 from pre_jvcpca_review.exercise_segments import (
     EXPORT_GRANULARITY_COMBINED,
     EXPORT_GRANULARITY_PER_EXERCISE,
+    EXPORT_GRANULARITY_SHEET_EXERCISE,
     GAGA_EXERCISE_ID_TO_LABEL,
     GAGA_EXERCISE_LABELS,
     ExerciseSegment,
     exercise_segments_path_for_participant,
+    export_label_for_segment,
     gaga_label_for_exercise_id,
     gaga_segments_for_session,
     group4_window,
     make_window_label,
+    segments_for_exercise_ids,
+    window_tag_for_segment,
 )
 from pre_jvcpca_review.export_constants import WINDOW_MANIFEST_FILE
 from pre_jvcpca_review.export_window import export_layer3_window
@@ -183,9 +187,11 @@ def export_gaga_session(
     allow_nan_matrix: bool = False,
     export_combined: bool = True,
     export_per_exercise: bool = True,
+    export_exercise_ids: set[int] | None = None,
+    export_all_sheet_exercises: bool = False,
     pilot_manifest_path: Path | None = None,
 ) -> GagaBatchExportResult:
-    """Export combined Group4 and/or per-exercise Gaga windows for one session."""
+    """Export combined Group4 and/or per-exercise windows for one session."""
     participant_id = str(session_row["participant_id"])
     session_id = str(session_row["session_id"])
     session_manifest_path = pilot_manifest_path or core_manifest_path_for_participant(participant_id)
@@ -344,39 +350,62 @@ def export_gaga_session(
             )
 
     if export_per_exercise:
-        gaga_segments = gaga_segments_for_session(segments)
-        found_ids = {seg.exercise_id for seg in gaga_segments}
-        for exercise_id, gaga_label in GAGA_EXERCISE_ID_TO_LABEL.items():
-            if exercise_id not in found_ids:
-                message = (
-                    f"No frame boundaries for exercise_id {exercise_id} "
-                    f"(Gaga {gaga_label}) in segmentation catalog."
-                )
-                result.skipped.append(
-                    {
-                        "session_id": session_id,
-                        "reason": "missing_exercise_segment",
-                        "message": message,
-                    }
-                )
-                _record_attempt(
-                    result,
-                    session_row=session_row,
-                    export_label=gaga_label,
-                    status=ATTEMPT_STATUS_SKIPPED,
-                    reason_code="missing_exercise_segment",
-                    reason_message=message,
-                    source_dependency=segmentation_source,
-                )
-        for segment in gaga_segments:
-            gaga_label = gaga_label_for_exercise_id(segment.exercise_id)
-            if not gaga_label:
+        if export_all_sheet_exercises:
+            ids_to_export = {seg.exercise_id for seg in segments}
+        elif export_exercise_ids is not None:
+            ids_to_export = set(export_exercise_ids)
+        else:
+            ids_to_export = {seg.exercise_id for seg in gaga_segments_for_session(segments)}
+
+        selected_segments = segments_for_exercise_ids(segments, ids_to_export)
+        found_ids = {seg.exercise_id for seg in selected_segments}
+        for exercise_id in sorted(ids_to_export):
+            if exercise_id in found_ids:
                 continue
+            export_label = export_label_for_segment(
+                ExerciseSegment(
+                    exercise_id=exercise_id,
+                    exercise_name="",
+                    start_frame=0,
+                    end_frame=0,
+                    session_id=session_id,
+                    sheet_name="",
+                )
+            )
+            message = (
+                f"No frame boundaries for exercise_id {exercise_id} "
+                f"({export_label}) in segmentation catalog."
+            )
+            result.skipped.append(
+                {
+                    "session_id": session_id,
+                    "reason": "missing_exercise_segment",
+                    "message": message,
+                }
+            )
+            _record_attempt(
+                result,
+                session_row=session_row,
+                export_label=export_label,
+                status=ATTEMPT_STATUS_SKIPPED,
+                reason_code="missing_exercise_segment",
+                reason_message=message,
+                source_dependency=segmentation_source,
+            )
+        for segment in selected_segments:
+            export_label = export_label_for_segment(segment)
+            gaga_label = gaga_label_for_exercise_id(segment.exercise_id)
+            tag = window_tag_for_segment(segment)
+            granularity = (
+                EXPORT_GRANULARITY_PER_EXERCISE
+                if gaga_label
+                else EXPORT_GRANULARITY_SHEET_EXERCISE
+            )
             label = make_window_label(
                 session_id,
                 segment.start_frame,
                 segment.end_frame,
-                tag=gaga_label,
+                tag=tag,
             )
             _run_export(
                 segment.start_frame,
@@ -384,10 +413,10 @@ def export_gaga_session(
                 label,
                 GagaExportMetadata(
                     gaga_exercise_id=segment.exercise_id,
-                    gaga_exercise_label=gaga_label,
-                    export_granularity=EXPORT_GRANULARITY_PER_EXERCISE,
+                    gaga_exercise_label=export_label,
+                    export_granularity=granularity,
                 ),
-                gaga_label,
+                export_label,
             )
 
     return result
@@ -404,6 +433,8 @@ def run_gaga_batch_export(
     allow_nan_matrix: bool = False,
     export_combined: bool = True,
     export_per_exercise: bool = True,
+    export_exercise_ids: set[int] | None = None,
+    export_all_sheet_exercises: bool = False,
     use_participant_core_manifests: bool = True,
 ) -> GagaBatchRunSummary:
     """Export Gaga windows for selected participants and write centralized manifest."""
@@ -435,6 +466,8 @@ def run_gaga_batch_export(
                 allow_nan_matrix=allow_nan_matrix,
                 export_combined=export_combined,
                 export_per_exercise=export_per_exercise,
+                export_exercise_ids=export_exercise_ids,
+                export_all_sheet_exercises=export_all_sheet_exercises,
                 pilot_manifest_path=(
                     core_manifest_path_for_participant(participant_id)
                     if use_participant_core_manifests

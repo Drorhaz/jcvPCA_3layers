@@ -40,7 +40,21 @@ def main() -> None:
         action="store_true",
         help="Allow NaN values in export matrix",
     )
+    parser.add_argument(
+        "--all-sheet-exercises",
+        action="store_true",
+        help="Export every exercise row in each session sheet (not only Gaga P1–P5)",
+    )
+    parser.add_argument(
+        "--exercise-id",
+        action="append",
+        dest="exercise_ids",
+        type=int,
+        help="Export only these exercise_id values (repeatable; overrides default Gaga set)",
+    )
     args = parser.parse_args()
+
+    export_exercise_ids = set(args.exercise_ids) if args.exercise_ids else None
 
     project_root = Path(__file__).resolve().parents[1]
     controller = PreJcvpcaReviewController(project_root)
@@ -53,6 +67,8 @@ def main() -> None:
         allow_nan_matrix=args.allow_nan_matrix,
         export_combined=not args.no_combined,
         export_per_exercise=not args.no_per_exercise,
+        export_exercise_ids=export_exercise_ids,
+        export_all_sheet_exercises=args.all_sheet_exercises,
     )
 
     print(f"Central manifest: {summary.central_manifest_path}")

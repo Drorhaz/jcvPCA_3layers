@@ -33,12 +33,32 @@ def main() -> None:
         dest="participants",
         help=f"Participant id(s); default {TARGET_PARTICIPANTS}",
     )
+    parser.add_argument(
+        "--request",
+        type=Path,
+        default=None,
+        help="Validated analysis_request.yaml (overrides participant/comparison selection)",
+    )
+    parser.add_argument(
+        "--project-root",
+        type=Path,
+        default=None,
+        help="Repository root for analysis_config loading",
+    )
+    parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Run a single small comparison for G6 smoke validation",
+    )
     args = parser.parse_args()
 
     batch_root = run_gaga_batch_jcvpca(
         layer25_root=args.layer25_root or default_layer25_root(),
         output_dir=args.output_dir,
         participants=args.participants,
+        analysis_request_path=args.request,
+        project_root=args.project_root,
+        smoke=args.smoke,
     )
     print(f"Batch complete: {batch_root}")
     print(f"Summary: {batch_root / 'batch_summary.md'}")
